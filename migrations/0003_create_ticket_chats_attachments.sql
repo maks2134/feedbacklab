@@ -1,7 +1,7 @@
 -- +goose Up
 CREATE TABLE IF NOT EXISTS ticket_chats (
-                                            id SERIAL PRIMARY KEY,
-                                            ticket_id INT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    ticket_id INT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
     sender_id UUID NOT NULL,
     sender_role VARCHAR(50) NOT NULL CHECK (sender_role IN ('client','support')),
     message TEXT NOT NULL,
@@ -17,8 +17,8 @@ CREATE TRIGGER trg_ticket_chats_set_updated
     FOR EACH ROW EXECUTE FUNCTION set_updated_timestamp();
 
 CREATE TABLE IF NOT EXISTS ticket_attachments (
-                                                  id SERIAL PRIMARY KEY,
-                                                  ticket_id INT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    ticket_id INT NOT NULL REFERENCES tickets(id) ON DELETE CASCADE,
     file_path TEXT NOT NULL,
     uploaded_by UUID NOT NULL,
     file_type VARCHAR(50),
@@ -33,8 +33,8 @@ CREATE TRIGGER trg_ticket_attachments_set_updated
     FOR EACH ROW EXECUTE FUNCTION set_updated_timestamp();
 
 CREATE TABLE IF NOT EXISTS message_attachments (
-                                                   id SERIAL PRIMARY KEY,
-                                                   chat_id INT NOT NULL REFERENCES ticket_chats(id) ON DELETE CASCADE,
+    id SERIAL PRIMARY KEY,
+    chat_id INT NOT NULL REFERENCES ticket_chats(id) ON DELETE CASCADE,
     file_path TEXT NOT NULL,
     uploaded_by UUID NOT NULL,
     file_type VARCHAR(50),
