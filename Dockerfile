@@ -5,6 +5,7 @@ WORKDIR /app
 RUN apk add --no-cache git
 
 COPY go.mod go.sum ./
+
 RUN go mod download
 
 COPY . .
@@ -21,4 +22,5 @@ COPY --from=builder /app/migrations ./migrations
 USER nonroot:nonroot
 
 EXPOSE 8080
+
 ENTRYPOINT ["/app/innotech"]
