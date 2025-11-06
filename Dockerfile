@@ -21,6 +21,6 @@ COPY --from=builder /app/migrations ./migrations
 
 USER nonroot:nonroot
 
-EXPOSE 8080
+EXPOSE 8080 
 
 ENTRYPOINT ["/app/innotech"]

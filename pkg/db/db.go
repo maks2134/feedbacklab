@@ -15,3 +15,5 @@ func Connect(databaseURL string) (*sqlx.DB, error) {
 	log.Println("database connected successfully")
 	return db, nil
 }
+
+// изучить slog

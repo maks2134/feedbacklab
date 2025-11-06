@@ -29,3 +29,5 @@ func main() {
 
 	app.StartServer(cfg.AppPort)
 }
+
+//TODO переводы

@@ -15,7 +15,6 @@ type Config struct {
 
 func Load() *Config {
 	_ = godotenv.Load()
-
 	cfg := &Config{
 		AppPort:       getEnv("APP_PORT", "8080"),
 		DatabaseURL:   getEnv("DATABASE_URL", "postgres://feedback:feedback@db:5432/innotech?sslmode=disable"),

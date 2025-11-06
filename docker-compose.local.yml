@@ -3,7 +3,7 @@ services:
     image: postgres:17.4
     container_name: innotech_db
     restart: always
-    environment:
+    env_file:
       - .env.docker
     ports:
       - "5432:5432"
