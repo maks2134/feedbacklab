@@ -3,6 +3,7 @@ package container
 import (
 	"innotech/config"
 	"innotech/internal/health"
+	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
 	"innotech/pkg/db"
 	"log"
@@ -11,10 +12,11 @@ import (
 )
 
 type Container struct {
-	Config        *config.Config
-	DB            *sqlx.DB
-	HealthHandler *health.Handler
-	TicketHandler *tickets.Handler
+	Config             *config.Config
+	DB                 *sqlx.DB
+	HealthHandler      *health.Handler
+	TicketHandler      *tickets.Handler
+	TicketChatsHandler *ticket_chats.Handler
 }
 
 func New() *Container {
@@ -32,10 +34,15 @@ func New() *Container {
 	ticketService := tickets.NewService(ticketRepo)
 	ticketHandler := tickets.NewHandler(ticketService)
 
+	chatRepo := ticket_chats.NewRepository(database)
+	chatService := ticket_chats.NewService(chatRepo)
+	chatHandler := ticket_chats.NewHandler(chatService)
+
 	return &Container{
-		Config:        cfg,
-		DB:            database,
-		HealthHandler: healthHandler,
-		TicketHandler: ticketHandler,
+		Config:             cfg,
+		DB:                 database,
+		HealthHandler:      healthHandler,
+		TicketHandler:      ticketHandler,
+		TicketChatsHandler: chatHandler,
 	}
 }
