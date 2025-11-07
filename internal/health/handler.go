@@ -14,6 +14,13 @@ func NewHandler(service HealthService) *Handler {
 	return &Handler{service: service}
 }
 
+// CheckHealth godoc
+// @Summary проверка здоровья сервиса
+// @Description возвращает статус OK
+// @Tags Health
+// @Produce json
+// @Success 200 {object} map[string]string
+// @Router /health [get]
 func (h *Handler) CheckHealth(c *fiber.Ctx) error {
 	ctx := context.Background()
 	if err := h.service.Check(ctx); err != nil {

@@ -7,6 +7,10 @@ import (
 	"log"
 )
 
+// @title FeedbackLab API
+// @version 0.1
+// @host localhost:8080
+// @BasePath /api
 func main() {
 	c := container.New()
 

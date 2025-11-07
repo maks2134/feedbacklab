@@ -1,6 +1,7 @@
 package app
 
 import (
+	_ "innotech/docs"
 	"innotech/internal/container"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
@@ -10,10 +11,13 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	swagger "github.com/swaggo/fiber-swagger"
 )
 
 func Start(container *container.Container) {
 	app := fiber.New()
+
+	app.Get("/swagger/*", swagger.WrapHandler)
 
 	health.RegisterRoutes(app, container.HealthHandler)
 	tickets.RegisterRoutes(app, container.TicketHandler)

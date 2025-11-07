@@ -14,6 +14,14 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create godoc
+// @Summary создать вложение сообщения
+// @Tags MessageAttachments
+// @Accept json
+// @Produce json
+// @Param attachment body MessageAttachment true "Attachment"
+// @Success 201 {object} MessageAttachment
+// @Router /message_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	var att MessageAttachment
 	if err := c.BodyParser(&att); err != nil {
@@ -25,6 +33,13 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(att)
 }
 
+// GetByID godoc
+// @Summary получить вложение по ID
+// @Tags MessageAttachments
+// @Produce json
+// @Param id path int true "ID"
+// @Success 200 {object} MessageAttachment
+// @Router /message_attachments/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -37,6 +52,13 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(att)
 }
 
+// GetByChatID godoc
+// @Summary получить все вложения по chat_id
+// @Tags MessageAttachments
+// @Produce json
+// @Param chat_id path int true "Chat ID"
+// @Success 200 {array} MessageAttachment
+// @Router /message_attachments/chat/{chat_id} [get]
 func (h *Handler) GetByChatID(c *fiber.Ctx) error {
 	chatID, err := strconv.Atoi(c.Params("chat_id"))
 	if err != nil {
@@ -49,6 +71,15 @@ func (h *Handler) GetByChatID(c *fiber.Ctx) error {
 	return c.JSON(list)
 }
 
+// Update godoc
+// @Summary обновить вложение
+// @Tags MessageAttachments
+// @Accept json
+// @Produce json
+// @Param id path int true "ID"
+// @Param attachment body MessageAttachment true "Attachment"
+// @Success 200 {object} MessageAttachment
+// @Router /message_attachments/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -65,6 +96,12 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(att)
 }
 
+// Delete godoc
+// @Summary удалить вложение
+// @Tags MessageAttachments
+// @Param id path int true "ID"
+// @Success 204
+// @Router /message_attachments/{id} [delete]
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {

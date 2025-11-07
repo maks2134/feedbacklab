@@ -14,6 +14,15 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create godoc
+// @Summary создание сообщения тикета
+// @Tags TicketChats
+// @Accept json
+// @Produce json
+// @Param chat body TicketChat true "Chat"
+// @Success 201 {object} TicketChat
+// @Failure 400 {object} map[string]string
+// @Router /ticket_chats/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	var chat TicketChat
 	if err := c.BodyParser(&chat); err != nil {
@@ -25,6 +34,14 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(chat)
 }
 
+// GetByID godoc
+// @Summary получить сообщение по ID
+// @Tags TicketChats
+// @Produce json
+// @Param id path int true "ID"
+// @Success 200 {object} TicketChat
+// @Failure 404 {object} map[string]string
+// @Router /ticket_chats/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -37,6 +54,13 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(chat)
 }
 
+// GetByTicketID godoc
+// @Summary получить все сообщения тикета
+// @Tags TicketChats
+// @Produce json
+// @Param ticket_id path int true "Ticket ID"
+// @Success 200 {array} TicketChat
+// @Router /ticket_chats/ticket/{ticket_id} [get]
 func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 	ticketID, err := strconv.Atoi(c.Params("ticket_id"))
 	if err != nil {
@@ -49,6 +73,15 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 	return c.JSON(chats)
 }
 
+// Update godoc
+// @Summary обновить сообщение
+// @Tags TicketChats
+// @Accept json
+// @Produce json
+// @Param id path int true "ID"
+// @Param chat body TicketChat true "Chat"
+// @Success 200 {object} TicketChat
+// @Router /ticket_chats/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -65,6 +98,12 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(chat)
 }
 
+// Delete godoc
+// @Summary удалить сообщение
+// @Tags TicketChats
+// @Param id path int true "ID"
+// @Success 204
+// @Router /ticket_chats/{id} [delete]
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
