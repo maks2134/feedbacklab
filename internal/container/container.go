@@ -3,6 +3,7 @@ package container
 import (
 	"innotech/config"
 	"innotech/internal/health"
+	"innotech/internal/message_attachments"
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
@@ -13,12 +14,13 @@ import (
 )
 
 type Container struct {
-	Config                   *config.Config
-	DB                       *sqlx.DB
-	HealthHandler            *health.Handler
-	TicketHandler            *tickets.Handler
-	TicketChatsHandler       *ticket_chats.Handler
-	TicketAttachmentsHandler *ticket_attachments.Handler
+	Config                    *config.Config
+	DB                        *sqlx.DB
+	HealthHandler             *health.Handler
+	TicketHandler             *tickets.Handler
+	TicketChatsHandler        *ticket_chats.Handler
+	TicketAttachmentsHandler  *ticket_attachments.Handler
+	MessageAttachmentsHandler *message_attachments.Handler
 }
 
 func New() *Container {
@@ -44,12 +46,17 @@ func New() *Container {
 	attachService := ticket_attachments.NewService(attachRepo)
 	attachHandler := ticket_attachments.NewHandler(attachService)
 
+	msgAttachRepo := message_attachments.NewRepository(database)
+	msgAttachService := message_attachments.NewService(msgAttachRepo)
+	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
+
 	return &Container{
-		Config:                   cfg,
-		DB:                       database,
-		HealthHandler:            healthHandler,
-		TicketHandler:            ticketHandler,
-		TicketChatsHandler:       chatHandler,
-		TicketAttachmentsHandler: attachHandler,
+		Config:                    cfg,
+		DB:                        database,
+		HealthHandler:             healthHandler,
+		TicketHandler:             ticketHandler,
+		TicketChatsHandler:        chatHandler,
+		TicketAttachmentsHandler:  attachHandler,
+		MessageAttachmentsHandler: msgAttachHandler,
 	}
 }
