@@ -31,3 +31,6 @@ cmd/server/main.go`
 | **Посмотреть логи** | `docker compose -f docker-compose.local.yml logs -f app` |
 | **Зайти внутрь контейнера API** | `docker exec -it innotech_app sh` |
 | **Зайти в PostgreSQL** | `docker exec -it innotech_db psql -U feedback -d innotech` |
+
+## 1.5 Swagger:
+Swagger доступен по ссылке: `http://localhost:8080/swagger/index.html#/`
