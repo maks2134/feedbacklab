@@ -18,7 +18,6 @@ services:
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.0
     container_name: keycloak
-    restart: always
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: db

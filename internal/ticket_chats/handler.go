@@ -19,15 +19,22 @@ func NewHandler(service Service) *Handler {
 // @Tags TicketChats
 // @Accept json
 // @Produce json
-// @Param chat body TicketChat true "Chat"
+// @Param chat body CreateTicketChatDTO true "Chat"
 // @Success 201 {object} TicketChat
 // @Failure 400 {object} map[string]string
 // @Router /ticket_chats/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	var chat TicketChat
-	if err := c.BodyParser(&chat); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+	dto := c.Locals("body").(*CreateTicketChatDTO)
+
+	chat := TicketChat{
+		TicketID:            dto.TicketID,
+		SenderID:            dto.SenderID,
+		SenderRole:          dto.SenderRole,
+		Message:             dto.Message,
+		MessageType:         dto.MessageType,
+		MattermostMessageID: dto.MattermostMessageID,
 	}
+
 	if err := h.service.Create(&chat); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -79,7 +86,7 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param chat body TicketChat true "Chat"
+// @Param chat body UpdateTicketChatDTO true "Chat"
 // @Success 200 {object} TicketChat
 // @Router /ticket_chats/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -87,11 +94,15 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var chat TicketChat
-	if err := c.BodyParser(&chat); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+
+	dto := c.Locals("body").(*UpdateTicketChatDTO)
+
+	chat := TicketChat{
+		ID:          id,
+		Message:     dto.Message,
+		MessageType: dto.MessageType,
 	}
-	chat.ID = id
+
 	if err := h.service.Update(&chat); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

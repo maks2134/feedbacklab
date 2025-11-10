@@ -19,14 +19,20 @@ func NewHandler(service Service) *Handler {
 // @Tags TicketAttachments
 // @Accept json
 // @Produce json
-// @Param attachment body TicketAttachment true "Attachment"
+// @Param attachment body CreateTicketAttachmentDTO true "Attachment"
 // @Success 201 {object} TicketAttachment
 // @Router /ticket_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	var att TicketAttachment
-	if err := c.BodyParser(&att); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+	dto := c.Locals("body").(*CreateTicketAttachmentDTO)
+
+	att := TicketAttachment{
+		TicketID:    dto.TicketID,
+		FilePath:    dto.FilePath,
+		UploadedBy:  dto.UploadedBy,
+		FileType:    dto.FileType,
+		Description: dto.Description,
 	}
+
 	if err := h.service.Create(&att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -77,7 +83,7 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param attachment body TicketAttachment true "Attachment"
+// @Param attachment body UpdateTicketAttachmentDTO true "Attachment"
 // @Success 200 {object} TicketAttachment
 // @Router /ticket_attachments/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -85,11 +91,16 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var att TicketAttachment
-	if err := c.BodyParser(&att); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+
+	dto := c.Locals("body").(*UpdateTicketAttachmentDTO)
+
+	att := TicketAttachment{
+		ID:          id,
+		FilePath:    dto.FilePath,
+		FileType:    dto.FileType,
+		Description: dto.Description,
 	}
-	att.ID = id
+
 	if err := h.service.Update(&att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
