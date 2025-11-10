@@ -1,6 +1,8 @@
 package app
 
 import (
+	_ "innotech/docs"
+
 	"innotech/internal/container"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
@@ -21,7 +23,6 @@ import (
 )
 
 func Start(container *container.Container) {
-
 	app := fiber.New()
 
 	app.Get("/swagger/*", swagger.WrapHandler)
