@@ -1,18 +1,38 @@
 package app
 
 import (
+	"innotech/internal/container"
+	"innotech/internal/health"
+	"innotech/internal/message_attachments"
+	"innotech/internal/ticket_attachments"
+	"innotech/internal/ticket_chats"
+	"innotech/internal/tickets"
+
 	"innotech/config"
 	"innotech/internal/handler"
-	"innotech/internal/health"
 	"innotech/internal/repository"
 	"innotech/internal/service"
 	"innotech/pkg/db"
+
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	swagger "github.com/swaggo/fiber-swagger"
 )
 
-func StartServer(port string) {
+func Start(container *container.Container) {
+
+	app := fiber.New()
+
+	app.Get("/swagger/*", swagger.WrapHandler)
+
+	health.RegisterRoutes(app, container.HealthHandler)
+
+	tickets.RegisterRoutes(app, container.TicketHandler)
+	ticket_chats.RegisterRoutes(app, container.TicketChatsHandler)
+	ticket_attachments.RegisterRoutes(app, container.TicketAttachmentsHandler)
+	message_attachments.RegisterRoutes(app, container.MessageAttachmentsHandler)
+
 	cfg := config.Load()
 
 	database, err := db.Connect(cfg.DatabaseURL)
@@ -39,10 +59,6 @@ func StartServer(port string) {
 	docHandler := handler.NewDocumentationHandler(docService)
 	userProjectHandler := handler.NewUserProjectHandler(userProjectService)
 
-	app := fiber.New()
-
-	health.RegisterRoutes(app)
-
 	api := app.Group("/api")
 	projectHandler.RegisterRoutes(api)
 	moduleHandler.RegisterRoutes(api)
@@ -50,8 +66,8 @@ func StartServer(port string) {
 	docHandler.RegisterRoutes(api)
 	userProjectHandler.RegisterRoutes(api)
 
-	log.Printf(" Server running on port %s\n", port)
-	if err := app.Listen(":" + port); err != nil {
+	log.Printf(" Server running on port %s\n", container.Config.AppPort)
+	if err := app.Listen(":" + container.Config.AppPort); err != nil {
 		log.Fatalf("failed to start server: %v", err)
 	}
 }
