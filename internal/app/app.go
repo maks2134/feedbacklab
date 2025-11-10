@@ -25,15 +25,19 @@ import (
 func Start(container *container.Container) {
 	app := fiber.New()
 
+	
 	app.Get("/swagger/*", swagger.WrapHandler)
 
+	
 	health.RegisterRoutes(app, container.HealthHandler)
+
 
 	tickets.RegisterRoutes(app, container.TicketHandler)
 	ticket_chats.RegisterRoutes(app, container.TicketChatsHandler)
 	ticket_attachments.RegisterRoutes(app, container.TicketAttachmentsHandler)
 	message_attachments.RegisterRoutes(app, container.MessageAttachmentsHandler)
 
+	
 	cfg := config.Load()
 
 	database, err := db.Connect(cfg.DatabaseURL)
@@ -67,6 +71,7 @@ func Start(container *container.Container) {
 	docHandler.RegisterRoutes(api)
 	userProjectHandler.RegisterRoutes(api)
 
+	
 	log.Printf(" Server running on port %s\n", container.Config.AppPort)
 	if err := app.Listen(":" + container.Config.AppPort); err != nil {
 		log.Fatalf("failed to start server: %v", err)

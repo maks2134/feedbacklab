@@ -1,0 +1,519 @@
+basePath: /api
+definitions:
+  message_attachments.MessageAttachment:
+    properties:
+      chat_id:
+        type: integer
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+      id:
+        type: integer
+      uploaded_by:
+        type: string
+    type: object
+  ticket_attachments.TicketAttachment:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+      id:
+        type: integer
+      ticket_id:
+        type: integer
+      uploaded_by:
+        type: string
+    type: object
+  ticket_chats.TicketChat:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      id:
+        type: integer
+      mattermost_message_id:
+        type: string
+      message:
+        type: string
+      message_type:
+        type: string
+      sender_id:
+        type: string
+      sender_role:
+        type: string
+      ticket_id:
+        type: integer
+    type: object
+  tickets.Ticket:
+    properties:
+      assigned_to:
+        type: string
+      contract_id:
+        type: integer
+      created_by:
+        type: string
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      gitlab_issue_url:
+        type: string
+      id:
+        type: integer
+      mattermost_thread_url:
+        type: string
+      message:
+        type: string
+      module_id:
+        type: integer
+      project_id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+host: localhost:8080
+info:
+  contact: {}
+  title: FeedbackLab API
+  version: "0.1"
+paths:
+  /health:
+    get:
+      description: возвращает статус OK
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: проверка здоровья сервиса
+      tags:
+      - Health
+  /message_attachments/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Attachment
+        in: body
+        name: attachment
+        required: true
+        schema:
+          $ref: '#/definitions/message_attachments.MessageAttachment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/message_attachments.MessageAttachment'
+      summary: создать вложение сообщения
+      tags:
+      - MessageAttachments
+  /message_attachments/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: удалить вложение
+      tags:
+      - MessageAttachments
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message_attachments.MessageAttachment'
+      summary: получить вложение по ID
+      tags:
+      - MessageAttachments
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Attachment
+        in: body
+        name: attachment
+        required: true
+        schema:
+          $ref: '#/definitions/message_attachments.MessageAttachment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/message_attachments.MessageAttachment'
+      summary: обновить вложение
+      tags:
+      - MessageAttachments
+  /message_attachments/chat/{chat_id}:
+    get:
+      parameters:
+      - description: Chat ID
+        in: path
+        name: chat_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/message_attachments.MessageAttachment'
+            type: array
+      summary: получить все вложения по chat_id
+      tags:
+      - MessageAttachments
+  /ticket_attachments/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Attachment
+        in: body
+        name: attachment
+        required: true
+        schema:
+          $ref: '#/definitions/ticket_attachments.TicketAttachment'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+      summary: создать вложение тикета
+      tags:
+      - TicketAttachments
+  /ticket_attachments/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: удалить вложение
+      tags:
+      - TicketAttachments
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+      summary: получить вложение по ID
+      tags:
+      - TicketAttachments
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Attachment
+        in: body
+        name: attachment
+        required: true
+        schema:
+          $ref: '#/definitions/ticket_attachments.TicketAttachment'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+      summary: обновить вложение
+      tags:
+      - TicketAttachments
+  /ticket_attachments/ticket/{ticket_id}:
+    get:
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticket_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ticket_attachments.TicketAttachment'
+            type: array
+      summary: получить все вложения тикета
+      tags:
+      - TicketAttachments
+  /ticket_chats/:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Chat
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/ticket_chats.TicketChat'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/ticket_chats.TicketChat'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: создание сообщения тикета
+      tags:
+      - TicketChats
+  /ticket_chats/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: удалить сообщение
+      tags:
+      - TicketChats
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ticket_chats.TicketChat'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: получить сообщение по ID
+      tags:
+      - TicketChats
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Chat
+        in: body
+        name: chat
+        required: true
+        schema:
+          $ref: '#/definitions/ticket_chats.TicketChat'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/ticket_chats.TicketChat'
+      summary: обновить сообщение
+      tags:
+      - TicketChats
+  /ticket_chats/ticket/{ticket_id}:
+    get:
+      parameters:
+      - description: Ticket ID
+        in: path
+        name: ticket_id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/ticket_chats.TicketChat'
+            type: array
+      summary: получить все сообщения тикета
+      tags:
+      - TicketChats
+  /tickets/:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tickets.Ticket'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: получить все тикеты
+      tags:
+      - Tickets
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ticket
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/tickets.Ticket'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/tickets.Ticket'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: создать тикет
+      tags:
+      - Tickets
+  /tickets/{id}:
+    delete:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: удалить тикет
+      tags:
+      - Tickets
+    get:
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tickets.Ticket'
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: получить тикет по ID
+      tags:
+      - Tickets
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Ticket
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/tickets.Ticket'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/tickets.Ticket'
+      summary: обновить тикет
+      tags:
+      - Tickets
+swagger: "2.0"

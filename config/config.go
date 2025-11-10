@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	AppPort       string
+	HealthPort    string
 	DatabaseURL   string
 	MigrationsDir string
 }
@@ -18,6 +19,7 @@ func Load() *Config {
 
 	cfg := &Config{
 		AppPort:       getEnv("APP_PORT", "8080"),
+		HealthPort:    getEnv("HEALTH_PORT", "8081"),
 		DatabaseURL:   getEnv("DATABASE_URL", "postgres://feedback:feedback@db:5432/innotech?sslmode=disable"),
 		MigrationsDir: getEnv("MIGRATIONS_DIR", "./migrations"),
 	}

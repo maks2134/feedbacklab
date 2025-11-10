@@ -1,31 +1,22 @@
 package main
 
 import (
-	"innotech/config"
 	"innotech/internal/app"
+	"innotech/internal/container"
 	"innotech/pkg/db"
 	"log"
-
-	"github.com/jmoiron/sqlx"
 )
 
+// @title FeedbackLab API
+// @version 0.1
+// @host localhost:8080
+// @BasePath /api
 func main() {
-	cfg := config.Load()
+	c := container.New()
 
-	database, err := db.Connect(cfg.DatabaseURL)
-	if err != nil {
-		log.Fatalf("DB connection failed: %v", err)
-	}
-	defer func(database *sqlx.DB) {
-		err := database.Close()
-		if err != nil {
-			log.Fatalf("DB connection failed: %v", err)
-		}
-	}(database)
-
-	if err := db.Migrate(cfg.DatabaseURL, cfg.MigrationsDir); err != nil {
+	if err := db.Migrate(c.Config.DatabaseURL, c.Config.MigrationsDir); err != nil {
 		log.Fatalf("Migration failed: %v", err)
 	}
 
-	app.StartServer(cfg.AppPort)
+	app.Start(c)
 }
