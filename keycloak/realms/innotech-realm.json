@@ -1,0 +1,23 @@
+{
+  "realm": "innotech",
+  "enabled": true,
+  "users": [
+    {
+      "username": "admin_user",
+      "enabled": true,
+      "emailVerified": true,
+      "credentials": [
+        { "type": "password", "value": "admin123", "temporary": false }
+      ]
+    }
+  ],
+  "clients": [
+    {
+      "clientId": "innotech-api",
+      "publicClient": true,
+      "directAccessGrantsEnabled": true,
+      "redirectUris": ["*"],
+      "webOrigins": ["*"]
+    }
+  ]
+}
