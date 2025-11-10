@@ -19,14 +19,19 @@ func NewHandler(service Service) *Handler {
 // @Tags MessageAttachments
 // @Accept json
 // @Produce json
-// @Param attachment body MessageAttachment true "Attachment"
+// @Param attachment body CreateMessageAttachmentDTO true "Attachment"
 // @Success 201 {object} MessageAttachment
 // @Router /message_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	var att MessageAttachment
-	if err := c.BodyParser(&att); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+	dto := c.Locals("body").(*CreateMessageAttachmentDTO)
+
+	att := MessageAttachment{
+		ChatID:     dto.ChatID,
+		FilePath:   dto.FilePath,
+		UploadedBy: dto.UploadedBy,
+		FileType:   dto.FileType,
 	}
+
 	if err := h.service.Create(&att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -77,7 +82,7 @@ func (h *Handler) GetByChatID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param attachment body MessageAttachment true "Attachment"
+// @Param attachment body UpdateMessageAttachmentDTO true "Attachment"
 // @Success 200 {object} MessageAttachment
 // @Router /message_attachments/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -85,11 +90,15 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var att MessageAttachment
-	if err := c.BodyParser(&att); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid body"})
+
+	dto := c.Locals("body").(*UpdateMessageAttachmentDTO)
+
+	att := MessageAttachment{
+		ID:       id,
+		FilePath: dto.FilePath,
+		FileType: dto.FileType,
 	}
-	att.ID = id
+
 	if err := h.service.Update(&att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}

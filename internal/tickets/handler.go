@@ -19,19 +19,30 @@ func NewHandler(service Service) *Handler {
 // @Tags Tickets
 // @Accept json
 // @Produce json
-// @Param ticket body Ticket true "Ticket"
+// @Param ticket body CreateTicketDTO true "Ticket"
 // @Success 201 {object} Ticket
 // @Failure 400 {object} map[string]string
-// @Router /tickets/ [post]
+// @Router /tickets [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	var t Ticket
-	if err := c.BodyParser(&t); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+	dto := c.Locals("body").(*CreateTicketDTO)
+
+	t := Ticket{
+		ProjectID:           dto.ProjectID,
+		ModuleID:            dto.ModuleID,
+		ContractID:          dto.ContractID,
+		CreatedBy:           dto.CreatedBy,
+		AssignedTo:          dto.AssignedTo,
+		Title:               dto.Title,
+		Message:             dto.Message,
+		Status:              dto.Status,
+		GitlabIssueURL:      dto.GitlabIssueURL,
+		MattermostThreadURL: dto.MattermostThreadURL,
 	}
 
 	if err := h.service.Create(c.Context(), &t); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
+
 	return c.Status(fiber.StatusCreated).JSON(t)
 }
 
@@ -76,7 +87,7 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param ticket body Ticket true "Ticket"
+// @Param ticket body UpdateTicketDTO true "Ticket"
 // @Success 200 {object} Ticket
 // @Router /tickets/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
@@ -84,15 +95,23 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var t Ticket
-	if err := c.BodyParser(&t); err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": err.Error()})
+
+	dto := c.Locals("body").(*UpdateTicketDTO)
+
+	t := Ticket{
+		ID:                  id,
+		Title:               dto.Title,
+		Message:             dto.Message,
+		Status:              dto.Status,
+		AssignedTo:          dto.AssignedTo,
+		GitlabIssueURL:      dto.GitlabIssueURL,
+		MattermostThreadURL: dto.MattermostThreadURL,
 	}
-	t.ID = id
 
 	if err := h.service.Update(c.Context(), &t); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
+
 	return c.JSON(t)
 }
 
