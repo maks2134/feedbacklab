@@ -1,22 +1,20 @@
-package handler
+package documentation
 
 import (
-	"innotech/internal/models"
-	"innotech/internal/service"
 	"github.com/gofiber/fiber/v2"
 	"strconv"
 )
 
-type ContractHandler struct {
-	service *service.ContractService
+type DocumentationHandler struct {
+	service *DocumentationService
 }
 
-func NewContractHandler(service *service.ContractService) *ContractHandler {
-	return &ContractHandler{service: service}
+func NewDocumentationHandler(service *DocumentationService) *DocumentationHandler {
+	return &DocumentationHandler{service: service}
 }
 
-func (h *ContractHandler) RegisterRoutes(r fiber.Router) {
-	group := r.Group("/contracts")
+func (h *DocumentationHandler) RegisterRoutes(r fiber.Router) {
+	group := r.Group("/documentations")
 
 	group.Get("/", h.GetAll)
 	group.Get("/:id", h.GetByID)
@@ -25,7 +23,7 @@ func (h *ContractHandler) RegisterRoutes(r fiber.Router) {
 	group.Delete("/:id", h.Delete)
 }
 
-func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
+func (h *DocumentationHandler) GetAll(c *fiber.Ctx) error {
 	items, err := h.service.GetAll()
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
@@ -33,7 +31,7 @@ func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(items)
 }
 
-func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
+func (h *DocumentationHandler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
@@ -45,8 +43,8 @@ func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(item)
 }
 
-func (h *ContractHandler) Create(c *fiber.Ctx) error {
-	var input models.Contract
+func (h *DocumentationHandler) Create(c *fiber.Ctx) error {
+	var input Documentation
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -56,12 +54,12 @@ func (h *ContractHandler) Create(c *fiber.Ctx) error {
 	return c.Status(201).JSON(input)
 }
 
-func (h *ContractHandler) Update(c *fiber.Ctx) error {
+func (h *DocumentationHandler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var input models.Contract
+	var input Documentation
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -72,7 +70,7 @@ func (h *ContractHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(input)
 }
 
-func (h *ContractHandler) Delete(c *fiber.Ctx) error {
+func (h *DocumentationHandler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})

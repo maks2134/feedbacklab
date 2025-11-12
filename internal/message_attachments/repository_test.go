@@ -1,6 +1,8 @@
 package message_attachments
 
 import (
+	"database/sql"
+	"log"
 	"testing"
 	"time"
 
@@ -15,7 +17,12 @@ func ptr(s string) *string { return &s }
 func TestRepository_Create_WithReturning(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
-	defer mockDB.Close()
+	defer func(mockDB *sql.DB) {
+		err := mockDB.Close()
+		if err != nil {
+			log.Fatal("failed to close mock DB")
+		}
+	}(mockDB)
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)

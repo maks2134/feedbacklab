@@ -2,6 +2,8 @@ package container
 
 import (
 	"innotech/config"
+	"innotech/internal/contract"
+	"innotech/internal/do"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
 	"innotech/internal/ticket_attachments"
@@ -23,6 +25,7 @@ type Container struct {
 	TicketChatsHandler        *ticket_chats.Handler
 	TicketAttachmentsHandler  *ticket_attachments.Handler
 	MessageAttachmentsHandler *message_attachments.Handler
+	ContractHandler           *contract.ContractHandler
 }
 
 func New() *Container {
@@ -56,6 +59,12 @@ func New() *Container {
 	msgAttachService := message_attachments.NewService(msgAttachRepo)
 	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
 
+	contractRepo := contract.NewContractRepository(database)
+	contractService := contract.NewContractService(contractRepo)
+	contractHandler := contract.NewContractHandler(contractService)
+
+	documRepo := documentation.NewDocumentationRepository(database)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -64,5 +73,6 @@ func New() *Container {
 		TicketChatsHandler:        chatHandler,
 		TicketAttachmentsHandler:  attachHandler,
 		MessageAttachmentsHandler: msgAttachHandler,
+		ContractHandler:           contractHandler,
 	}
 }
