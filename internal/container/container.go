@@ -8,7 +8,9 @@ import (
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
 	"innotech/pkg/db"
+	"innotech/pkg/logger"
 	"log"
+	"log/slog"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -30,6 +32,10 @@ func New() *Container {
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
 	}
+
+	newLogger := logger.NewLogger()
+	slog.SetDefault(newLogger)
+	//TODO сделать нормальный логгер через slog
 
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
