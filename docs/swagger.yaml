@@ -1,5 +1,19 @@
-basePath: /api
 definitions:
+  message_attachments.CreateMessageAttachmentDTO:
+    properties:
+      chat_id:
+        type: integer
+      file_path:
+        type: string
+      file_type:
+        type: string
+      uploaded_by:
+        type: string
+    required:
+    - chat_id
+    - file_path
+    - uploaded_by
+    type: object
   message_attachments.MessageAttachment:
     properties:
       chat_id:
@@ -16,6 +30,107 @@ definitions:
         type: integer
       uploaded_by:
         type: string
+    type: object
+  message_attachments.UpdateMessageAttachmentDTO:
+    properties:
+      file_path:
+        type: string
+      file_type:
+        type: string
+    type: object
+  models.Contract:
+    properties:
+      client_name:
+        type: string
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      project_id:
+        type: integer
+      start_date:
+        type: string
+    type: object
+  models.Documentation:
+    properties:
+      content:
+        type: string
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      file_url:
+        type: string
+      id:
+        type: integer
+      project_id:
+        type: integer
+      title:
+        type: string
+    type: object
+  models.Module:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+      project_id:
+        type: integer
+    type: object
+  models.Project:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      id:
+        type: integer
+      name:
+        type: string
+    type: object
+  models.UserProject:
+    properties:
+      date_added:
+        type: string
+      id:
+        type: integer
+      project_id:
+        type: integer
+      role:
+        type: string
+      user_id:
+        type: string
+    type: object
+  ticket_attachments.CreateTicketAttachmentDTO:
+    properties:
+      description:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+      ticket_id:
+        type: integer
+      uploaded_by:
+        type: string
+    required:
+    - file_path
+    - ticket_id
+    - uploaded_by
     type: object
   ticket_attachments.TicketAttachment:
     properties:
@@ -35,6 +150,45 @@ definitions:
         type: integer
       uploaded_by:
         type: string
+    type: object
+  ticket_attachments.UpdateTicketAttachmentDTO:
+    properties:
+      description:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+    type: object
+  ticket_chats.CreateTicketChatDTO:
+    properties:
+      mattermost_message_id:
+        type: string
+      message:
+        minLength: 1
+        type: string
+      message_type:
+        enum:
+        - text
+        - file
+        - system
+        type: string
+      sender_id:
+        type: string
+      sender_role:
+        enum:
+        - customer
+        - manager
+        - developer
+        - tester
+        type: string
+      ticket_id:
+        type: integer
+    required:
+    - message
+    - sender_id
+    - sender_role
+    - ticket_id
     type: object
   ticket_chats.TicketChat:
     properties:
@@ -56,6 +210,54 @@ definitions:
         type: string
       ticket_id:
         type: integer
+    type: object
+  ticket_chats.UpdateTicketChatDTO:
+    properties:
+      message:
+        minLength: 1
+        type: string
+      message_type:
+        enum:
+        - text
+        - file
+        - system
+        type: string
+    type: object
+  tickets.CreateTicketDTO:
+    properties:
+      assigned_to:
+        type: string
+      contract_id:
+        type: integer
+      created_by:
+        type: string
+      gitlab_issue_url:
+        type: string
+      mattermost_thread_url:
+        type: string
+      message:
+        type: string
+      module_id:
+        type: integer
+      project_id:
+        type: integer
+      status:
+        enum:
+        - open
+        - in_progress
+        - resolved
+        - closed
+        type: string
+      title:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - contract_id
+    - created_by
+    - message
+    - project_id
+    - title
     type: object
   tickets.Ticket:
     properties:
@@ -86,12 +288,577 @@ definitions:
       title:
         type: string
     type: object
-host: localhost:8080
+  tickets.UpdateTicketDTO:
+    properties:
+      assigned_to:
+        type: string
+      gitlab_issue_url:
+        type: string
+      mattermost_thread_url:
+        type: string
+      message:
+        type: string
+      status:
+        enum:
+        - open
+        - in_progress
+        - resolved
+        - closed
+        type: string
+      title:
+        maxLength: 255
+        minLength: 3
+        type: string
+    required:
+    - message
+    - status
+    - title
+    type: object
 info:
   contact: {}
-  title: FeedbackLab API
-  version: "0.1"
 paths:
+  /api/contracts:
+    get:
+      description: Returns all contracts
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Contract'
+            type: array
+      summary: Get all contracts
+      tags:
+      - Contracts
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Contract Data
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/models.Contract'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Contract'
+      summary: Create a new contract
+      tags:
+      - Contracts
+  /api/contracts/{id}:
+    delete:
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete contract
+      tags:
+      - Contracts
+    get:
+      description: Returns a single contract by its ID
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Contract'
+      summary: Get contract by ID
+      tags:
+      - Contracts
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Contract ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Contract Data
+        in: body
+        name: contract
+        required: true
+        schema:
+          $ref: '#/definitions/models.Contract'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Contract'
+      summary: Update existing contract
+      tags:
+      - Contracts
+  /api/documentations:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Documentation'
+            type: array
+      summary: Get all documentations
+      tags:
+      - Documentations
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Documentation Data
+        in: body
+        name: doc
+        required: true
+        schema:
+          $ref: '#/definitions/models.Documentation'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Documentation'
+      summary: Create a new documentation
+      tags:
+      - Documentations
+  /api/documentations/{id}:
+    delete:
+      parameters:
+      - description: Documentation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete documentation
+      tags:
+      - Documentations
+    get:
+      parameters:
+      - description: Documentation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Documentation'
+      summary: Get documentation by ID
+      tags:
+      - Documentations
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: Documentation ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Documentation Data
+        in: body
+        name: doc
+        required: true
+        schema:
+          $ref: '#/definitions/models.Documentation'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Documentation'
+      summary: Update existing documentation
+      tags:
+      - Documentations
+  /api/modules:
+    get:
+      description: Returns all modules
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Module'
+            type: array
+      summary: Get all modules
+      tags:
+      - Modules
+    post:
+      consumes:
+      - application/json
+      description: Creates a new module entry
+      parameters:
+      - description: Module Data
+        in: body
+        name: module
+        required: true
+        schema:
+          $ref: '#/definitions/models.Module'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Module'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new module
+      tags:
+      - Modules
+  /api/modules/{id}:
+    delete:
+      description: Deletes a module by ID
+      parameters:
+      - description: Module ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete module
+      tags:
+      - Modules
+    get:
+      description: Returns a single module by its ID
+      parameters:
+      - description: Module ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Module'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get module by ID
+      tags:
+      - Modules
+    put:
+      consumes:
+      - application/json
+      description: Updates module details by ID
+      parameters:
+      - description: Module ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Module Data
+        in: body
+        name: module
+        required: true
+        schema:
+          $ref: '#/definitions/models.Module'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Module'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update existing module
+      tags:
+      - Modules
+  /api/projects:
+    get:
+      description: Returns all projects
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Project'
+            type: array
+      summary: Get all projects
+      tags:
+      - Projects
+    post:
+      consumes:
+      - application/json
+      description: Creates a new project entry
+      parameters:
+      - description: Project Data
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/models.Project'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Create a new project
+      tags:
+      - Projects
+  /api/projects/{id}:
+    delete:
+      description: Deletes a project by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Delete project
+      tags:
+      - Projects
+    get:
+      description: Returns a single project by its ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Get project by ID
+      tags:
+      - Projects
+    put:
+      consumes:
+      - application/json
+      description: Updates project details by ID
+      parameters:
+      - description: Project ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated Project Data
+        in: body
+        name: project
+        required: true
+        schema:
+          $ref: '#/definitions/models.Project'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.Project'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties: true
+            type: object
+        "404":
+          description: Not Found
+          schema:
+            additionalProperties: true
+            type: object
+      summary: Update existing project
+      tags:
+      - Projects
+  /api/user-projects:
+    get:
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.UserProject'
+            type: array
+      summary: Get all user-project relations
+      tags:
+      - UserProjects
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: UserProject Data
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserProject'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/models.UserProject'
+      summary: Create a new user-project
+      tags:
+      - UserProjects
+  /api/user-projects/{id}:
+    delete:
+      parameters:
+      - description: UserProject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+      summary: Delete user-project
+      tags:
+      - UserProjects
+    get:
+      parameters:
+      - description: UserProject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserProject'
+      summary: Get user-project by ID
+      tags:
+      - UserProjects
+    put:
+      consumes:
+      - application/json
+      parameters:
+      - description: UserProject ID
+        in: path
+        name: id
+        required: true
+        type: integer
+      - description: Updated UserProject Data
+        in: body
+        name: relation
+        required: true
+        schema:
+          $ref: '#/definitions/models.UserProject'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/models.UserProject'
+      summary: Update user-project relation
+      tags:
+      - UserProjects
   /health:
     get:
       description: возвращает статус OK
@@ -117,7 +884,7 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/message_attachments.MessageAttachment'
+          $ref: '#/definitions/message_attachments.CreateMessageAttachmentDTO'
       produces:
       - application/json
       responses:
@@ -173,7 +940,7 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/message_attachments.MessageAttachment'
+          $ref: '#/definitions/message_attachments.UpdateMessageAttachmentDTO'
       produces:
       - application/json
       responses:
@@ -214,7 +981,7 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/ticket_attachments.TicketAttachment'
+          $ref: '#/definitions/ticket_attachments.CreateTicketAttachmentDTO'
       produces:
       - application/json
       responses:
@@ -270,7 +1037,7 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/ticket_attachments.TicketAttachment'
+          $ref: '#/definitions/ticket_attachments.UpdateTicketAttachmentDTO'
       produces:
       - application/json
       responses:
@@ -311,7 +1078,7 @@ paths:
         name: chat
         required: true
         schema:
-          $ref: '#/definitions/ticket_chats.TicketChat'
+          $ref: '#/definitions/ticket_chats.CreateTicketChatDTO'
       produces:
       - application/json
       responses:
@@ -379,7 +1146,7 @@ paths:
         name: chat
         required: true
         schema:
-          $ref: '#/definitions/ticket_chats.TicketChat'
+          $ref: '#/definitions/ticket_chats.UpdateTicketChatDTO'
       produces:
       - application/json
       responses:
@@ -410,6 +1177,33 @@ paths:
       summary: получить все сообщения тикета
       tags:
       - TicketChats
+  /tickets:
+    post:
+      consumes:
+      - application/json
+      parameters:
+      - description: Ticket
+        in: body
+        name: ticket
+        required: true
+        schema:
+          $ref: '#/definitions/tickets.CreateTicketDTO'
+      produces:
+      - application/json
+      responses:
+        "201":
+          description: Created
+          schema:
+            $ref: '#/definitions/tickets.Ticket'
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: создать тикет
+      tags:
+      - Tickets
   /tickets/:
     get:
       produces:
@@ -426,32 +1220,6 @@ paths:
               type: string
             type: object
       summary: получить все тикеты
-      tags:
-      - Tickets
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Ticket
-        in: body
-        name: ticket
-        required: true
-        schema:
-          $ref: '#/definitions/tickets.Ticket'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/tickets.Ticket'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties:
-              type: string
-            type: object
-      summary: создать тикет
       tags:
       - Tickets
   /tickets/{id}:
@@ -505,7 +1273,7 @@ paths:
         name: ticket
         required: true
         schema:
-          $ref: '#/definitions/tickets.Ticket'
+          $ref: '#/definitions/tickets.UpdateTicketDTO'
       produces:
       - application/json
       responses:

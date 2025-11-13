@@ -3,8 +3,9 @@ package handler
 import (
 	"innotech/internal/models"
 	"innotech/internal/service"
-	"github.com/gofiber/fiber/v2"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type UserProjectHandler struct {
@@ -25,6 +26,12 @@ func (h *UserProjectHandler) RegisterRoutes(r fiber.Router) {
 	group.Delete("/:id", h.Delete)
 }
 
+// GetAll godoc
+// @Summary Get all user-project relations
+// @Tags UserProjects
+// @Produce json
+// @Success 200 {array} models.UserProject
+// @Router /api/user-projects [get]
 func (h *UserProjectHandler) GetAll(c *fiber.Ctx) error {
 	items, err := h.service.GetAll()
 	if err != nil {
@@ -33,6 +40,13 @@ func (h *UserProjectHandler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(items)
 }
 
+// GetByID godoc
+// @Summary Get user-project by ID
+// @Tags UserProjects
+// @Produce json
+// @Param id path int true "UserProject ID"
+// @Success 200 {object} models.UserProject
+// @Router /api/user-projects/{id} [get]
 func (h *UserProjectHandler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -45,6 +59,14 @@ func (h *UserProjectHandler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(item)
 }
 
+// Create godoc
+// @Summary Create a new user-project
+// @Tags UserProjects
+// @Accept json
+// @Produce json
+// @Param relation body models.UserProject true "UserProject Data"
+// @Success 201 {object} models.UserProject
+// @Router /api/user-projects [post]
 func (h *UserProjectHandler) Create(c *fiber.Ctx) error {
 	var input models.UserProject
 	if err := c.BodyParser(&input); err != nil {
@@ -56,6 +78,15 @@ func (h *UserProjectHandler) Create(c *fiber.Ctx) error {
 	return c.Status(201).JSON(input)
 }
 
+// Update godoc
+// @Summary Update user-project relation
+// @Tags UserProjects
+// @Accept json
+// @Produce json
+// @Param id path int true "UserProject ID"
+// @Param relation body models.UserProject true "Updated UserProject Data"
+// @Success 200 {object} models.UserProject
+// @Router /api/user-projects/{id} [put]
 func (h *UserProjectHandler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -72,6 +103,12 @@ func (h *UserProjectHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(input)
 }
 
+// Delete godoc
+// @Summary Delete user-project
+// @Tags UserProjects
+// @Param id path int true "UserProject ID"
+// @Success 204 "No Content"
+// @Router /api/user-projects/{id} [delete]
 func (h *UserProjectHandler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
