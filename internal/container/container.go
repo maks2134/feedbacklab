@@ -3,11 +3,14 @@ package container
 import (
 	"innotech/config"
 	"innotech/internal/contract"
+	"innotech/internal/documentations"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
+	"innotech/internal/projects"
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
+	"innotech/internal/user_projects"
 	"innotech/pkg/db"
 	"innotech/pkg/logger"
 	"log"
@@ -25,7 +28,9 @@ type Container struct {
 	TicketAttachmentsHandler  *ticket_attachments.Handler
 	MessageAttachmentsHandler *message_attachments.Handler
 	ContractHandler           *contract.ContractHandler
-	//DocumentationHandler	  *documentation.DocumentationHandler
+	ProjectHandler            *projects.Handler
+	DocumentationHandler      *documentations.Handler
+	UserProjectHandler        *user_projects.Handler
 }
 
 func New() *Container {
@@ -63,9 +68,17 @@ func New() *Container {
 	contractService := contract.NewContractService(contractRepo)
 	contractHandler := contract.NewContractHandler(contractService)
 
-	//documRepo := documentation.NewDocumentationRepository(database)
-	//documService := documentation.NewDocumentationService(documRepo)
-	//documHandler : =documentation.NewDocumentationHandler(documService)
+	projectRepo := projects.NewRepository(database)
+	projectService := projects.NewService(projectRepo)
+	projectHandler := projects.NewHandler(projectService)
+
+	docRepo := documentations.NewRepository(database)
+	docService := documentations.NewService(docRepo)
+	docHandler := documentations.NewHandler(docService)
+
+	userProjectRepo := user_projects.NewRepository(database)
+	userProjectService := user_projects.NewService(userProjectRepo)
+	userProjectHandler := user_projects.NewHandler(userProjectService)
 
 	return &Container{
 		Config:                    cfg,
@@ -76,6 +89,8 @@ func New() *Container {
 		TicketAttachmentsHandler:  attachHandler,
 		MessageAttachmentsHandler: msgAttachHandler,
 		ContractHandler:           contractHandler,
-		//DocumentationHandler:      documHandler,
+		ProjectHandler:            projectHandler,
+		DocumentationHandler:      docHandler,
+		UserProjectHandler:        userProjectHandler,
 	}
 }
