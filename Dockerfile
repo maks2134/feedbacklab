@@ -6,7 +6,7 @@ COPY go.mod go.sum ./
 RUN go mod download
 COPY . .
 
-RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o feedbacklab ./cmd/server
+RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o feedbacklab ./cmd/feedbacklab
 RUN CGO_ENABLED=0 GOOS=linux GOARCH=amd64 go build -o healthcheck ./cmd/healthcheck
 
 FROM gcr.io/distroless/static-debian12:nonroot
