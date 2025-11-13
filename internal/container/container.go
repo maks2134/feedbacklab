@@ -2,11 +2,15 @@ package container
 
 import (
 	"innotech/config"
+	"innotech/internal/contract"
+	"innotech/internal/documentations"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
+	"innotech/internal/projects"
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
+	"innotech/internal/user_projects"
 	"innotech/pkg/db"
 	"innotech/pkg/logger"
 	"log"
@@ -23,6 +27,10 @@ type Container struct {
 	TicketChatsHandler        *ticket_chats.Handler
 	TicketAttachmentsHandler  *ticket_attachments.Handler
 	MessageAttachmentsHandler *message_attachments.Handler
+	ContractHandler           *contract.ContractHandler
+	ProjectHandler            *projects.Handler
+	DocumentationHandler      *documentations.Handler
+	UserProjectHandler        *user_projects.Handler
 }
 
 func New() *Container {
@@ -56,6 +64,22 @@ func New() *Container {
 	msgAttachService := message_attachments.NewService(msgAttachRepo)
 	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
 
+	contractRepo := contract.NewContractRepository(database)
+	contractService := contract.NewContractService(contractRepo)
+	contractHandler := contract.NewContractHandler(contractService)
+
+	projectRepo := projects.NewRepository(database)
+	projectService := projects.NewService(projectRepo)
+	projectHandler := projects.NewHandler(projectService)
+
+	docRepo := documentations.NewRepository(database)
+	docService := documentations.NewService(docRepo)
+	docHandler := documentations.NewHandler(docService)
+
+	userProjectRepo := user_projects.NewRepository(database)
+	userProjectService := user_projects.NewService(userProjectRepo)
+	userProjectHandler := user_projects.NewHandler(userProjectService)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -64,5 +88,9 @@ func New() *Container {
 		TicketChatsHandler:        chatHandler,
 		TicketAttachmentsHandler:  attachHandler,
 		MessageAttachmentsHandler: msgAttachHandler,
+		ContractHandler:           contractHandler,
+		ProjectHandler:            projectHandler,
+		DocumentationHandler:      docHandler,
+		UserProjectHandler:        userProjectHandler,
 	}
 }

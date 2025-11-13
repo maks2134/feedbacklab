@@ -1,29 +1,17 @@
-package handler
+package contract
 
 import (
-	"innotech/internal/models"
-	"innotech/internal/service"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
 )
 
 type ContractHandler struct {
-	service *service.ContractService
+	service ContractService
 }
 
-func NewContractHandler(service *service.ContractService) *ContractHandler {
-	return &ContractHandler{service: service}
-}
-
-func (h *ContractHandler) RegisterRoutes(r fiber.Router) {
-	group := r.Group("/contracts")
-
-	group.Get("/", h.GetAll)
-	group.Get("/:id", h.GetByID)
-	group.Post("/", h.Create)
-	group.Put("/:id", h.Update)
-	group.Delete("/:id", h.Delete)
+func NewContractHandler(service *ContractService) *ContractHandler {
+	return &ContractHandler{service: *service}
 }
 
 // GetAll godoc
@@ -70,7 +58,7 @@ func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
 // @Success 201 {object} models.Contract
 // @Router /api/contracts [post]
 func (h *ContractHandler) Create(c *fiber.Ctx) error {
-	var input models.Contract
+	var input Contract
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -94,7 +82,7 @@ func (h *ContractHandler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
 	}
-	var input models.Contract
+	var input Contract
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
 	}

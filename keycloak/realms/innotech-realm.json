@@ -1,5 +1,5 @@
 {
-  "realm": "innotech",
+  "realm": "feedbacklab",
   "enabled": true,
   "users": [
     {
@@ -13,7 +13,7 @@
   ],
   "clients": [
     {
-      "clientId": "innotech-api",
+      "clientId": "feedbacklab-api",
       "publicClient": true,
       "directAccessGrantsEnabled": true,
       "redirectUris": ["*"],
