@@ -20,3 +20,5 @@ func main() {
 
 	app.Start(c)
 }
+
+// todo 1) сделать парсер в конфиге, 2) прикрутить slog, 3) названия в docker(https://github.com/wagoodman/dive), 4) лиентер(https://gist.github.com/maratori/47a4d00457a92aa426dbd48a18776322), 5) переводы, 6) minio.

@@ -6,6 +6,8 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+//golang ci-lint
+
 type Handler struct {
 	service Service
 }

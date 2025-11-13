@@ -7,10 +7,6 @@ import (
 
 var validate = validator.New()
 
-func ValidateDTO[T any](dto *T) error {
-	return validate.Struct(dto)
-}
-
 func ValidateBody[T any](next fiber.Handler) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		var body T
