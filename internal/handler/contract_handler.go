@@ -3,8 +3,9 @@ package handler
 import (
 	"innotech/internal/models"
 	"innotech/internal/service"
-	"github.com/gofiber/fiber/v2"
 	"strconv"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type ContractHandler struct {
@@ -25,6 +26,13 @@ func (h *ContractHandler) RegisterRoutes(r fiber.Router) {
 	group.Delete("/:id", h.Delete)
 }
 
+// GetAll godoc
+// @Summary Get all contracts
+// @Description Returns all contracts
+// @Tags Contracts
+// @Produce json
+// @Success 200 {array} models.Contract
+// @Router /api/contracts [get]
 func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
 	items, err := h.service.GetAll()
 	if err != nil {
@@ -33,6 +41,14 @@ func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(items)
 }
 
+// GetByID godoc
+// @Summary Get contract by ID
+// @Description Returns a single contract by its ID
+// @Tags Contracts
+// @Produce json
+// @Param id path int true "Contract ID"
+// @Success 200 {object} models.Contract
+// @Router /api/contracts/{id} [get]
 func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -45,6 +61,14 @@ func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(item)
 }
 
+// Create godoc
+// @Summary Create a new contract
+// @Tags Contracts
+// @Accept json
+// @Produce json
+// @Param contract body models.Contract true "Contract Data"
+// @Success 201 {object} models.Contract
+// @Router /api/contracts [post]
 func (h *ContractHandler) Create(c *fiber.Ctx) error {
 	var input models.Contract
 	if err := c.BodyParser(&input); err != nil {
@@ -56,6 +80,15 @@ func (h *ContractHandler) Create(c *fiber.Ctx) error {
 	return c.Status(201).JSON(input)
 }
 
+// Update godoc
+// @Summary Update existing contract
+// @Tags Contracts
+// @Accept json
+// @Produce json
+// @Param id path int true "Contract ID"
+// @Param contract body models.Contract true "Updated Contract Data"
+// @Success 200 {object} models.Contract
+// @Router /api/contracts/{id} [put]
 func (h *ContractHandler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -72,6 +105,12 @@ func (h *ContractHandler) Update(c *fiber.Ctx) error {
 	return c.JSON(input)
 }
 
+// Delete godoc
+// @Summary Delete contract
+// @Tags Contracts
+// @Param id path int true "Contract ID"
+// @Success 204 "No Content"
+// @Router /api/contracts/{id} [delete]
 func (h *ContractHandler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
