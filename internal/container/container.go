@@ -3,6 +3,7 @@ package container
 import (
 	"innotech/config"
 	"innotech/internal/contract"
+	"innotech/internal/documentations"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
 	"innotech/internal/projects"
@@ -27,6 +28,7 @@ type Container struct {
 	MessageAttachmentsHandler *message_attachments.Handler
 	ContractHandler           *contract.ContractHandler
 	ProjectHandler            *projects.Handler
+	DocumentationHandler      *documentations.Handler
 }
 
 func New() *Container {
@@ -68,6 +70,10 @@ func New() *Container {
 	projectService := projects.NewService(projectRepo)
 	projectHandler := projects.NewHandler(projectService)
 
+	docRepo := documentations.NewRepository(database)
+	docService := documentations.NewService(docRepo)
+	docHandler := documentations.NewHandler(docService)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -78,5 +84,6 @@ func New() *Container {
 		MessageAttachmentsHandler: msgAttachHandler,
 		ContractHandler:           contractHandler,
 		ProjectHandler:            projectHandler,
+		DocumentationHandler:      docHandler,
 	}
 }
