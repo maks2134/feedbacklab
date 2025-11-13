@@ -10,6 +10,7 @@ import (
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
+	"innotech/internal/user_projects"
 	"innotech/pkg/db"
 	"innotech/pkg/logger"
 	"log"
@@ -29,6 +30,7 @@ type Container struct {
 	ContractHandler           *contract.ContractHandler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
+	UserProjectHandler        *user_projects.Handler
 }
 
 func New() *Container {
@@ -74,6 +76,10 @@ func New() *Container {
 	docService := documentations.NewService(docRepo)
 	docHandler := documentations.NewHandler(docService)
 
+	userProjectRepo := user_projects.NewRepository(database)
+	userProjectService := user_projects.NewService(userProjectRepo)
+	userProjectHandler := user_projects.NewHandler(userProjectService)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -85,5 +91,6 @@ func New() *Container {
 		ContractHandler:           contractHandler,
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
+		UserProjectHandler:        userProjectHandler,
 	}
 }
