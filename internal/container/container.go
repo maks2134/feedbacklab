@@ -5,6 +5,7 @@ import (
 	"innotech/internal/contract"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
+	"innotech/internal/projects"
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
@@ -25,7 +26,7 @@ type Container struct {
 	TicketAttachmentsHandler  *ticket_attachments.Handler
 	MessageAttachmentsHandler *message_attachments.Handler
 	ContractHandler           *contract.ContractHandler
-	//DocumentationHandler	  *documentation.DocumentationHandler
+	ProjectHandler            *projects.Handler
 }
 
 func New() *Container {
@@ -63,9 +64,9 @@ func New() *Container {
 	contractService := contract.NewContractService(contractRepo)
 	contractHandler := contract.NewContractHandler(contractService)
 
-	//documRepo := documentation.NewDocumentationRepository(database)
-	//documService := documentation.NewDocumentationService(documRepo)
-	//documHandler : =documentation.NewDocumentationHandler(documService)
+	projectRepo := projects.NewRepository(database)
+	projectService := projects.NewService(projectRepo)
+	projectHandler := projects.NewHandler(projectService)
 
 	return &Container{
 		Config:                    cfg,
@@ -76,6 +77,6 @@ func New() *Container {
 		TicketAttachmentsHandler:  attachHandler,
 		MessageAttachmentsHandler: msgAttachHandler,
 		ContractHandler:           contractHandler,
-		//DocumentationHandler:      documHandler,
+		ProjectHandler:            projectHandler,
 	}
 }
