@@ -2,15 +2,16 @@ package user_projects
 
 import (
 	"context"
+	"innotech/internal/storage/postgres"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
-	Create(ctx context.Context, up *UserProject) error
-	Get(ctx context.Context, userID string, projectID int) (*UserProject, error)
-	GetAll(ctx context.Context) ([]UserProject, error)
-	Update(ctx context.Context, up *UserProject) error
+	Create(ctx context.Context, up *postgres.UserProject) error
+	Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error)
+	GetAll(ctx context.Context) ([]postgres.UserProject, error)
+	Update(ctx context.Context, up *postgres.UserProject) error
 	Delete(ctx context.Context, userID string, projectID int) error
 }
 
@@ -22,7 +23,7 @@ func NewRepository(db *sqlx.DB) Repository {
 	return &userProjectRepository{db: db}
 }
 
-func (r *userProjectRepository) Create(ctx context.Context, up *UserProject) error {
+func (r *userProjectRepository) Create(ctx context.Context, up *postgres.UserProject) error {
 	query := `
 		INSERT INTO user_projects (user_id, project_id, permissions)
 		VALUES (:user_id, :project_id, :permissions)
@@ -34,8 +35,8 @@ func (r *userProjectRepository) Create(ctx context.Context, up *UserProject) err
 	return stmt.GetContext(ctx, up, up)
 }
 
-func (r *userProjectRepository) Get(ctx context.Context, userID string, projectID int) (*UserProject, error) {
-	var up UserProject
+func (r *userProjectRepository) Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error) {
+	var up postgres.UserProject
 	err := r.db.GetContext(ctx, &up, `
 		SELECT * FROM user_projects WHERE user_id = $1 AND project_id = $2
 	`, userID, projectID)
@@ -45,13 +46,13 @@ func (r *userProjectRepository) Get(ctx context.Context, userID string, projectI
 	return &up, nil
 }
 
-func (r *userProjectRepository) GetAll(ctx context.Context) ([]UserProject, error) {
-	var ups []UserProject
+func (r *userProjectRepository) GetAll(ctx context.Context) ([]postgres.UserProject, error) {
+	var ups []postgres.UserProject
 	err := r.db.SelectContext(ctx, &ups, "SELECT * FROM user_projects")
 	return ups, err
 }
 
-func (r *userProjectRepository) Update(ctx context.Context, up *UserProject) error {
+func (r *userProjectRepository) Update(ctx context.Context, up *postgres.UserProject) error {
 	query := `
 		UPDATE user_projects
 		SET permissions = :permissions

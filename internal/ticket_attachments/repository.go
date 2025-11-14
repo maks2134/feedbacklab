@@ -2,15 +2,16 @@ package ticket_attachments
 
 import (
 	"fmt"
+	"innotech/internal/storage/postgres"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
-	Create(att *TicketAttachment) error
-	GetByID(id int) (*TicketAttachment, error)
-	GetByTicketID(ticketID int) ([]TicketAttachment, error)
-	Update(att *TicketAttachment) error
+	Create(att *postgres.TicketAttachment) error
+	GetByID(id int) (*postgres.TicketAttachment, error)
+	GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error)
+	Update(att *postgres.TicketAttachment) error
 	Delete(id int) error
 }
 
@@ -22,7 +23,7 @@ func NewRepository(db *sqlx.DB) Repository {
 	return &repository{db: db}
 }
 
-func (r *repository) Create(att *TicketAttachment) error {
+func (r *repository) Create(att *postgres.TicketAttachment) error {
 	query := `
 		INSERT INTO ticket_attachments (ticket_id, file_path, uploaded_by, file_type, description)
 		VALUES (:ticket_id, :file_path, :uploaded_by, :file_type, :description)
@@ -42,8 +43,8 @@ func (r *repository) Create(att *TicketAttachment) error {
 	return stmt.Get(att, att)
 }
 
-func (r *repository) GetByID(id int) (*TicketAttachment, error) {
-	var att TicketAttachment
+func (r *repository) GetByID(id int) (*postgres.TicketAttachment, error) {
+	var att postgres.TicketAttachment
 	err := r.db.Get(&att, `SELECT * FROM ticket_attachments WHERE id = $1`, id)
 	if err != nil {
 		return nil, err
@@ -51,8 +52,8 @@ func (r *repository) GetByID(id int) (*TicketAttachment, error) {
 	return &att, nil
 }
 
-func (r *repository) GetByTicketID(ticketID int) ([]TicketAttachment, error) {
-	var list []TicketAttachment
+func (r *repository) GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error) {
+	var list []postgres.TicketAttachment
 	err := r.db.Select(&list, `SELECT * FROM ticket_attachments WHERE ticket_id = $1 ORDER BY date_created `, ticketID)
 	if err != nil {
 		return nil, err
@@ -60,7 +61,7 @@ func (r *repository) GetByTicketID(ticketID int) ([]TicketAttachment, error) {
 	return list, nil
 }
 
-func (r *repository) Update(att *TicketAttachment) error {
+func (r *repository) Update(att *postgres.TicketAttachment) error {
 	query := `
 		UPDATE ticket_attachments
 		SET file_path = :file_path,

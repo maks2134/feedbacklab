@@ -2,6 +2,7 @@ package tickets
 
 import (
 	"context"
+	"innotech/internal/storage/postgres"
 	"testing"
 	"time"
 
@@ -20,7 +21,7 @@ func TestTicketRepository_Create_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	ticket := &Ticket{
+	ticket := &postgres.Ticket{
 		ProjectID:  1,
 		ModuleID:   new(int),
 		ContractID: 2,
@@ -58,7 +59,7 @@ func TestTicketRepository_Update_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	ticket := &Ticket{
+	ticket := &postgres.Ticket{
 		ID:       1,
 		Title:    "Updated",
 		Message:  "New details",

@@ -1,6 +1,8 @@
 package tickets
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -26,9 +28,9 @@ func NewHandler(service Service) *Handler {
 // @Failure 400 {object} map[string]string
 // @Router /tickets [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateTicketDTO)
+	dto := c.Locals("body").(*transport.CreateTicketDTO)
 
-	t := Ticket{
+	t := postgres.Ticket{
 		ProjectID:           dto.ProjectID,
 		ModuleID:            dto.ModuleID,
 		ContractID:          dto.ContractID,
@@ -98,9 +100,9 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*UpdateTicketDTO)
+	dto := c.Locals("body").(*transport.UpdateTicketDTO)
 
-	t := Ticket{
+	t := postgres.Ticket{
 		ID:                  id,
 		Title:               dto.Title,
 		Message:             dto.Message,

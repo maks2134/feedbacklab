@@ -1,4 +1,4 @@
-package documentations
+package transport
 
 type CreateDocumentationDTO struct {
 	ProjectID  int     `json:"project_id" validate:"required"`

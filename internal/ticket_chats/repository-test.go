@@ -2,6 +2,7 @@ package ticket_chats
 
 import (
 	"database/sql"
+	"innotech/internal/storage/postgres"
 	"log"
 	"testing"
 	"time"
@@ -26,7 +27,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	chat := &TicketChat{
+	chat := &postgres.TicketChat{
 		TicketID:    1,
 		SenderID:    "user1",
 		SenderRole:  "customer",
@@ -60,7 +61,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	chat := &TicketChat{
+	chat := &postgres.TicketChat{
 		ID:          5,
 		Message:     "updated",
 		MessageType: "edited",

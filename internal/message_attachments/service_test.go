@@ -2,6 +2,7 @@ package message_attachments
 
 import (
 	"errors"
+	"innotech/internal/storage/postgres"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -10,34 +11,34 @@ import (
 
 type mockRepoMA struct{ mock.Mock }
 
-func (m *mockRepoMA) Create(att *MessageAttachment) error { return m.Called(att).Error(0) }
-func (m *mockRepoMA) GetByID(id int) (*MessageAttachment, error) {
+func (m *mockRepoMA) Create(att *postgres.MessageAttachment) error { return m.Called(att).Error(0) }
+func (m *mockRepoMA) GetByID(id int) (*postgres.MessageAttachment, error) {
 	args := m.Called(id)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).(*MessageAttachment), args.Error(1)
+	return args.Get(0).(*postgres.MessageAttachment), args.Error(1)
 }
-func (m *mockRepoMA) GetByChatID(chatID int) ([]MessageAttachment, error) {
+func (m *mockRepoMA) GetByChatID(chatID int) ([]postgres.MessageAttachment, error) {
 	args := m.Called(chatID)
 	if args.Get(0) == nil {
 		return nil, args.Error(1)
 	}
-	return args.Get(0).([]MessageAttachment), args.Error(1)
+	return args.Get(0).([]postgres.MessageAttachment), args.Error(1)
 }
-func (m *mockRepoMA) Update(att *MessageAttachment) error { return m.Called(att).Error(0) }
-func (m *mockRepoMA) Delete(id int) error                 { return m.Called(id).Error(0) }
+func (m *mockRepoMA) Update(att *postgres.MessageAttachment) error { return m.Called(att).Error(0) }
+func (m *mockRepoMA) Delete(id int) error                          { return m.Called(id).Error(0) }
 
 func TestCreate_ValidationFails_WhenMissingFields(t *testing.T) {
 	repo := new(mockRepoMA)
 	svc := NewService(repo)
 
 	// missing file path
-	err := svc.Create(&MessageAttachment{ChatID: 1, FilePath: ""})
+	err := svc.Create(&postgres.MessageAttachment{ChatID: 1, FilePath: ""})
 	assert.Error(t, err)
 
 	// missing chat id
-	err = svc.Create(&MessageAttachment{ChatID: 0, FilePath: "p"})
+	err = svc.Create(&postgres.MessageAttachment{ChatID: 0, FilePath: "p"})
 	assert.Error(t, err)
 }
 
@@ -45,7 +46,7 @@ func TestCreate_HappyPath_CallsRepo(t *testing.T) {
 	repo := new(mockRepoMA)
 	svc := NewService(repo)
 
-	a := &MessageAttachment{ChatID: 2, FilePath: "p"}
+	a := &postgres.MessageAttachment{ChatID: 2, FilePath: "p"}
 	repo.On("Create", a).Return(nil).Once()
 
 	err := svc.Create(a)
@@ -57,7 +58,7 @@ func TestCreate_RepoError_ReturnsError(t *testing.T) {
 	repo := new(mockRepoMA)
 	svc := NewService(repo)
 
-	a := &MessageAttachment{ChatID: 2, FilePath: "p"}
+	a := &postgres.MessageAttachment{ChatID: 2, FilePath: "p"}
 	repo.On("Create", a).Return(errors.New("db")).Once()
 
 	err := svc.Create(a)
@@ -69,9 +70,9 @@ func TestGetUpdateDelete_PassesThrough(t *testing.T) {
 	repo := new(mockRepoMA)
 	svc := NewService(repo)
 
-	exp := &MessageAttachment{ID: 11}
+	exp := &postgres.MessageAttachment{ID: 11}
 	repo.On("GetByID", 11).Return(exp, nil).Once()
-	repo.On("GetByChatID", 3).Return([]MessageAttachment{{ID: 1}}, nil).Once()
+	repo.On("GetByChatID", 3).Return([]postgres.MessageAttachment{{ID: 1}}, nil).Once()
 	repo.On("Update", exp).Return(nil).Once()
 	repo.On("Delete", 11).Return(nil).Once()
 

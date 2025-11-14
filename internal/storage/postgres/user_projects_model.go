@@ -1,4 +1,4 @@
-package user_projects
+package postgres
 
 import "time"
 

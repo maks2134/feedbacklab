@@ -2,6 +2,7 @@ package message_attachments
 
 import (
 	"database/sql"
+	"innotech/internal/storage/postgres"
 	"log"
 	"testing"
 	"time"
@@ -28,7 +29,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	att := &MessageAttachment{
+	att := &postgres.MessageAttachment{
 		ChatID:     1,
 		FilePath:   "/path/to/file",
 		UploadedBy: "user1",
@@ -62,7 +63,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	att := &MessageAttachment{
+	att := &postgres.MessageAttachment{
 		ID:       5,
 		FilePath: "/new/path",
 		FileType: ptr("application/pdf"),

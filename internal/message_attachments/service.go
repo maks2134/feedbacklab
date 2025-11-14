@@ -1,12 +1,15 @@
 package message_attachments
 
-import "errors"
+import (
+	"errors"
+	"innotech/internal/storage/postgres"
+)
 
 type Service interface {
-	Create(att *MessageAttachment) error
-	GetByID(id int) (*MessageAttachment, error)
-	GetByChatID(chatID int) ([]MessageAttachment, error)
-	Update(att *MessageAttachment) error
+	Create(att *postgres.MessageAttachment) error
+	GetByID(id int) (*postgres.MessageAttachment, error)
+	GetByChatID(chatID int) ([]postgres.MessageAttachment, error)
+	Update(att *postgres.MessageAttachment) error
 	Delete(id int) error
 }
 
@@ -18,7 +21,7 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s *service) Create(att *MessageAttachment) error {
+func (s *service) Create(att *postgres.MessageAttachment) error {
 	if att.FilePath == "" {
 		return errors.New("file_path cannot be empty")
 	}
@@ -28,15 +31,15 @@ func (s *service) Create(att *MessageAttachment) error {
 	return s.repo.Create(att)
 }
 
-func (s *service) GetByID(id int) (*MessageAttachment, error) {
+func (s *service) GetByID(id int) (*postgres.MessageAttachment, error) {
 	return s.repo.GetByID(id)
 }
 
-func (s *service) GetByChatID(chatID int) ([]MessageAttachment, error) {
+func (s *service) GetByChatID(chatID int) ([]postgres.MessageAttachment, error) {
 	return s.repo.GetByChatID(chatID)
 }
 
-func (s *service) Update(att *MessageAttachment) error {
+func (s *service) Update(att *postgres.MessageAttachment) error {
 	return s.repo.Update(att)
 }
 

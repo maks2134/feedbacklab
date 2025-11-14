@@ -1,6 +1,8 @@
 package message_attachments
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,9 +25,9 @@ func NewHandler(service Service) *Handler {
 // @Success 201 {object} MessageAttachment
 // @Router /message_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateMessageAttachmentDTO)
+	dto := c.Locals("body").(*transport.CreateMessageAttachmentDTO)
 
-	att := MessageAttachment{
+	att := postgres.MessageAttachment{
 		ChatID:     dto.ChatID,
 		FilePath:   dto.FilePath,
 		UploadedBy: dto.UploadedBy,
@@ -91,9 +93,9 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*UpdateMessageAttachmentDTO)
+	dto := c.Locals("body").(*transport.UpdateMessageAttachmentDTO)
 
-	att := MessageAttachment{
+	att := postgres.MessageAttachment{
 		ID:       id,
 		FilePath: dto.FilePath,
 		FileType: dto.FileType,

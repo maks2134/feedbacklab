@@ -1,12 +1,15 @@
 package ticket_chats
 
-import "errors"
+import (
+	"errors"
+	"innotech/internal/storage/postgres"
+)
 
 type Service interface {
-	Create(chat *TicketChat) error
-	GetByID(id int) (*TicketChat, error)
-	GetByTicketID(ticketID int) ([]TicketChat, error)
-	Update(chat *TicketChat) error
+	Create(chat *postgres.TicketChat) error
+	GetByID(id int) (*postgres.TicketChat, error)
+	GetByTicketID(ticketID int) ([]postgres.TicketChat, error)
+	Update(chat *postgres.TicketChat) error
 	Delete(id int) error
 }
 
@@ -18,22 +21,22 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s *service) Create(chat *TicketChat) error {
+func (s *service) Create(chat *postgres.TicketChat) error {
 	if chat.Message == "" {
 		return errors.New("message cannot be empty")
 	}
 	return s.repo.Create(chat)
 }
 
-func (s *service) GetByID(id int) (*TicketChat, error) {
+func (s *service) GetByID(id int) (*postgres.TicketChat, error) {
 	return s.repo.GetByID(id)
 }
 
-func (s *service) GetByTicketID(ticketID int) ([]TicketChat, error) {
+func (s *service) GetByTicketID(ticketID int) ([]postgres.TicketChat, error) {
 	return s.repo.GetByTicketID(ticketID)
 }
 
-func (s *service) Update(chat *TicketChat) error {
+func (s *service) Update(chat *postgres.TicketChat) error {
 	return s.repo.Update(chat)
 }
 

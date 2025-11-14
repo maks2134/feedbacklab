@@ -1,14 +1,16 @@
 package ticket_chats
 
 import (
+	"innotech/internal/storage/postgres"
+
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
-	Create(chat *TicketChat) error
-	GetByID(id int) (*TicketChat, error)
-	GetByTicketID(ticketID int) ([]TicketChat, error)
-	Update(chat *TicketChat) error
+	Create(chat *postgres.TicketChat) error
+	GetByID(id int) (*postgres.TicketChat, error)
+	GetByTicketID(ticketID int) ([]postgres.TicketChat, error)
+	Update(chat *postgres.TicketChat) error
 	Delete(id int) error
 }
 
@@ -20,7 +22,7 @@ func NewRepository(db *sqlx.DB) Repository {
 	return &repository{db: db}
 }
 
-func (r *repository) Create(chat *TicketChat) error {
+func (r *repository) Create(chat *postgres.TicketChat) error {
 	query := `
 		INSERT INTO ticket_chats (ticket_id, sender_id, sender_role, message, message_type, mattermost_message_id)
 		VALUES (:ticket_id, :sender_id, :sender_role, :message, :message_type, :mattermost_message_id)
@@ -35,8 +37,8 @@ func (r *repository) Create(chat *TicketChat) error {
 	return stmt.Get(chat, chat)
 }
 
-func (r *repository) GetByID(id int) (*TicketChat, error) {
-	var chat TicketChat
+func (r *repository) GetByID(id int) (*postgres.TicketChat, error) {
+	var chat postgres.TicketChat
 	err := r.db.Get(&chat, `SELECT * FROM ticket_chats WHERE id = $1`, id)
 	if err != nil {
 		return nil, err
@@ -44,8 +46,8 @@ func (r *repository) GetByID(id int) (*TicketChat, error) {
 	return &chat, nil
 }
 
-func (r *repository) GetByTicketID(ticketID int) ([]TicketChat, error) {
-	var chats []TicketChat
+func (r *repository) GetByTicketID(ticketID int) ([]postgres.TicketChat, error) {
+	var chats []postgres.TicketChat
 	err := r.db.Select(&chats, `SELECT * FROM ticket_chats WHERE ticket_id = $1 ORDER BY date_created ASC`, ticketID)
 	if err != nil {
 		return nil, err
@@ -53,7 +55,7 @@ func (r *repository) GetByTicketID(ticketID int) ([]TicketChat, error) {
 	return chats, nil
 }
 
-func (r *repository) Update(chat *TicketChat) error {
+func (r *repository) Update(chat *postgres.TicketChat) error {
 	query := `
 		UPDATE ticket_chats
 		SET message = :message,

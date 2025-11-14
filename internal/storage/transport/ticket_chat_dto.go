@@ -1,4 +1,4 @@
-package ticket_chats
+package transport
 
 type CreateTicketChatDTO struct {
 	TicketID            int     `json:"ticket_id" validate:"required"`

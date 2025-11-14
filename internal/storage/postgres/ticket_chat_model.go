@@ -1,4 +1,4 @@
-package ticket_chats
+package postgres
 
 import "time"
 

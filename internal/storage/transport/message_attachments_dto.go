@@ -1,4 +1,4 @@
-package message_attachments
+package transport
 
 type CreateMessageAttachmentDTO struct {
 	ChatID     int     `json:"chat_id" validate:"required"`
