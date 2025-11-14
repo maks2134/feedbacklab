@@ -1,36 +1,70 @@
 package config
 
 import (
+	"fmt"
 	"log"
+	"net/url"
 	"os"
+	"strconv"
 
 	"github.com/joho/godotenv"
 )
 
 type Config struct {
-	AppPort       string
-	HealthPort    string
+	AppPort       int
+	HealthPort    int
 	DatabaseURL   string
+	ParsedDBURL   *url.URL
 	MigrationsDir string
 }
 
-func Load() *Config {
+func Load() (*Config, error) {
 	_ = godotenv.Load()
 
-	cfg := &Config{
-		AppPort:       getEnv("APP_PORT", "8080"),
-		HealthPort:    getEnv("HEALTH_PORT", "8081"),
-		DatabaseURL:   getEnv("DATABASE_URL", "postgres://feedback:feedback@db:5432/innotech?sslmode=disable"),
-		MigrationsDir: getEnv("MIGRATIONS_DIR", "./migrations"),
-	}
+	cfg := &Config{}
 
-	log.Println("config loaded successfully")
-	return cfg
+	appPort, err := getEnvInt("APP_PORT", 8080)
+	if err != nil {
+		return nil, fmt.Errorf("invalid APP_PORT: %w", err)
+	}
+	cfg.AppPort = appPort
+
+	healthPort, err := getEnvInt("HEALTH_PORT", 8081)
+	if err != nil {
+		return nil, fmt.Errorf("invalid HEALTH_PORT: %w", err)
+	}
+	cfg.HealthPort = healthPort
+
+	cfg.DatabaseURL = getEnv("DATABASE_URL",
+		"postgres://feedback:feedback@db:5432/innotech?sslmode=disable",
+	)
+
+	parsedURL, err := url.Parse(cfg.DatabaseURL)
+	if err != nil {
+		return nil, fmt.Errorf("invalid DATABASE_URL: %w", err)
+	}
+	cfg.ParsedDBURL = parsedURL
+
+	cfg.MigrationsDir = getEnv("MIGRATIONS_DIR", "./migrations")
+
+	log.Println("config loaded and parsed successfully")
+	return cfg, nil
 }
 
 func getEnv(key, fallback string) string {
-	if value, exists := os.LookupEnv(key); exists {
-		return value
+	if val, ok := os.LookupEnv(key); ok {
+		return val
 	}
 	return fallback
+}
+
+func getEnvInt(key string, fallback int) (int, error) {
+	if val, ok := os.LookupEnv(key); ok {
+		parsed, err := strconv.Atoi(val)
+		if err != nil {
+			return 0, err
+		}
+		return parsed, nil
+	}
+	return fallback, nil
 }

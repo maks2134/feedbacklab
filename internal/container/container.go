@@ -34,7 +34,10 @@ type Container struct {
 }
 
 func New() *Container {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	database, err := db.Connect(cfg.DatabaseURL)
 	if err != nil {
