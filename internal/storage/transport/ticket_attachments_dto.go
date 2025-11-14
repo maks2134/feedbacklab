@@ -1,4 +1,4 @@
-package ticket_attachments
+package transport
 
 type CreateTicketAttachmentDTO struct {
 	TicketID    int     `json:"ticket_id" validate:"required"`

@@ -1,12 +1,15 @@
 package user_projects
 
-import "context"
+import (
+	"context"
+	"innotech/internal/storage/postgres"
+)
 
 type Service interface {
-	Create(ctx context.Context, up *UserProject) error
-	Get(ctx context.Context, userID string, projectID int) (*UserProject, error)
-	GetAll(ctx context.Context) ([]UserProject, error)
-	Update(ctx context.Context, up *UserProject) error
+	Create(ctx context.Context, up *postgres.UserProject) error
+	Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error)
+	GetAll(ctx context.Context) ([]postgres.UserProject, error)
+	Update(ctx context.Context, up *postgres.UserProject) error
 	Delete(ctx context.Context, userID string, projectID int) error
 }
 
@@ -18,19 +21,19 @@ func NewService(repo Repository) Service {
 	return &userProjectService{repo: repo}
 }
 
-func (s *userProjectService) Create(ctx context.Context, up *UserProject) error {
+func (s *userProjectService) Create(ctx context.Context, up *postgres.UserProject) error {
 	return s.repo.Create(ctx, up)
 }
 
-func (s *userProjectService) Get(ctx context.Context, userID string, projectID int) (*UserProject, error) {
+func (s *userProjectService) Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error) {
 	return s.repo.Get(ctx, userID, projectID)
 }
 
-func (s *userProjectService) GetAll(ctx context.Context) ([]UserProject, error) {
+func (s *userProjectService) GetAll(ctx context.Context) ([]postgres.UserProject, error) {
 	return s.repo.GetAll(ctx)
 }
 
-func (s *userProjectService) Update(ctx context.Context, up *UserProject) error {
+func (s *userProjectService) Update(ctx context.Context, up *postgres.UserProject) error {
 	return s.repo.Update(ctx, up)
 }
 

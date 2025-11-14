@@ -1,6 +1,8 @@
 package documentations
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,8 +17,8 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateDocumentationDTO)
-	d := Documentation{
+	dto := c.Locals("body").(*transport.CreateDocumentationDTO)
+	d := postgres.Documentation{
 		ProjectID:  dto.ProjectID,
 		FilePath:   dto.FilePath,
 		Version:    dto.Version,
@@ -53,8 +55,8 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	dto := c.Locals("body").(*UpdateDocumentationDTO)
-	d := Documentation{
+	dto := c.Locals("body").(*transport.UpdateDocumentationDTO)
+	d := postgres.Documentation{
 		ID:         id,
 		FilePath:   dto.FilePath,
 		Version:    dto.Version,

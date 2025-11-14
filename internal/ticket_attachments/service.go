@@ -1,12 +1,15 @@
 package ticket_attachments
 
-import "errors"
+import (
+	"errors"
+	"innotech/internal/storage/postgres"
+)
 
 type Service interface {
-	Create(att *TicketAttachment) error
-	GetByID(id int) (*TicketAttachment, error)
-	GetByTicketID(ticketID int) ([]TicketAttachment, error)
-	Update(att *TicketAttachment) error
+	Create(att *postgres.TicketAttachment) error
+	GetByID(id int) (*postgres.TicketAttachment, error)
+	GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error)
+	Update(att *postgres.TicketAttachment) error
 	Delete(id int) error
 }
 
@@ -18,22 +21,22 @@ func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }
 
-func (s *service) Create(att *TicketAttachment) error {
+func (s *service) Create(att *postgres.TicketAttachment) error {
 	if att.FilePath == "" {
 		return errors.New("file_path cannot be empty")
 	}
 	return s.repo.Create(att)
 }
 
-func (s *service) GetByID(id int) (*TicketAttachment, error) {
+func (s *service) GetByID(id int) (*postgres.TicketAttachment, error) {
 	return s.repo.GetByID(id)
 }
 
-func (s *service) GetByTicketID(ticketID int) ([]TicketAttachment, error) {
+func (s *service) GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error) {
 	return s.repo.GetByTicketID(ticketID)
 }
 
-func (s *service) Update(att *TicketAttachment) error {
+func (s *service) Update(att *postgres.TicketAttachment) error {
 	return s.repo.Update(att)
 }
 

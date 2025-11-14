@@ -1,6 +1,7 @@
 package ticket_attachments
 
 import (
+	"innotech/internal/storage/postgres"
 	"testing"
 	"time"
 
@@ -21,7 +22,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	att := &TicketAttachment{
+	att := &postgres.TicketAttachment{
 		TicketID:    1,
 		FilePath:    "/path/to/file",
 		UploadedBy:  "user1",
@@ -56,7 +57,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	att := &TicketAttachment{
+	att := &postgres.TicketAttachment{
 		ID:          5,
 		FilePath:    "/new/path",
 		FileType:    ptr("application/pdf"),

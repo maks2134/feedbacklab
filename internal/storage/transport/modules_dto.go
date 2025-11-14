@@ -1,4 +1,4 @@
-package modules
+package transport
 
 type CreateModuleDTO struct {
 	ProjectID         int     `json:"project_id" validate:"required"`

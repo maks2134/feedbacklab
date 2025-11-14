@@ -1,12 +1,15 @@
 package documentations
 
-import "context"
+import (
+	"context"
+	"innotech/internal/storage/postgres"
+)
 
 type Service interface {
-	Create(ctx context.Context, d *Documentation) error
-	GetByID(ctx context.Context, id int) (*Documentation, error)
-	GetAll(ctx context.Context) ([]Documentation, error)
-	Update(ctx context.Context, d *Documentation) error
+	Create(ctx context.Context, d *postgres.Documentation) error
+	GetByID(ctx context.Context, id int) (*postgres.Documentation, error)
+	GetAll(ctx context.Context) ([]postgres.Documentation, error)
+	Update(ctx context.Context, d *postgres.Documentation) error
 	Delete(ctx context.Context, id int) error
 }
 
@@ -18,19 +21,19 @@ func NewService(repo Repository) Service {
 	return &documentationService{repo: repo}
 }
 
-func (s *documentationService) Create(ctx context.Context, d *Documentation) error {
+func (s *documentationService) Create(ctx context.Context, d *postgres.Documentation) error {
 	return s.repo.Create(ctx, d)
 }
 
-func (s *documentationService) GetByID(ctx context.Context, id int) (*Documentation, error) {
+func (s *documentationService) GetByID(ctx context.Context, id int) (*postgres.Documentation, error) {
 	return s.repo.GetByID(ctx, id)
 }
 
-func (s *documentationService) GetAll(ctx context.Context) ([]Documentation, error) {
+func (s *documentationService) GetAll(ctx context.Context) ([]postgres.Documentation, error) {
 	return s.repo.GetAll(ctx)
 }
 
-func (s *documentationService) Update(ctx context.Context, d *Documentation) error {
+func (s *documentationService) Update(ctx context.Context, d *postgres.Documentation) error {
 	return s.repo.Update(ctx, d)
 }
 

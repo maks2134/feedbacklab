@@ -1,6 +1,7 @@
 package message_attachments
 
 import (
+	"innotech/internal/storage/transport"
 	"innotech/pkg/middleware"
 
 	"github.com/gofiber/fiber/v2"
@@ -11,7 +12,7 @@ func RegisterRoutes(app *fiber.App, h *Handler) {
 
 	api.Get("/:id", h.GetByID)
 	api.Get("/chat/:chat_id", h.GetByChatID)
-	api.Post("/", middleware.ValidateBody[CreateMessageAttachmentDTO](h.Create))
-	api.Put("/:id", middleware.ValidateBody[UpdateMessageAttachmentDTO](h.Update))
+	api.Post("/", middleware.ValidateBody[transport.CreateMessageAttachmentDTO](h.Create))
+	api.Put("/:id", middleware.ValidateBody[transport.UpdateMessageAttachmentDTO](h.Update))
 	api.Delete("/:id", h.Delete)
 }

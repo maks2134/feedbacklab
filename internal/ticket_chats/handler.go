@@ -1,6 +1,8 @@
 package ticket_chats
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -24,9 +26,9 @@ func NewHandler(service Service) *Handler {
 // @Failure 400 {object} map[string]string
 // @Router /ticket_chats/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateTicketChatDTO)
+	dto := c.Locals("body").(*transport.CreateTicketChatDTO)
 
-	chat := TicketChat{
+	chat := postgres.TicketChat{
 		TicketID:            dto.TicketID,
 		SenderID:            dto.SenderID,
 		SenderRole:          dto.SenderRole,
@@ -95,9 +97,9 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*UpdateTicketChatDTO)
+	dto := c.Locals("body").(*transport.UpdateTicketChatDTO)
 
-	chat := TicketChat{
+	chat := postgres.TicketChat{
 		ID:          id,
 		Message:     dto.Message,
 		MessageType: dto.MessageType,

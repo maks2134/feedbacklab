@@ -1,6 +1,8 @@
 package ticket_attachments
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -23,9 +25,9 @@ func NewHandler(service Service) *Handler {
 // @Success 201 {object} TicketAttachment
 // @Router /ticket_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateTicketAttachmentDTO)
+	dto := c.Locals("body").(*transport.CreateTicketAttachmentDTO)
 
-	att := TicketAttachment{
+	att := postgres.TicketAttachment{
 		TicketID:    dto.TicketID,
 		FilePath:    dto.FilePath,
 		UploadedBy:  dto.UploadedBy,
@@ -92,9 +94,9 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*UpdateTicketAttachmentDTO)
+	dto := c.Locals("body").(*transport.UpdateTicketAttachmentDTO)
 
-	att := TicketAttachment{
+	att := postgres.TicketAttachment{
 		ID:          id,
 		FilePath:    dto.FilePath,
 		FileType:    dto.FileType,

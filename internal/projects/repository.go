@@ -2,15 +2,16 @@ package projects
 
 import (
 	"context"
+	"innotech/internal/storage/postgres"
 
 	"github.com/jmoiron/sqlx"
 )
 
 type Repository interface {
-	Create(ctx context.Context, p *Project) error
-	GetByID(ctx context.Context, id int) (*Project, error)
-	GetAll(ctx context.Context) ([]Project, error)
-	Update(ctx context.Context, p *Project) error
+	Create(ctx context.Context, p *postgres.Project) error
+	GetByID(ctx context.Context, id int) (*postgres.Project, error)
+	GetAll(ctx context.Context) ([]postgres.Project, error)
+	Update(ctx context.Context, p *postgres.Project) error
 	Delete(ctx context.Context, id int) error
 }
 
@@ -22,7 +23,7 @@ func NewRepository(db *sqlx.DB) Repository {
 	return &projectRepository{db: db}
 }
 
-func (r *projectRepository) Create(ctx context.Context, p *Project) error {
+func (r *projectRepository) Create(ctx context.Context, p *postgres.Project) error {
 	query := `
 		INSERT INTO projects (name, description, gitlab_project_id, mattermost_team)
 		VALUES (:name, :description, :gitlab_project_id, :mattermost_team)
@@ -35,8 +36,8 @@ func (r *projectRepository) Create(ctx context.Context, p *Project) error {
 	return stmt.GetContext(ctx, p, p)
 }
 
-func (r *projectRepository) GetByID(ctx context.Context, id int) (*Project, error) {
-	var p Project
+func (r *projectRepository) GetByID(ctx context.Context, id int) (*postgres.Project, error) {
+	var p postgres.Project
 	err := r.db.GetContext(ctx, &p, "SELECT * FROM projects WHERE id=$1", id)
 	if err != nil {
 		return nil, err
@@ -44,13 +45,13 @@ func (r *projectRepository) GetByID(ctx context.Context, id int) (*Project, erro
 	return &p, nil
 }
 
-func (r *projectRepository) GetAll(ctx context.Context) ([]Project, error) {
-	var ps []Project
+func (r *projectRepository) GetAll(ctx context.Context) ([]postgres.Project, error) {
+	var ps []postgres.Project
 	err := r.db.SelectContext(ctx, &ps, "SELECT * FROM projects ORDER BY date_created DESC")
 	return ps, err
 }
 
-func (r *projectRepository) Update(ctx context.Context, p *Project) error {
+func (r *projectRepository) Update(ctx context.Context, p *postgres.Project) error {
 	query := `
 		UPDATE projects
 		SET name=:name, description=:description, gitlab_project_id=:gitlab_project_id, mattermost_team=:mattermost_team

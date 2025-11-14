@@ -1,6 +1,8 @@
 package projects
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -15,8 +17,8 @@ func NewHandler(service Service) *Handler {
 }
 
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*CreateProjectDTO)
-	p := Project{
+	dto := c.Locals("body").(*transport.CreateProjectDTO)
+	p := postgres.Project{
 		Name:            dto.Name,
 		Description:     dto.Description,
 		GitlabProjectID: dto.GitlabProjectID,
@@ -53,8 +55,8 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	dto := c.Locals("body").(*UpdateProjectDTO)
-	p := Project{
+	dto := c.Locals("body").(*transport.UpdateProjectDTO)
+	p := postgres.Project{
 		ID:              id,
 		Name:            dto.Name,
 		Description:     dto.Description,

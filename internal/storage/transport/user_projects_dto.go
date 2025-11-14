@@ -1,4 +1,4 @@
-package user_projects
+package transport
 
 type CreateUserProjectDTO struct {
 	UserID      string   `json:"user_id" validate:"required,uuid4"`

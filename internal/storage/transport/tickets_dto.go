@@ -1,4 +1,4 @@
-package tickets
+package transport
 
 type CreateTicketDTO struct {
 	ProjectID           int     `json:"project_id" validate:"required"`

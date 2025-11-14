@@ -1,4 +1,4 @@
-package modules
+package postgres
 
 import "time"
 
