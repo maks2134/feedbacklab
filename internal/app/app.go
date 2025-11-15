@@ -3,6 +3,8 @@ package app
 import (
 	_ "innotech/docs"
 	"innotech/internal/contract"
+	"innotech/internal/modules"
+
 	"innotech/internal/documentations"
 	"innotech/internal/projects"
 	"innotech/internal/user_projects"
@@ -39,6 +41,7 @@ func Start(container *container.Container) {
 	projects.RegisterRoutes(app, container.ProjectHandler)
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
 	user_projects.RegisterRoutes(app, container.UserProjectHandler)
+	modules.RegisterRoutes(app, container.ModuleHandler)
 
 	log.Printf(" Server running on port %s\n", container.Config.AppPort)
 	if err := app.Listen(":" + strconv.Itoa(container.Config.AppPort)); err != nil {

@@ -11,9 +11,12 @@ import (
 )
 
 func main() {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalf("failed to load config: %v", err)
+	}
 
-	target := fmt.Sprintf("http://app:%s/api/health", cfg.AppPort)
+	target := fmt.Sprintf("http://app:%d/api/health", cfg.AppPort)
 	service := health.NewHTTPHealthService(target, 3*time.Second)
 	handler := health.NewHandler(service)
 
@@ -22,9 +25,9 @@ func main() {
 
 	port := cfg.HealthPort
 
-	log.Printf("healthcheck service running on port %s (target: %s)\n", port, target)
+	log.Printf("healthcheck service running on port %d (target: %s)\n", port, target)
 
-	if err := app.Listen(":" + port); err != nil {
+	if err := app.Listen(fmt.Sprintf(":%d", port)); err != nil {
 		log.Fatalf("failed to start healthcheck service: %v", err)
 	}
 }

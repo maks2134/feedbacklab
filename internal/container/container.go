@@ -6,6 +6,7 @@ import (
 	"innotech/internal/documentations"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
+	"innotech/internal/modules"
 	"innotech/internal/projects"
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
@@ -35,6 +36,7 @@ type Container struct {
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
+	ModuleHandler             *modules.Handler
 }
 
 func New() *Container {
@@ -52,7 +54,6 @@ func New() *Container {
 	slog.SetDefault(newLogger)
 	//TODO сделать нормальный логгер через slog
 
-	// Инициализация i18n
 	i18nBundle := i18n.InitBundle()
 	localesDir := getEnv("LOCALES_DIR", "./locales")
 	if err := i18n.LoadTranslations(i18nBundle, localesDir); err != nil {
@@ -94,6 +95,10 @@ func New() *Container {
 	userProjectService := user_projects.NewService(userProjectRepo)
 	userProjectHandler := user_projects.NewHandler(userProjectService)
 
+	modulesRepo := modules.NewRepository(database)
+	modulesService := modules.NewService(modulesRepo)
+	modulesHandler := modules.NewHandler(modulesService)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -107,6 +112,7 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
+		ModuleHandler:             modulesHandler,
 	}
 }
 
