@@ -21,7 +21,6 @@ func TestContractService_CRUD(t *testing.T) {
 	startDate := now
 	endDate := now.AddDate(1, 0, 0)
 
-	// Test GetAll
 	rows := sqlmock.NewRows([]string{"id", "project_id", "client_name", "start_date", "end_date", "description"}).
 		AddRow(1, 1, "Client", startDate, endDate, "Agreement")
 	mock.ExpectQuery(`SELECT \* FROM contracts ORDER BY id`).WillReturnRows(rows)
@@ -31,7 +30,6 @@ func TestContractService_CRUD(t *testing.T) {
 	assert.Len(t, items, 1)
 	assert.Equal(t, "Client", items[0].ClientName)
 
-	// Test GetByID
 	row := sqlmock.NewRows([]string{"id", "project_id", "client_name", "start_date", "end_date", "description"}).
 		AddRow(1, 1, "Client", startDate, endDate, "Agreement")
 	mock.ExpectQuery(`SELECT \* FROM contracts WHERE id=\$1`).WithArgs(1).WillReturnRows(row)
@@ -40,7 +38,6 @@ func TestContractService_CRUD(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "Client", got.ClientName)
 
-	// Test Create
 	contract := &Contract{
 		ProjectID:   1,
 		ClientName:  "New Client",
@@ -56,7 +53,6 @@ func TestContractService_CRUD(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, 2, contract.ID)
 
-	// Test Update
 	contract.ID = 2
 	contract.ClientName = "Updated Client"
 	mock.ExpectExec(`UPDATE contracts SET client_name=\$1, start_date=\$2, end_date=\$3, description=\$4 WHERE id=\$5`).
@@ -66,7 +62,6 @@ func TestContractService_CRUD(t *testing.T) {
 	err = svc.Update(contract)
 	assert.NoError(t, err)
 
-	// Test Delete
 	mock.ExpectExec(`DELETE FROM contracts WHERE id=\$1`).WithArgs(2).WillReturnResult(sqlmock.NewResult(1, 1))
 	err = svc.Delete(2)
 	assert.NoError(t, err)

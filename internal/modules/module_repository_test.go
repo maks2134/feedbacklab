@@ -20,7 +20,6 @@ func TestModuleRepository_CRUD(t *testing.T) {
 	ctx := context.Background()
 	now := time.Now()
 
-	// GetAll
 	rows := sqlmock.NewRows([]string{"id", "project_id", "name", "description", "responsible_user_id", "date_created", "date_updated"}).
 		AddRow(1, 1, "Module", "Desc", nil, now, now)
 	mock.ExpectQuery(`SELECT \* FROM modules ORDER BY date_created DESC`).WillReturnRows(rows)
@@ -28,7 +27,6 @@ func TestModuleRepository_CRUD(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Len(t, all, 1)
 
-	// GetByID
 	row := sqlmock.NewRows([]string{"id", "project_id", "name", "description", "responsible_user_id", "date_created", "date_updated"}).
 		AddRow(1, 1, "Module", "Desc", nil, now, now)
 	mock.ExpectQuery(`SELECT \* FROM modules WHERE id=\$1`).WithArgs(1).WillReturnRows(row)
@@ -36,7 +34,6 @@ func TestModuleRepository_CRUD(t *testing.T) {
 	assert.NoError(t, err)
 	assert.Equal(t, "Module", got.Name)
 
-	// Create
 	desc := "D"
 	m := &postgres.Module{ProjectID: 1, Name: "New", Description: &desc}
 	mock.ExpectQuery(`INSERT INTO modules`).
@@ -47,7 +44,6 @@ func TestModuleRepository_CRUD(t *testing.T) {
 		t.Logf("Expected error with sqlmock limitations: %v", err)
 	}
 
-	// Update
 	m.ID = 1
 	mock.ExpectQuery(`UPDATE modules`).
 		WithArgs("New", "D", nil, 1).
@@ -57,7 +53,6 @@ func TestModuleRepository_CRUD(t *testing.T) {
 		t.Logf("Expected error with sqlmock limitations: %v", err)
 	}
 
-	// Delete
 	mock.ExpectExec(`DELETE FROM modules WHERE id=\$1`).WithArgs(1).WillReturnResult(sqlmock.NewResult(1, 1))
 	err = repo.Delete(ctx, 1)
 	assert.NoError(t, err)
