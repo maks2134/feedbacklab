@@ -14,6 +14,7 @@ import (
 	"innotech/internal/ticket_attachments"
 	"innotech/internal/ticket_chats"
 	"innotech/internal/tickets"
+	"innotech/pkg/middleware"
 
 	"log"
 
@@ -23,6 +24,8 @@ import (
 
 func Start(container *container.Container) {
 	app := fiber.New()
+
+	app.Use(middleware.I18nMiddleware(container.I18nBundle))
 
 	app.Get("/swagger/*", swagger.WrapHandler)
 

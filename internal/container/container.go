@@ -12,16 +12,20 @@ import (
 	"innotech/internal/tickets"
 	"innotech/internal/user_projects"
 	"innotech/pkg/db"
+	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
 	"log"
 	"log/slog"
+	"os"
 
 	"github.com/jmoiron/sqlx"
+	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
 type Container struct {
 	Config                    *config.Config
 	DB                        *sqlx.DB
+	I18nBundle                *goi18n.Bundle
 	HealthHandler             *health.Handler
 	TicketHandler             *tickets.Handler
 	TicketChatsHandler        *ticket_chats.Handler
@@ -47,6 +51,13 @@ func New() *Container {
 	newLogger := logger.NewLogger()
 	slog.SetDefault(newLogger)
 	//TODO сделать нормальный логгер через slog
+
+	// Инициализация i18n
+	i18nBundle := i18n.InitBundle()
+	localesDir := getEnv("LOCALES_DIR", "./locales")
+	if err := i18n.LoadTranslations(i18nBundle, localesDir); err != nil {
+		log.Printf("Warning: failed to load translations: %v", err)
+	}
 
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
@@ -86,6 +97,7 @@ func New() *Container {
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
+		I18nBundle:                i18nBundle,
 		HealthHandler:             healthHandler,
 		TicketHandler:             ticketHandler,
 		TicketChatsHandler:        chatHandler,
@@ -96,4 +108,11 @@ func New() *Container {
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return fallback
 }
