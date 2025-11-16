@@ -1,0 +1,52 @@
+run:
+  timeout: 5m
+  tests: true
+
+linters:
+  enable:
+    - govet
+    - errcheck
+    - gofmt
+    - goimports
+    - gosimple
+    - staticcheck
+    - unused
+    - ineffassign
+    - typecheck
+    - gocritic
+    - revive
+    - gofumpt
+
+linters-settings:
+  gofmt:
+    simplify: true
+
+  goimports:
+    local-prefixes: innotech
+
+  gocritic:
+    enabled-tags:
+      - diagnostic
+      - performance
+      - style
+
+  revive:
+    ignoreGeneratedHeader: true
+    severity: warning
+    rules:
+      - name: indent-error-flow
+      - name: exported
+      - name: rangeValCopy
+      - name: receiver-naming
+      - name: blank-imports
+      - name: unused-parameter
+      - name: unnecessary-stmt
+      - name: unnecessary-return
+
+issues:
+  exclude-use-default: false
+  max-same-issues: 50
+  exclude:
+    - "Error return value .* not checked"
+    - "should have comment"
+    - "comment on exported"
