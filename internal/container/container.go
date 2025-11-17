@@ -6,13 +6,13 @@ import (
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
 	"innotech/internal/health"
-	"innotech/internal/message_attachments"
+	"innotech/internal/messageattachments"
 	"innotech/internal/modules"
 	"innotech/internal/projects"
-	"innotech/internal/ticket_attachments"
-	"innotech/internal/ticket_chats"
+	"innotech/internal/ticketattachments"
+	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
-	"innotech/internal/user_projects"
+	"innotech/internal/userprojects"
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
@@ -31,13 +31,13 @@ type Container struct {
 	I18nBundle                *goi18n.Bundle
 	HealthHandler             *health.Handler
 	TicketHandler             *tickets.Handler
-	TicketChatsHandler        *ticket_chats.Handler
-	TicketAttachmentsHandler  *ticket_attachments.Handler
-	MessageAttachmentsHandler *message_attachments.Handler
+	TicketChatsHandler        *ticketchats.Handler
+	TicketAttachmentsHandler  *ticketattachments.Handler
+	MessageAttachmentsHandler *messageattachments.Handler
 	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
-	UserProjectHandler        *user_projects.Handler
+	UserProjectHandler        *userprojects.Handler
 	ModuleHandler             *modules.Handler
 }
 
@@ -70,17 +70,17 @@ func New() *Container {
 	ticketService := tickets.NewService(ticketRepo)
 	ticketHandler := tickets.NewHandler(ticketService)
 
-	chatRepo := ticket_chats.NewRepository(database)
-	chatService := ticket_chats.NewService(chatRepo)
-	chatHandler := ticket_chats.NewHandler(chatService)
+	chatRepo := ticketchats.NewRepository(database)
+	chatService := ticketchats.NewService(chatRepo)
+	chatHandler := ticketchats.NewHandler(chatService)
 
-	attachRepo := ticket_attachments.NewRepository(database)
-	attachService := ticket_attachments.NewService(attachRepo)
-	attachHandler := ticket_attachments.NewHandler(attachService)
+	attachRepo := ticketattachments.NewRepository(database)
+	attachService := ticketattachments.NewService(attachRepo)
+	attachHandler := ticketattachments.NewHandler(attachService)
 
-	msgAttachRepo := message_attachments.NewRepository(database)
-	msgAttachService := message_attachments.NewService(msgAttachRepo)
-	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
+	msgAttachRepo := messageattachments.NewRepository(database)
+	msgAttachService := messageattachments.NewService(msgAttachRepo)
+	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	contractRepo := contract.NewRepository(database)
 	contractService := contract.NewService(contractRepo)
@@ -94,9 +94,9 @@ func New() *Container {
 	docService := documentations.NewService(docRepo)
 	docHandler := documentations.NewHandler(docService)
 
-	userProjectRepo := user_projects.NewRepository(database)
-	userProjectService := user_projects.NewService(userProjectRepo)
-	userProjectHandler := user_projects.NewHandler(userProjectService)
+	userProjectRepo := userprojects.NewRepository(database)
+	userProjectService := userprojects.NewService(userProjectRepo)
+	userProjectHandler := userprojects.NewHandler(userProjectService)
 
 	modulesRepo := modules.NewRepository(database)
 	modulesService := modules.NewService(modulesRepo)

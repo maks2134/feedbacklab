@@ -9,14 +9,14 @@ import (
 
 	"innotech/internal/documentations"
 	"innotech/internal/projects"
-	"innotech/internal/user_projects"
+	"innotech/internal/userprojects"
 	"strconv"
 
 	"innotech/internal/container"
 	"innotech/internal/health"
-	"innotech/internal/message_attachments"
-	"innotech/internal/ticket_attachments"
-	"innotech/internal/ticket_chats"
+	"innotech/internal/messageattachments"
+	"innotech/internal/ticketattachments"
+	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
 	"innotech/pkg/middleware"
 
@@ -37,13 +37,13 @@ func Start(container *container.Container) {
 	health.RegisterRoutes(app, container.HealthHandler)
 
 	tickets.RegisterRoutes(app, container.TicketHandler)
-	ticket_chats.RegisterRoutes(app, container.TicketChatsHandler)
-	ticket_attachments.RegisterRoutes(app, container.TicketAttachmentsHandler)
-	message_attachments.RegisterRoutes(app, container.MessageAttachmentsHandler)
+	ticketchats.RegisterRoutes(app, container.TicketChatsHandler)
+	ticketattachments.RegisterRoutes(app, container.TicketAttachmentsHandler)
+	messageattachments.RegisterRoutes(app, container.MessageAttachmentsHandler)
 	contract.RegisterRoutes(app, container.ContractHandler)
 	projects.RegisterRoutes(app, container.ProjectHandler)
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
-	user_projects.RegisterRoutes(app, container.UserProjectHandler)
+	userprojects.RegisterRoutes(app, container.UserProjectHandler)
 	modules.RegisterRoutes(app, container.ModuleHandler)
 
 	log.Printf(" Server running on port %d\n", container.Config.AppPort)

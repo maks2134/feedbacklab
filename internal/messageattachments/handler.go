@@ -1,5 +1,5 @@
-// Package message_attachments provides message attachment management functionality.
-package message_attachments
+// Package messageattachments provides message attachment management functionality.
+package messageattachments
 
 import (
 	"innotech/internal/storage/postgres"

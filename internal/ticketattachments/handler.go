@@ -1,5 +1,5 @@
-// Package ticket_attachments provides ticket attachment management functionality.
-package ticket_attachments
+// Package ticketattachments provides ticket attachment management functionality.
+package ticketattachments
 
 import (
 	"innotech/internal/storage/postgres"

@@ -1,4 +1,4 @@
-package message_attachments
+package messageattachments
 
 import (
 	"innotech/internal/storage/postgres"

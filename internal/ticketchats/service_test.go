@@ -1,4 +1,4 @@
-package ticket_chats
+package ticketchats
 
 import (
 	"errors"

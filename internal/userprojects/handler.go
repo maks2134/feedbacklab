@@ -1,5 +1,5 @@
-// Package user_projects provides user-project relationship management functionality.
-package user_projects
+// Package userprojects provides user-project relationship management functionality.
+package userprojects
 
 import (
 	"innotech/internal/storage/postgres"

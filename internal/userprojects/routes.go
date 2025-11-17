@@ -1,4 +1,4 @@
-package user_projects
+package userprojects
 
 import (
 	"innotech/internal/storage/transport"

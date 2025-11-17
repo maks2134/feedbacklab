@@ -1,5 +1,5 @@
-// Package ticket_chats provides ticket chat message management functionality.
-package ticket_chats
+// Package ticketchats provides ticket chat message management functionality.
+package ticketchats
 
 import (
 	"innotech/internal/storage/postgres"
