@@ -1,4 +1,5 @@
-package message_attachments
+// Package ticketattachments provides ticket attachment management functionality.
+package ticketattachments
 
 import (
 	"innotech/internal/storage/postgres"
@@ -8,30 +9,33 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for ticket attachment operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
 // Create godoc
-// @Summary создать вложение сообщения
-// @Tags MessageAttachments
+// @Summary создать вложение тикета
+// @Tags TicketAttachments
 // @Accept json
 // @Produce json
-// @Param attachment body CreateMessageAttachmentDTO true "Attachment"
-// @Success 201 {object} MessageAttachment
-// @Router /message_attachments/ [post]
+// @Param attachment body CreateTicketAttachmentDTO true "Attachment"
+// @Success 201 {object} TicketAttachment
+// @Router /ticket_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*transport.CreateMessageAttachmentDTO)
+	dto := c.Locals("body").(*transport.CreateTicketAttachmentDTO)
 
-	att := postgres.MessageAttachment{
-		ChatID:     dto.ChatID,
-		FilePath:   dto.FilePath,
-		UploadedBy: dto.UploadedBy,
-		FileType:   dto.FileType,
+	att := postgres.TicketAttachment{
+		TicketID:    dto.TicketID,
+		FilePath:    dto.FilePath,
+		UploadedBy:  dto.UploadedBy,
+		FileType:    dto.FileType,
+		Description: dto.Description,
 	}
 
 	if err := h.service.Create(&att); err != nil {
@@ -42,11 +46,11 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 
 // GetByID godoc
 // @Summary получить вложение по ID
-// @Tags MessageAttachments
+// @Tags TicketAttachments
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} MessageAttachment
-// @Router /message_attachments/{id} [get]
+// @Success 200 {object} TicketAttachment
+// @Router /ticket_attachments/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -59,19 +63,19 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(att)
 }
 
-// GetByChatID godoc
-// @Summary получить все вложения по chat_id
-// @Tags MessageAttachments
+// GetByTicketID godoc
+// @Summary получить все вложения тикета
+// @Tags TicketAttachments
 // @Produce json
-// @Param chat_id path int true "Chat ID"
-// @Success 200 {array} MessageAttachment
-// @Router /message_attachments/chat/{chat_id} [get]
-func (h *Handler) GetByChatID(c *fiber.Ctx) error {
-	chatID, err := strconv.Atoi(c.Params("chat_id"))
+// @Param ticket_id path int true "Ticket ID"
+// @Success 200 {array} TicketAttachment
+// @Router /ticket_attachments/ticket/{ticket_id} [get]
+func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
+	ticketID, err := strconv.Atoi(c.Params("ticket_id"))
 	if err != nil {
-		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid chat id"})
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid ticket id"})
 	}
-	list, err := h.service.GetByChatID(chatID)
+	list, err := h.service.GetByTicketID(ticketID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -80,25 +84,26 @@ func (h *Handler) GetByChatID(c *fiber.Ctx) error {
 
 // Update godoc
 // @Summary обновить вложение
-// @Tags MessageAttachments
+// @Tags TicketAttachments
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param attachment body UpdateMessageAttachmentDTO true "Attachment"
-// @Success 200 {object} MessageAttachment
-// @Router /message_attachments/{id} [put]
+// @Param attachment body UpdateTicketAttachmentDTO true "Attachment"
+// @Success 200 {object} TicketAttachment
+// @Router /ticket_attachments/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*transport.UpdateMessageAttachmentDTO)
+	dto := c.Locals("body").(*transport.UpdateTicketAttachmentDTO)
 
-	att := postgres.MessageAttachment{
-		ID:       id,
-		FilePath: dto.FilePath,
-		FileType: dto.FileType,
+	att := postgres.TicketAttachment{
+		ID:          id,
+		FilePath:    dto.FilePath,
+		FileType:    dto.FileType,
+		Description: dto.Description,
 	}
 
 	if err := h.service.Update(&att); err != nil {
@@ -109,10 +114,10 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 
 // Delete godoc
 // @Summary удалить вложение
-// @Tags MessageAttachments
+// @Tags TicketAttachments
 // @Param id path int true "ID"
 // @Success 204
-// @Router /message_attachments/{id} [delete]
+// @Router /ticket_attachments/{id} [delete]
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {

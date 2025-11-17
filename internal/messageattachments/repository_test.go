@@ -1,4 +1,4 @@
-package ticket_chats
+package messageattachments
 
 import (
 	"database/sql"
@@ -13,13 +13,15 @@ import (
 	"github.com/stretchr/testify/require"
 )
 
+func ptr(s string) *string { return &s }
+
 func TestRepository_Create_WithReturning(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	defer func(mockDB *sql.DB) {
 		err := mockDB.Close()
 		if err != nil {
-			log.Fatal(err)
+			log.Fatal("failed to close mock DB")
 		}
 	}(mockDB)
 
@@ -27,28 +29,28 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	chat := &postgres.TicketChat{
-		TicketID:    1,
-		SenderID:    "user1",
-		SenderRole:  "customer",
-		Message:     "test message",
-		MessageType: "text",
+	att := &postgres.MessageAttachment{
+		ChatID:     1,
+		FilePath:   "/path/to/file",
+		UploadedBy: "user1",
+		FileType:   ptr("image/png"),
 	}
 
-	mock.ExpectPrepare(`INSERT INTO ticket_chats.*RETURNING.*`)
+	mock.ExpectPrepare(`INSERT INTO message_attachments.*RETURNING.*`)
 
 	rows := sqlmock.NewRows([]string{"id", "date_created", "date_updated"}).
 		AddRow(42, now, now)
 
-	mock.ExpectQuery(`INSERT INTO ticket_chats.*RETURNING.*`).
+	mock.ExpectQuery(`INSERT INTO message_attachments.*RETURNING.*`).
+		WithArgs(att.ChatID, att.FilePath, att.UploadedBy, att.FileType).
 		WillReturnRows(rows)
 
-	err = repo.Create(chat)
+	err = repo.Create(att)
 
 	assert.NoError(t, err)
-	assert.Equal(t, 42, chat.ID)
-	assert.Equal(t, now, chat.DateCreated)
-	assert.Equal(t, now, chat.DateUpdated)
+	assert.Equal(t, 42, att.ID)
+	assert.Equal(t, now, att.DateCreated)
+	assert.Equal(t, now, att.DateUpdated)
 	assert.NoError(t, mock.ExpectationsWereMet())
 }
 
@@ -61,28 +63,28 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 	repo := NewRepository(db)
 
 	now := time.Now().UTC()
-	chat := &postgres.TicketChat{
-		ID:          5,
-		Message:     "updated",
-		MessageType: "edited",
+	att := &postgres.MessageAttachment{
+		ID:       5,
+		FilePath: "/new/path",
+		FileType: ptr("application/pdf"),
 	}
 
-	mock.ExpectPrepare(`UPDATE ticket_chats SET.*WHERE id = \?.*RETURNING date_updated`)
+	mock.ExpectPrepare(`UPDATE message_attachments SET.*WHERE id = \?.*RETURNING date_updated`)
 
 	rows := sqlmock.NewRows([]string{"date_updated"}).AddRow(now)
 
-	mock.ExpectQuery(`UPDATE ticket_chats SET.*WHERE id = \?.*RETURNING date_updated`).
-		WithArgs(chat.Message, chat.MessageType, nil, chat.ID).
+	mock.ExpectQuery(`UPDATE message_attachments SET.*WHERE id = \?.*RETURNING date_updated`).
+		WithArgs(att.FilePath, att.FileType, att.ID).
 		WillReturnRows(rows)
 
-	err = repo.Update(chat)
+	err = repo.Update(att)
 
 	assert.NoError(t, err)
-	assert.Equal(t, now, chat.DateUpdated)
+	assert.Equal(t, now, att.DateUpdated)
 	assert.NoError(t, mock.ExpectationsWereMet())
 }
 
-func TestRepository_GetByTicketID_WithOrder(t *testing.T) {
+func TestRepository_GetByChatID_WithOrder(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
 	defer func() { _ = mockDB.Close() }()
@@ -93,25 +95,25 @@ func TestRepository_GetByTicketID_WithOrder(t *testing.T) {
 	now := time.Now().UTC()
 
 	rows := sqlmock.NewRows([]string{
-		"id", "ticket_id", "sender_id", "sender_role", "message",
-		"message_type", "mattermost_message_id", "date_created", "date_updated",
+		"id", "chat_id", "file_path", "uploaded_by", "file_type",
+		"date_created", "date_updated",
 	}).AddRow(
-		1, 42, "user1", "customer", "msg1",
-		"text", nil, now, now,
+		1, 42, "/path1", "user1", ptr("image/png"),
+		now, now,
 	).AddRow(
-		2, 42, "user2", "support", "msg2",
-		"text", "mm-123", now.Add(time.Hour), now.Add(time.Hour),
+		2, 42, "/path2", "user2", ptr("text/plain"),
+		now.Add(time.Hour), now.Add(time.Hour),
 	)
 
-	mock.ExpectQuery(`SELECT \* FROM ticket_chats WHERE ticket_id = \$1 ORDER BY date_created ASC`).
+	mock.ExpectQuery(`SELECT \* FROM message_attachments WHERE chat_id = \$1 ORDER BY date_created`).
 		WithArgs(42).
 		WillReturnRows(rows)
 
-	list, err := repo.GetByTicketID(42)
+	list, err := repo.GetByChatID(42)
 
 	assert.NoError(t, err)
 	assert.Len(t, list, 2)
-	assert.Equal(t, "mm-123", *list[1].MattermostMessageID)
-	assert.Nil(t, list[0].MattermostMessageID)
+	assert.Equal(t, "image/png", *list[0].FileType)
+	assert.Equal(t, "text/plain", *list[1].FileType)
 	assert.NoError(t, mock.ExpectationsWereMet())
 }

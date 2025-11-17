@@ -1,10 +1,11 @@
-package message_attachments
+package messageattachments
 
 import (
 	"errors"
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for message attachment business logic operations.
 type Service interface {
 	Create(att *postgres.MessageAttachment) error
 	GetByID(id int) (*postgres.MessageAttachment, error)
@@ -17,6 +18,7 @@ type service struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }

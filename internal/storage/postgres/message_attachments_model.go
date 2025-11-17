@@ -2,6 +2,7 @@ package postgres
 
 import "time"
 
+// MessageAttachment represents a file attachment for a chat message in the database.
 type MessageAttachment struct {
 	ID          int       `db:"id" json:"id"`
 	ChatID      int       `db:"chat_id" json:"chat_id"`

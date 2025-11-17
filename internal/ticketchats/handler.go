@@ -1,4 +1,5 @@
-package ticket_chats
+// Package ticketchats provides ticket chat message management functionality.
+package ticketchats
 
 import (
 	"innotech/internal/storage/postgres"
@@ -8,10 +9,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for ticket chat operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }

@@ -1,4 +1,4 @@
-package message_attachments
+package messageattachments
 
 import (
 	"innotech/internal/storage/postgres"
@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for message attachment data access operations.
 type Repository interface {
 	Create(att *postgres.MessageAttachment) error
 	GetByID(id int) (*postgres.MessageAttachment, error)
@@ -19,6 +20,7 @@ type repository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &repository{db: db}
 }

@@ -1,4 +1,4 @@
-package ticket_chats
+package ticketchats
 
 import (
 	"innotech/internal/storage/postgres"
@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for ticket chat data access operations.
 type Repository interface {
 	Create(chat *postgres.TicketChat) error
 	GetByID(id int) (*postgres.TicketChat, error)
@@ -19,6 +20,7 @@ type repository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &repository{db: db}
 }

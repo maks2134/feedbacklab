@@ -1,3 +1,4 @@
+// Package projects provides project management functionality.
 package projects
 
 import (
@@ -8,14 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for project operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create handles the creation of a new project.
 func (h *Handler) Create(c *fiber.Ctx) error {
 	dto := c.Locals("body").(*transport.CreateProjectDTO)
 	p := postgres.Project{
@@ -30,6 +34,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(p)
 }
 
+// GetByID retrieves a project by its ID.
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -42,6 +47,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(p)
 }
 
+// GetAll retrieves all projects.
 func (h *Handler) GetAll(c *fiber.Ctx) error {
 	ps, err := h.service.GetAll(c.Context())
 	if err != nil {
@@ -50,6 +56,7 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(ps)
 }
 
+// Update handles the update of an existing project.
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -69,6 +76,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(p)
 }
 
+// Delete handles the deletion of a project.
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {

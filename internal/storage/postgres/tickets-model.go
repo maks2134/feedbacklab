@@ -2,6 +2,7 @@ package postgres
 
 import "time"
 
+// Ticket represents a ticket in the database.
 type Ticket struct {
 	ID                  int       `db:"id" json:"id"`
 	ProjectID           int       `db:"project_id" json:"project_id"`

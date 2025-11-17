@@ -5,6 +5,7 @@ import (
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for documentation business logic operations.
 type Service interface {
 	Create(ctx context.Context, d *postgres.Documentation) error
 	GetByID(ctx context.Context, id int) (*postgres.Documentation, error)
@@ -17,6 +18,7 @@ type documentationService struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &documentationService{repo: repo}
 }

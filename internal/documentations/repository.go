@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for documentation data access operations.
 type Repository interface {
 	Create(ctx context.Context, d *postgres.Documentation) error
 	GetByID(ctx context.Context, id int) (*postgres.Documentation, error)
@@ -19,6 +20,7 @@ type documentationRepository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &documentationRepository{db: db}
 }

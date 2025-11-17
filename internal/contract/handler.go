@@ -6,11 +6,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for contract operations.
 type Handler struct {
-	service ContractService
+	service Service
 }
 
-func NewContractHandler(service *ContractService) *Handler {
+// NewHandler creates a new Handler instance.
+func NewHandler(service *Service) *Handler {
 	return &Handler{service: *service}
 }
 

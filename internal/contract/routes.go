@@ -2,6 +2,7 @@ package contract
 
 import "github.com/gofiber/fiber/v2"
 
+// RegisterRoutes registers HTTP routes for contract operations.
 func RegisterRoutes(app *fiber.App, h *Handler) {
 	api := app.Group("/api/contracts")
 

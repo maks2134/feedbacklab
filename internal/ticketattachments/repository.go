@@ -1,4 +1,4 @@
-package ticket_attachments
+package ticketattachments
 
 import (
 	"fmt"
@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for ticket attachment data access operations.
 type Repository interface {
 	Create(att *postgres.TicketAttachment) error
 	GetByID(id int) (*postgres.TicketAttachment, error)
@@ -19,6 +20,7 @@ type repository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &repository{db: db}
 }

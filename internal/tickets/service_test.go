@@ -52,7 +52,7 @@ func TestService_Create_SetsStatusAndCallsRepo(t *testing.T) {
 
 	tIn := &postgres.Ticket{Title: "t1", Message: "m1"}
 
-	repo.On("Create", mock.Anything, tIn).Run(func(args mock.Arguments) {
+	repo.On("Create", mock.Anything, tIn).Run(func(_ mock.Arguments) {
 	}).Return(nil).Once()
 
 	err := svc.Create(ctx, tIn)

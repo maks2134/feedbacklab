@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for ticket data access operations.
 type Repository interface {
 	Create(ctx context.Context, t *postgres.Ticket) error
 	GetByID(ctx context.Context, id int) (*postgres.Ticket, error)
@@ -19,6 +20,7 @@ type ticketRepository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &ticketRepository{db: db}
 }

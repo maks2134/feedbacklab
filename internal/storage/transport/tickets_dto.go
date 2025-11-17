@@ -1,5 +1,6 @@
 package transport
 
+// CreateTicketDTO represents the data structure for creating a ticket.
 type CreateTicketDTO struct {
 	ProjectID           int     `json:"project_id" validate:"required"`
 	ModuleID            *int    `json:"module_id,omitempty"`
@@ -13,6 +14,7 @@ type CreateTicketDTO struct {
 	MattermostThreadURL *string `json:"mattermost_thread_url,omitempty" validate:"omitempty,url"`
 }
 
+// UpdateTicketDTO represents the data structure for updating a ticket.
 type UpdateTicketDTO struct {
 	AssignedTo          *string `json:"assigned_to,omitempty" validate:"omitempty,uuid4"`
 	Title               string  `json:"title" validate:"required,min=3,max=255"`

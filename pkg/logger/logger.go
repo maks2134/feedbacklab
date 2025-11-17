@@ -1,3 +1,4 @@
+// Package logger provides logging functionality for the application.
 package logger
 
 import (
@@ -5,6 +6,7 @@ import (
 	"os"
 )
 
+// NewLogger creates and returns a new structured logger instance.
 func NewLogger() *slog.Logger {
 	logger := slog.New(slog.NewJSONHandler(os.Stdout, nil))
 	logger.Debug("Debug message")

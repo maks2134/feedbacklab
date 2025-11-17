@@ -1,4 +1,4 @@
-package message_attachments
+package messageattachments
 
 import (
 	"innotech/internal/storage/transport"
@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// RegisterRoutes registers HTTP routes for message attachment operations.
 func RegisterRoutes(app *fiber.App, h *Handler) {
 	api := app.Group("/api/message_attachments")
 

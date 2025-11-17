@@ -1,4 +1,4 @@
-package ticket_attachments
+package ticketattachments
 
 import (
 	"innotech/internal/storage/postgres"

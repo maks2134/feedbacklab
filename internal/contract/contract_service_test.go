@@ -14,8 +14,8 @@ func TestContractService_CRUD(t *testing.T) {
 	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
-	repo := NewContractRepository(sqlxDB)
-	svc := NewContractService(repo)
+	repo := NewRepository(sqlxDB)
+	svc := NewService(repo)
 
 	now := time.Now()
 	startDate := now

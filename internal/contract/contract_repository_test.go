@@ -14,7 +14,7 @@ func TestContractRepository_CRUD(t *testing.T) {
 	db, mock, _ := sqlmock.New()
 	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
-	repo := NewContractRepository(sqlxDB)
+	repo := NewRepository(sqlxDB)
 
 	rows := sqlmock.NewRows([]string{"id", "project_id", "client_name", "start_date", "end_date", "description"}).
 		AddRow(1, 1, "Client", time.Now(), time.Now().AddDate(1, 0, 0), "Desc")

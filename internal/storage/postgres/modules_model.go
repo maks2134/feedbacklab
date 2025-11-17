@@ -2,6 +2,7 @@ package postgres
 
 import "time"
 
+// Module represents a module in the database.
 type Module struct {
 	ID                int       `db:"id" json:"id"`
 	ProjectID         int       `db:"project_id" json:"project_id"`

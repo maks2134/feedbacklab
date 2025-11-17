@@ -1,4 +1,5 @@
-package user_projects
+// Package userprojects provides user-project relationship management functionality.
+package userprojects
 
 import (
 	"innotech/internal/storage/postgres"
@@ -8,14 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for user-project operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create handles the creation of a new user-project relationship.
 func (h *Handler) Create(c *fiber.Ctx) error {
 	dto := c.Locals("body").(*transport.CreateUserProjectDTO)
 	up := postgres.UserProject{
@@ -30,6 +34,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(up)
 }
 
+// Get retrieves a user-project relationship by user ID and project ID.
 func (h *Handler) Get(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 	projectID, err := strconv.Atoi(c.Params("project_id"))
@@ -43,6 +48,7 @@ func (h *Handler) Get(c *fiber.Ctx) error {
 	return c.JSON(up)
 }
 
+// GetAll retrieves all user-project relationships.
 func (h *Handler) GetAll(c *fiber.Ctx) error {
 	list, err := h.service.GetAll(c.Context())
 	if err != nil {
@@ -51,6 +57,7 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(list)
 }
 
+// Update handles the update of an existing user-project relationship.
 func (h *Handler) Update(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 	projectID, err := strconv.Atoi(c.Params("project_id"))
@@ -70,6 +77,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(up)
 }
 
+// Delete handles the deletion of a user-project relationship.
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	userID := c.Params("user_id")
 	projectID, err := strconv.Atoi(c.Params("project_id"))
