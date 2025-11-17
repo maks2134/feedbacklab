@@ -2,6 +2,7 @@ package ticket_chats
 
 import (
 	"innotech/internal/storage/postgres"
+	"log"
 
 	"github.com/jmoiron/sqlx"
 )
@@ -32,7 +33,11 @@ func (r *repository) Create(chat *postgres.TicketChat) error {
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	return stmt.Get(chat, chat)
 }
@@ -68,7 +73,11 @@ func (r *repository) Update(chat *postgres.TicketChat) error {
 	if err != nil {
 		return err
 	}
-	defer stmt.Close()
+	defer func() {
+		if err := stmt.Close(); err != nil {
+			log.Fatal(err)
+		}
+	}()
 
 	return stmt.Get(chat, chat)
 }

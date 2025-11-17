@@ -6,12 +6,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
-type ContractHandler struct {
+type Handler struct {
 	service ContractService
 }
 
-func NewContractHandler(service *ContractService) *ContractHandler {
-	return &ContractHandler{service: *service}
+func NewContractHandler(service *ContractService) *Handler {
+	return &Handler{service: *service}
 }
 
 // GetAll godoc
@@ -21,7 +21,7 @@ func NewContractHandler(service *ContractService) *ContractHandler {
 // @Produce json
 // @Success 200 {array} models.Contract
 // @Router /api/contracts [get]
-func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
+func (h *Handler) GetAll(c *fiber.Ctx) error {
 	items, err := h.service.GetAll()
 	if err != nil {
 		return c.Status(500).JSON(fiber.Map{"error": err.Error()})
@@ -37,7 +37,7 @@ func (h *ContractHandler) GetAll(c *fiber.Ctx) error {
 // @Param id path int true "Contract ID"
 // @Success 200 {object} models.Contract
 // @Router /api/contracts/{id} [get]
-func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
+func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
@@ -57,7 +57,7 @@ func (h *ContractHandler) GetByID(c *fiber.Ctx) error {
 // @Param contract body models.Contract true "Contract Data"
 // @Success 201 {object} models.Contract
 // @Router /api/contracts [post]
-func (h *ContractHandler) Create(c *fiber.Ctx) error {
+func (h *Handler) Create(c *fiber.Ctx) error {
 	var input Contract
 	if err := c.BodyParser(&input); err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": err.Error()})
@@ -77,7 +77,7 @@ func (h *ContractHandler) Create(c *fiber.Ctx) error {
 // @Param contract body models.Contract true "Updated Contract Data"
 // @Success 200 {object} models.Contract
 // @Router /api/contracts/{id} [put]
-func (h *ContractHandler) Update(c *fiber.Ctx) error {
+func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})
@@ -99,7 +99,7 @@ func (h *ContractHandler) Update(c *fiber.Ctx) error {
 // @Param id path int true "Contract ID"
 // @Success 204 "No Content"
 // @Router /api/contracts/{id} [delete]
-func (h *ContractHandler) Delete(c *fiber.Ctx) error {
+func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
 		return c.Status(400).JSON(fiber.Map{"error": "invalid id"})

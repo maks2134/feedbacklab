@@ -13,7 +13,7 @@ import (
 
 func TestProjectRepository_GetAll(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
 	repo := NewRepository(sqlxDB)
@@ -31,7 +31,7 @@ func TestProjectRepository_GetAll(t *testing.T) {
 
 func TestProjectRepository_GetByID(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
 	repo := NewRepository(sqlxDB)
@@ -50,7 +50,7 @@ func TestProjectRepository_GetByID(t *testing.T) {
 
 func TestProjectRepository_Create(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
 	repo := NewRepository(sqlxDB)
@@ -70,7 +70,7 @@ func TestProjectRepository_Create(t *testing.T) {
 
 func TestProjectRepository_Update(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
 	repo := NewRepository(sqlxDB)
@@ -90,7 +90,7 @@ func TestProjectRepository_Update(t *testing.T) {
 
 func TestProjectRepository_Delete(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 
 	repo := NewRepository(sqlxDB)

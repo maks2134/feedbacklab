@@ -3,7 +3,6 @@ package health
 import (
 	"context"
 	"fmt"
-	"io"
 	"net/http"
 	"time"
 )
@@ -37,12 +36,11 @@ func (h *HTTPHealthService) Check(ctx context.Context) error {
 	if err != nil {
 		return fmt.Errorf("health request failed: %w", err)
 	}
-	defer func(Body io.ReadCloser) {
-		err := Body.Close()
-		if err != nil {
-			fmt.Println("could not close response body")
+	defer func() {
+		if resp != nil && resp.Body != nil {
+			_ = resp.Body.Close()
 		}
-	}(resp.Body)
+	}()
 
 	if resp.StatusCode != http.StatusOK {
 		return fmt.Errorf("unexpected status: %d", resp.StatusCode)

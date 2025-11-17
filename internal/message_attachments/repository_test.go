@@ -57,7 +57,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 func TestRepository_Update_WithReturning(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
-	defer mockDB.Close()
+	defer func() { _ = mockDB.Close() }()
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)
@@ -87,7 +87,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 func TestRepository_GetByChatID_WithOrder(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
-	defer mockDB.Close()
+	defer func() { _ = mockDB.Close() }()
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)

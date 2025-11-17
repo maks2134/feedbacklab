@@ -13,7 +13,7 @@ import (
 
 func TestDocumentationRepository_CRUD(t *testing.T) {
 	db, mock, _ := sqlmock.New()
-	defer db.Close()
+	defer func() { _ = db.Close() }()
 	sqlxDB := sqlx.NewDb(db, "sqlmock")
 	repo := NewRepository(sqlxDB)
 

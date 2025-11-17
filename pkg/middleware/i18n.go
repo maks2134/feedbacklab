@@ -26,10 +26,3 @@ func I18nMiddleware(bundle *goi18n.Bundle) fiber.Handler {
 		return c.Next()
 	}
 }
-
-func GetLocalizer(c *fiber.Ctx) *goi18n.Localizer {
-	if localizer, ok := c.Locals("localizer").(*goi18n.Localizer); ok {
-		return localizer
-	}
-	return nil
-}

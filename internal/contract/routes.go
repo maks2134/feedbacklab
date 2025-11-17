@@ -2,7 +2,7 @@ package contract
 
 import "github.com/gofiber/fiber/v2"
 
-func RegisterRoutes(app *fiber.App, h *ContractHandler) {
+func RegisterRoutes(app *fiber.App, h *Handler) {
 	api := app.Group("/api/contracts")
 
 	api.Get("/", h.GetAll)

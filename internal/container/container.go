@@ -32,7 +32,7 @@ type Container struct {
 	TicketChatsHandler        *ticket_chats.Handler
 	TicketAttachmentsHandler  *ticket_attachments.Handler
 	MessageAttachmentsHandler *message_attachments.Handler
-	ContractHandler           *contract.ContractHandler
+	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
@@ -52,7 +52,7 @@ func New() *Container {
 
 	newLogger := logger.NewLogger()
 	slog.SetDefault(newLogger)
-	//TODO сделать нормальный логгер через slog
+	// TODO сделать нормальный логгер через slog
 
 	i18nBundle := i18n.InitBundle()
 	localesDir := getEnv("LOCALES_DIR", "./locales")

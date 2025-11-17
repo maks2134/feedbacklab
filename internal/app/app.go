@@ -43,7 +43,7 @@ func Start(container *container.Container) {
 	user_projects.RegisterRoutes(app, container.UserProjectHandler)
 	modules.RegisterRoutes(app, container.ModuleHandler)
 
-	log.Printf(" Server running on port %s\n", container.Config.AppPort)
+	log.Printf(" Server running on port %d\n", container.Config.AppPort)
 	if err := app.Listen(":" + strconv.Itoa(container.Config.AppPort)); err != nil {
 		log.Fatalf("failed to start feedbacklab: %v", err)
 	}
