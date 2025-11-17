@@ -1,3 +1,4 @@
+// Package message_attachments provides message attachment management functionality.
 package message_attachments
 
 import (
@@ -8,10 +9,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for message attachment operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }

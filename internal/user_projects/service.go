@@ -5,6 +5,7 @@ import (
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for user-project business logic operations.
 type Service interface {
 	Create(ctx context.Context, up *postgres.UserProject) error
 	Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error)
@@ -17,6 +18,7 @@ type userProjectService struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &userProjectService{repo: repo}
 }

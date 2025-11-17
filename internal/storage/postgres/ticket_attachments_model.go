@@ -2,6 +2,7 @@ package postgres
 
 import "time"
 
+// TicketAttachment represents a file attachment for a ticket in the database.
 type TicketAttachment struct {
 	ID          int       `db:"id" json:"id"`
 	TicketID    int       `db:"ticket_id" json:"ticket_id"`

@@ -5,6 +5,7 @@ import (
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for project business logic operations.
 type Service interface {
 	Create(ctx context.Context, p *postgres.Project) error
 	GetByID(ctx context.Context, id int) (*postgres.Project, error)

@@ -7,6 +7,7 @@ import (
 	"github.com/jmoiron/sqlx"
 )
 
+// Repository defines the interface for user-project data access operations.
 type Repository interface {
 	Create(ctx context.Context, up *postgres.UserProject) error
 	Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error)
@@ -19,6 +20,7 @@ type userProjectRepository struct {
 	db *sqlx.DB
 }
 
+// NewRepository creates a new Repository instance.
 func NewRepository(db *sqlx.DB) Repository {
 	return &userProjectRepository{db: db}
 }

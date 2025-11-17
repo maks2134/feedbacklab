@@ -5,6 +5,7 @@ import (
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for ticket chat business logic operations.
 type Service interface {
 	Create(chat *postgres.TicketChat) error
 	GetByID(id int) (*postgres.TicketChat, error)
@@ -17,6 +18,7 @@ type service struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &service{repo: repo}
 }

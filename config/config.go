@@ -11,6 +11,7 @@ import (
 	"github.com/joho/godotenv"
 )
 
+// Config holds application configuration settings.
 type Config struct {
 	AppPort       int
 	HealthPort    int
@@ -19,6 +20,7 @@ type Config struct {
 	MigrationsDir string
 }
 
+// Load reads configuration from environment variables and returns a Config instance.
 func Load() (*Config, error) {
 	_ = godotenv.Load()
 

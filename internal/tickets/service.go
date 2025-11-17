@@ -5,6 +5,7 @@ import (
 	"innotech/internal/storage/postgres"
 )
 
+// Service defines the interface for ticket business logic operations.
 type Service interface {
 	Create(ctx context.Context, t *postgres.Ticket) error
 	GetByID(ctx context.Context, id int) (*postgres.Ticket, error)
@@ -17,6 +18,7 @@ type ticketService struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &ticketService{repo: repo}
 }

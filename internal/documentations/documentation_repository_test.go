@@ -1,3 +1,4 @@
+// Package documentations provides documentation management functionality.
 package documentations
 
 import (

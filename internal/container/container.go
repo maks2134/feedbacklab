@@ -1,3 +1,4 @@
+// Package container provides dependency injection container for the application.
 package container
 
 import (
@@ -23,6 +24,7 @@ import (
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
+// Container holds all application dependencies and services.
 type Container struct {
 	Config                    *config.Config
 	DB                        *sqlx.DB
@@ -39,6 +41,7 @@ type Container struct {
 	ModuleHandler             *modules.Handler
 }
 
+// New creates and initializes a new Container with all dependencies.
 func New() *Container {
 	cfg, err := config.Load()
 	if err != nil {

@@ -1,6 +1,8 @@
+// Package app provides application initialization and routing.
 package app
 
 import (
+	// Import swagger docs for API documentation.
 	_ "innotech/docs"
 	"innotech/internal/contract"
 	"innotech/internal/modules"
@@ -24,6 +26,7 @@ import (
 	swagger "github.com/swaggo/fiber-swagger"
 )
 
+// Start initializes and starts the HTTP server with all registered routes.
 func Start(container *container.Container) {
 	app := fiber.New()
 

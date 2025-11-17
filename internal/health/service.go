@@ -7,15 +7,18 @@ import (
 	"time"
 )
 
+// HealthService defines the interface for health check operations.
 type HealthService interface {
 	Check(ctx context.Context) error
 }
 
+// HTTPHealthService performs health checks via HTTP requests.
 type HTTPHealthService struct {
 	URL     string
 	Timeout time.Duration
 }
 
+// NewHTTPHealthService creates a new HTTPHealthService instance.
 func NewHTTPHealthService(url string, timeout time.Duration) *HTTPHealthService {
 	return &HTTPHealthService{
 		URL:     url,
@@ -23,6 +26,7 @@ func NewHTTPHealthService(url string, timeout time.Duration) *HTTPHealthService 
 	}
 }
 
+// Check performs a health check by making an HTTP request to the configured URL.
 func (h *HTTPHealthService) Check(ctx context.Context) error {
 	ctx, cancel := context.WithTimeout(ctx, h.Timeout)
 	defer cancel()

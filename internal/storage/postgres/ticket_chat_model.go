@@ -2,6 +2,7 @@ package postgres
 
 import "time"
 
+// TicketChat represents a chat message in a ticket in the database.
 type TicketChat struct {
 	ID                  int       `db:"id" json:"id"`
 	TicketID            int       `db:"ticket_id" json:"ticket_id"`

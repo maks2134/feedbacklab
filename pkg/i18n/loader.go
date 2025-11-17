@@ -9,6 +9,7 @@ import (
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
+// LoadTranslations loads all translation files from the specified directory into the bundle.
 func LoadTranslations(bundle *goi18n.Bundle, localesDir string) error {
 	if bundle == nil {
 		return fmt.Errorf("bundle is nil")

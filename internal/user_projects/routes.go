@@ -7,6 +7,7 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// RegisterRoutes registers HTTP routes for user-project operations.
 func RegisterRoutes(app *fiber.App, h *Handler) {
 	api := app.Group("/api/user-projects")
 

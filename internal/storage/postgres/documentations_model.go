@@ -1,7 +1,9 @@
+// Package postgres contains database model definitions for PostgreSQL.
 package postgres
 
 import "time"
 
+// Documentation represents a documentation file in the database.
 type Documentation struct {
 	ID          int       `db:"id" json:"id"`
 	ProjectID   int       `db:"project_id" json:"project_id"`

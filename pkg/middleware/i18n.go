@@ -1,3 +1,4 @@
+// Package middleware provides HTTP middleware functions for the application.
 package middleware
 
 import (
@@ -6,6 +7,7 @@ import (
 	"golang.org/x/text/language"
 )
 
+// I18nMiddleware creates a middleware that handles internationalization by detecting the user's language.
 func I18nMiddleware(bundle *goi18n.Bundle) fiber.Handler {
 	return func(c *fiber.Ctx) error {
 		acceptLanguage := c.Get("Accept-Language", "ru")

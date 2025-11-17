@@ -1,3 +1,4 @@
+// Package tickets provides ticket management functionality.
 package tickets
 
 import (
@@ -8,10 +9,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for ticket operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }

@@ -1,3 +1,4 @@
+// Package ticket_attachments provides ticket attachment management functionality.
 package ticket_attachments
 
 import (
@@ -8,10 +9,12 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for ticket attachment operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }

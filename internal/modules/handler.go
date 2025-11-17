@@ -1,3 +1,4 @@
+// Package modules provides module management functionality.
 package modules
 
 import (
@@ -8,14 +9,17 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for module operations.
 type Handler struct {
 	service Service
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create handles the creation of a new module.
 func (h *Handler) Create(c *fiber.Ctx) error {
 	dto := c.Locals("body").(*transport.CreateModuleDTO)
 	m := postgres.Module{
@@ -30,6 +34,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(m)
 }
 
+// GetByID retrieves a module by its ID.
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -42,6 +47,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(m)
 }
 
+// GetAll retrieves all modules.
 func (h *Handler) GetAll(c *fiber.Ctx) error {
 	ms, err := h.service.GetAll(c.Context())
 	if err != nil {
@@ -50,6 +56,7 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(ms)
 }
 
+// Update handles the update of an existing module.
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
@@ -68,6 +75,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(m)
 }
 
+// Delete handles the deletion of a module.
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
 	if err != nil {
