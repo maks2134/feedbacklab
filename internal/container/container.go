@@ -82,9 +82,9 @@ func New() *Container {
 	msgAttachService := message_attachments.NewService(msgAttachRepo)
 	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
 
-	contractRepo := contract.NewContractRepository(database)
-	contractService := contract.NewContractService(contractRepo)
-	contractHandler := contract.NewContractHandler(contractService)
+	contractRepo := contract.NewRepository(database)
+	contractService := contract.NewService(contractRepo)
+	contractHandler := contract.NewHandler(contractService)
 
 	projectRepo := projects.NewRepository(database)
 	projectService := projects.NewService(projectRepo)

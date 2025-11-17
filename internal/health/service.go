@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-// HealthService defines the interface for health check operations.
-type HealthService interface {
+// Service defines the interface for health check operations.
+type Service interface {
 	Check(ctx context.Context) error
 }
 

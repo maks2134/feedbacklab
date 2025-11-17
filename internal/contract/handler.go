@@ -8,11 +8,11 @@ import (
 
 // Handler handles HTTP requests for contract operations.
 type Handler struct {
-	service ContractService
+	service Service
 }
 
-// NewContractHandler creates a new Handler instance.
-func NewContractHandler(service *ContractService) *Handler {
+// NewHandler creates a new Handler instance.
+func NewHandler(service *Service) *Handler {
 	return &Handler{service: *service}
 }
 

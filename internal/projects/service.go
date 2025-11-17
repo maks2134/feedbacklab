@@ -18,6 +18,7 @@ type projectService struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	return &projectService{repo: repo}
 }
