@@ -1,3 +1,4 @@
+// Package container provides dependency injection container for the application.
 package container
 
 import (
@@ -6,39 +7,51 @@ import (
 	"innotech/internal/documentations"
 	"innotech/internal/files"
 	"innotech/internal/health"
-	"innotech/internal/message_attachments"
+	"innotech/internal/messageattachments"
+	"innotech/internal/modules"
 	"innotech/internal/projects"
-	"innotech/internal/ticket_attachments"
-	"innotech/internal/ticket_chats"
+	"innotech/internal/ticketattachments"
+	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
-	"innotech/internal/user_projects"
+	"innotech/internal/userprojects"
 	"innotech/pkg/db"
+	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
 	"innotech/pkg/minio"
 	"log"
 	"log/slog"
+	"os"
 
 	"github.com/jmoiron/sqlx"
+	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
 )
 
+// Container holds all application dependencies and services.
 type Container struct {
 	Config                    *config.Config
 	DB                        *sqlx.DB
+	I18nBundle                *goi18n.Bundle
 	HealthHandler             *health.Handler
 	TicketHandler             *tickets.Handler
-	TicketChatsHandler        *ticket_chats.Handler
-	TicketAttachmentsHandler  *ticket_attachments.Handler
-	MessageAttachmentsHandler *message_attachments.Handler
-	ContractHandler           *contract.ContractHandler
+	TicketChatsHandler        *ticketchats.Handler
+	TicketAttachmentsHandler  *ticketattachments.Handler
+	MessageAttachmentsHandler *messageattachments.Handler
+	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
 	Minio                     *minio.MinioClient
 	FileHandler               *files.Handler
+	UserProjectHandler        *userprojects.Handler
+	ModuleHandler             *modules.Handler
 }
 
+// New creates and initializes a new Container with all dependencies.
 func New() *Container {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	database, err := db.Connect(cfg.DatabaseURL)
 	if err != nil {
@@ -47,7 +60,13 @@ func New() *Container {
 
 	newLogger := logger.NewLogger()
 	slog.SetDefault(newLogger)
-	//TODO сделать нормальный логгер через slog
+	// TODO сделать нормальный логгер через slog
+
+	i18nBundle := i18n.InitBundle()
+	localesDir := getEnv("LOCALES_DIR", "./locales")
+	if err := i18n.LoadTranslations(i18nBundle, localesDir); err != nil {
+		log.Printf("Warning: failed to load translations: %v", err)
+	}
 
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
@@ -56,21 +75,21 @@ func New() *Container {
 	ticketService := tickets.NewService(ticketRepo)
 	ticketHandler := tickets.NewHandler(ticketService)
 
-	chatRepo := ticket_chats.NewRepository(database)
-	chatService := ticket_chats.NewService(chatRepo)
-	chatHandler := ticket_chats.NewHandler(chatService)
+	chatRepo := ticketchats.NewRepository(database)
+	chatService := ticketchats.NewService(chatRepo)
+	chatHandler := ticketchats.NewHandler(chatService)
 
-	attachRepo := ticket_attachments.NewRepository(database)
-	attachService := ticket_attachments.NewService(attachRepo)
-	attachHandler := ticket_attachments.NewHandler(attachService)
+	attachRepo := ticketattachments.NewRepository(database)
+	attachService := ticketattachments.NewService(attachRepo)
+	attachHandler := ticketattachments.NewHandler(attachService)
 
-	msgAttachRepo := message_attachments.NewRepository(database)
-	msgAttachService := message_attachments.NewService(msgAttachRepo)
-	msgAttachHandler := message_attachments.NewHandler(msgAttachService)
+	msgAttachRepo := messageattachments.NewRepository(database)
+	msgAttachService := messageattachments.NewService(msgAttachRepo)
+	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
-	contractRepo := contract.NewContractRepository(database)
-	contractService := contract.NewContractService(contractRepo)
-	contractHandler := contract.NewContractHandler(contractService)
+	contractRepo := contract.NewRepository(database)
+	contractService := contract.NewService(contractRepo)
+	contractHandler := contract.NewHandler(contractService)
 
 	projectRepo := projects.NewRepository(database)
 	projectService := projects.NewService(projectRepo)
@@ -80,9 +99,13 @@ func New() *Container {
 	docService := documentations.NewService(docRepo)
 	docHandler := documentations.NewHandler(docService)
 
-	userProjectRepo := user_projects.NewRepository(database)
-	userProjectService := user_projects.NewService(userProjectRepo)
-	userProjectHandler := user_projects.NewHandler(userProjectService)
+	userProjectRepo := userprojects.NewRepository(database)
+	userProjectService := userprojects.NewService(userProjectRepo)
+	userProjectHandler := userprojects.NewHandler(userProjectService)
+
+	modulesRepo := modules.NewRepository(database)
+	modulesService := modules.NewService(modulesRepo)
+	modulesHandler := modules.NewHandler(modulesService)
 
 	minioClient, err := minio.New(
 		cfg.MinioEndpoint,
@@ -102,6 +125,7 @@ func New() *Container {
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
+		I18nBundle:                i18nBundle,
 		HealthHandler:             healthHandler,
 		TicketHandler:             ticketHandler,
 		TicketChatsHandler:        chatHandler,
@@ -113,5 +137,13 @@ func New() *Container {
 		UserProjectHandler:        userProjectHandler,
 		Minio:                     minioClient,
 		FileHandler:               fileHandler,
+		ModuleHandler:             modulesHandler,
 	}
+}
+
+func getEnv(key, fallback string) string {
+	if val, ok := os.LookupEnv(key); ok {
+		return val
+	}
+	return fallback
 }

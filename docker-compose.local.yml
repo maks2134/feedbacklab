@@ -1,7 +1,7 @@
 services:
   db:
     image: postgres:17.4
-    container_name: innotech_db
+    container_name: feedback_db
     restart: always
     env_file:
       - .env.docker
@@ -10,7 +10,7 @@ services:
     volumes:
       - db_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U feedback -d innotech"]
+      test: ["CMD-SHELL", "pg_isready -U feedback -d feedback"]
       interval: 5s
       timeout: 3s
       retries: 5
@@ -46,7 +46,7 @@ services:
 
   app:
     build: .
-    container_name: innotech_app
+    container_name: feedbacklab
     depends_on:
       db:
         condition: service_healthy

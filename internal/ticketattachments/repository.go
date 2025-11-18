@@ -1,0 +1,92 @@
+package ticketattachments
+
+import (
+	"fmt"
+	"innotech/internal/storage/postgres"
+
+	"github.com/jmoiron/sqlx"
+)
+
+// Repository defines the interface for ticket attachment data access operations.
+type Repository interface {
+	Create(att *postgres.TicketAttachment) error
+	GetByID(id int) (*postgres.TicketAttachment, error)
+	GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error)
+	Update(att *postgres.TicketAttachment) error
+	Delete(id int) error
+}
+
+type repository struct {
+	db *sqlx.DB
+}
+
+// NewRepository creates a new Repository instance.
+func NewRepository(db *sqlx.DB) Repository {
+	return &repository{db: db}
+}
+
+func (r *repository) Create(att *postgres.TicketAttachment) error {
+	query := `
+		INSERT INTO ticket_attachments (ticket_id, file_path, uploaded_by, file_type, description)
+		VALUES (:ticket_id, :file_path, :uploaded_by, :file_type, :description)
+		RETURNING id, date_created, date_updated;
+	`
+	stmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		return err
+	}
+	defer func(stmt *sqlx.NamedStmt) {
+		err := stmt.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(stmt)
+
+	return stmt.Get(att, att)
+}
+
+func (r *repository) GetByID(id int) (*postgres.TicketAttachment, error) {
+	var att postgres.TicketAttachment
+	err := r.db.Get(&att, `SELECT * FROM ticket_attachments WHERE id = $1`, id)
+	if err != nil {
+		return nil, err
+	}
+	return &att, nil
+}
+
+func (r *repository) GetByTicketID(ticketID int) ([]postgres.TicketAttachment, error) {
+	var list []postgres.TicketAttachment
+	err := r.db.Select(&list, `SELECT * FROM ticket_attachments WHERE ticket_id = $1 ORDER BY date_created `, ticketID)
+	if err != nil {
+		return nil, err
+	}
+	return list, nil
+}
+
+func (r *repository) Update(att *postgres.TicketAttachment) error {
+	query := `
+		UPDATE ticket_attachments
+		SET file_path = :file_path,
+		    file_type = :file_type,
+		    description = :description
+		WHERE id = :id
+		RETURNING date_updated;
+	`
+	stmt, err := r.db.PrepareNamed(query)
+	if err != nil {
+		return err
+	}
+	defer func(stmt *sqlx.NamedStmt) {
+		err := stmt.Close()
+		if err != nil {
+			fmt.Println(err)
+		}
+	}(stmt)
+
+	return stmt.Get(att, att)
+}
+
+func (r *repository) Delete(id int) error {
+	_, err := r.db.Exec(`DELETE FROM ticket_attachments WHERE id = $1`, id)
+	return err
+}
