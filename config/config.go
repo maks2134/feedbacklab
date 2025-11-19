@@ -67,6 +67,7 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
+// getEnvInt - parser to integer value
 func getEnvInt(key string, fallback int) (int, error) {
 	if val, ok := os.LookupEnv(key); ok {
 		parsed, err := strconv.Atoi(val)

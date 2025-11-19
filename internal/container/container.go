@@ -39,7 +39,6 @@ type Container struct {
 	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
-	UserProjectHandler        *user_projects.Handler
 	Minio                     *minio.MinioClient
 	FileHandler               *files.Handler
 	UserProjectHandler        *userprojects.Handler

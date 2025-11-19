@@ -1,8 +1,9 @@
 package files
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"log/slog"
+
+	"github.com/gofiber/fiber/v2"
 )
 
 type Handler struct {
@@ -14,7 +15,7 @@ func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{service: service, logger: logger}
 }
 
-// POST /files/upload
+// Upload POST /files/upload
 func (h *Handler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
 	if err != nil {
