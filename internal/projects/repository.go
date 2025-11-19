@@ -28,14 +28,16 @@ func NewRepository(db *sqlx.DB) Repository {
 func (r *projectRepository) Create(ctx context.Context, p *postgres.Project) error {
 	query := `
 		INSERT INTO projects (name, description, gitlab_project_id, mattermost_team)
-		VALUES (:name, :description, :gitlab_project_id, :mattermost_team)
+		VALUES ($1, $2, $3, $4)
 		RETURNING id, date_created, date_updated
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, p, p)
+
+	return r.db.QueryRowxContext(ctx, query,
+		p.Name,
+		p.Description,
+		p.GitlabProjectID,
+		p.MattermostTeam,
+	).StructScan(p)
 }
 
 func (r *projectRepository) GetByID(ctx context.Context, id int) (*postgres.Project, error) {
@@ -56,15 +58,18 @@ func (r *projectRepository) GetAll(ctx context.Context) ([]postgres.Project, err
 func (r *projectRepository) Update(ctx context.Context, p *postgres.Project) error {
 	query := `
 		UPDATE projects
-		SET name=:name, description=:description, gitlab_project_id=:gitlab_project_id, mattermost_team=:mattermost_team
-		WHERE id=:id
+		SET name=$1, description=$2, gitlab_project_id=$3, mattermost_team=$4
+		WHERE id=$5
 		RETURNING date_updated
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, &p.DateUpdated, p)
+
+	return r.db.QueryRowxContext(ctx, query,
+		p.Name,
+		p.Description,
+		p.GitlabProjectID,
+		p.MattermostTeam,
+		p.ID,
+	).Scan(&p.DateUpdated)
 }
 
 func (r *projectRepository) Delete(ctx context.Context, id int) error {

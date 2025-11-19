@@ -1,6 +1,7 @@
 package ticketattachments
 
 import (
+	"context"
 	"innotech/internal/storage/postgres"
 	"testing"
 	"time"
@@ -39,7 +40,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 		WithArgs(att.TicketID, att.FilePath, att.UploadedBy, att.FileType, att.Description).
 		WillReturnRows(rows)
 
-	err = repo.Create(att)
+	err = repo.Create(context.Background(), att)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 42, att.ID)
@@ -72,7 +73,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 		WithArgs(att.FilePath, att.FileType, att.Description, att.ID).
 		WillReturnRows(rows)
 
-	err = repo.Update(att)
+	err = repo.Update(context.Background(), att)
 
 	assert.NoError(t, err)
 	assert.Equal(t, now, att.DateUpdated)
@@ -104,7 +105,7 @@ func TestRepository_GetByTicketID_WithOrder(t *testing.T) {
 		WithArgs(42).
 		WillReturnRows(rows)
 
-	list, err := repo.GetByTicketID(42)
+	list, err := repo.GetByTicketID(context.Background(), 42)
 
 	assert.NoError(t, err)
 	assert.Len(t, list, 2)

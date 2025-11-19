@@ -28,14 +28,20 @@ func NewRepository(db *sqlx.DB) Repository {
 func (r *ticketRepository) Create(ctx context.Context, t *postgres.Ticket) error {
 	query := `
 		INSERT INTO tickets (project_id, module_id, contract_id, created_by, assigned_to, title, message, status)
-		VALUES (:project_id, :module_id, :contract_id, :created_by, :assigned_to, :title, :message, :status)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
 		RETURNING id, date_created, date_updated
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, t, t)
+
+	return r.db.QueryRowxContext(ctx, query,
+		t.ProjectID,
+		t.ModuleID,
+		t.ContractID,
+		t.CreatedBy,
+		t.AssignedTo,
+		t.Title,
+		t.Message,
+		t.Status,
+	).StructScan(t)
 }
 
 func (r *ticketRepository) GetByID(ctx context.Context, id int) (*postgres.Ticket, error) {
@@ -59,15 +65,19 @@ func (r *ticketRepository) GetAll(ctx context.Context) ([]postgres.Ticket, error
 func (r *ticketRepository) Update(ctx context.Context, t *postgres.Ticket) error {
 	query := `
 		UPDATE tickets
-		SET title=:title, message=:message, status=:status, assigned_to=:assigned_to, module_id=:module_id
-		WHERE id=:id
+		SET title=$1, message=$2, status=$3, assigned_to=$4, module_id=$5
+		WHERE id=$6
 		RETURNING date_updated
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, &t.DateUpdated, t)
+
+	return r.db.QueryRowxContext(ctx, query,
+		t.Title,
+		t.Message,
+		t.Status,
+		t.AssignedTo,
+		t.ModuleID,
+		t.ID,
+	).Scan(&t.DateUpdated)
 }
 
 func (r *ticketRepository) Delete(ctx context.Context, id int) error {

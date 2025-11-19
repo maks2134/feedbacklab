@@ -28,13 +28,14 @@ func NewRepository(db *sqlx.DB) Repository {
 func (r *userProjectRepository) Create(ctx context.Context, up *postgres.UserProject) error {
 	query := `
 		INSERT INTO user_projects (user_id, project_id, permissions)
-		VALUES (:user_id, :project_id, :permissions)
+		VALUES ($1, $2, $3)
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, up, up)
+
+	return r.db.QueryRowxContext(ctx, query,
+		up.UserID,
+		up.ProjectID,
+		up.Permissions,
+	).Scan(&up.DateCreated, &up.DateUpdated)
 }
 
 func (r *userProjectRepository) Get(ctx context.Context, userID string, projectID int) (*postgres.UserProject, error) {
@@ -57,14 +58,15 @@ func (r *userProjectRepository) GetAll(ctx context.Context) ([]postgres.UserProj
 func (r *userProjectRepository) Update(ctx context.Context, up *postgres.UserProject) error {
 	query := `
 		UPDATE user_projects
-		SET permissions = :permissions
-		WHERE user_id = :user_id AND project_id = :project_id
+		SET permissions = $1
+		WHERE user_id = $2 AND project_id = $3
 	`
-	stmt, err := r.db.PrepareNamedContext(ctx, query)
-	if err != nil {
-		return err
-	}
-	return stmt.GetContext(ctx, &up.DateUpdated, up)
+
+	return r.db.QueryRowxContext(ctx, query,
+		up.Permissions,
+		up.UserID,
+		up.ProjectID,
+	).Scan(&up.DateUpdated)
 }
 
 func (r *userProjectRepository) Delete(ctx context.Context, userID string, projectID int) error {
