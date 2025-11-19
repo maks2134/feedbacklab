@@ -37,7 +37,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		FileType:   dto.FileType,
 	}
 
-	if err := h.service.Create(&att); err != nil {
+	if err := h.service.Create(c.UserContext(), &att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.Status(fiber.StatusCreated).JSON(att)
@@ -55,7 +55,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	att, err := h.service.GetByID(id)
+	att, err := h.service.GetByID(c.UserContext(), id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "not found"})
 	}
@@ -74,7 +74,7 @@ func (h *Handler) GetByChatID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid chat id"})
 	}
-	list, err := h.service.GetByChatID(chatID)
+	list, err := h.service.GetByChatID(c.UserContext(), chatID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -104,7 +104,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		FileType: dto.FileType,
 	}
 
-	if err := h.service.Update(&att); err != nil {
+	if err := h.service.Update(c.UserContext(), &att); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.JSON(att)
@@ -121,7 +121,7 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	if err := h.service.Delete(id); err != nil {
+	if err := h.service.Delete(c.UserContext(), id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.SendStatus(fiber.StatusNoContent)

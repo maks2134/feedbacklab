@@ -1,3 +1,4 @@
+// Package minio - package to create basic operation in MinIO storage
 package minio
 
 import (
@@ -10,12 +11,14 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type MinioClient struct {
+// Client - struct to create basic operation in MinIO storage
+type Client struct {
 	Client     *minio.Client
 	BucketName string
 }
 
-func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClient, error) {
+// New - functional to create new connection in MinIO
+func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*Client, error) {
 	client, err := minio.New(endpoint, &minio.Options{
 		Creds:  credentials.NewStaticV4(accessKey, secretKey, ""),
 		Secure: useSSL,
@@ -34,18 +37,20 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClie
 		log.Println("Bucket created:", bucket)
 	}
 
-	return &MinioClient{
+	return &Client{
 		Client:     client,
 		BucketName: bucket,
 	}, nil
 }
 
-func (m *MinioClient) Upload(ctx context.Context, objectName, filePath string) error {
+// Upload - functional to upload new file in MinIO
+func (m *Client) Upload(ctx context.Context, objectName, filePath string) error {
 	_, err := m.Client.FPutObject(ctx, m.BucketName, objectName, filePath, minio.PutObjectOptions{})
 	return err
 }
 
-func (m *MinioClient) GetFileURL(objectName string) (string, error) {
+// GetFileURL - functional to getting file URL
+func (m *Client) GetFileURL(objectName string) (string, error) {
 	reqParams := make(url.Values)
 
 	presignedURL, err := m.Client.PresignedGetObject(

@@ -2,7 +2,7 @@
 package app
 
 import (
-	// Import swagger docs for API documentation.
+	// import Swagger docs
 	_ "innotech/docs"
 	"innotech/internal/contract"
 	"innotech/internal/modules"

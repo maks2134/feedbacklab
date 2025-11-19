@@ -56,6 +56,14 @@ func Load() (*Config, error) {
 
 	cfg.MigrationsDir = getEnv("MIGRATIONS_DIR", "./migrations")
 
+	cfg.MinioEndpoint = getEnv("MINIO_ENDPOINT", "localhost:9000")
+	cfg.MinioAccessKey = getEnv("MINIO_ACCESS_KEY", "minio")
+	cfg.MinioSecretKey = getEnv("MINIO_SECRET_KEY", "minio123")
+	cfg.MinioBucket = getEnv("MINIO_BUCKET", "feedback")
+
+	useSSLStr := getEnv("MINIO_USE_SSL", "false")
+	cfg.MinioUseSSL, _ = strconv.ParseBool(useSSLStr)
+
 	log.Println("config loaded and parsed successfully")
 	return cfg, nil
 }
