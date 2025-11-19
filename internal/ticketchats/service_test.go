@@ -122,15 +122,16 @@ func TestUpdate_Delete_PassThrough(t *testing.T) {
 	repo.AssertExpectations(t)
 }
 
-// Дополнительные тесты для проверки контекста
 func TestService_Methods_UseContext(t *testing.T) {
 	repo := new(mockRepo)
 	svc := NewService(repo)
 
-	ctx := context.WithValue(context.Background(), "test", "value")
+	type contextKey string
+	const testKey contextKey = "test"
+
+	ctx := context.WithValue(context.Background(), testKey, "value")
 	chat := &postgres.TicketChat{ID: 1, Message: "test"}
 
-	// Проверяем, что контекст передается в репозиторий
 	repo.On("Create", ctx, chat).Return(nil).Once()
 	repo.On("GetByID", ctx, 1).Return(chat, nil).Once()
 	repo.On("GetByTicketID", ctx, 1).Return([]postgres.TicketChat{*chat}, nil).Once()
