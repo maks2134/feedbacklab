@@ -2,6 +2,7 @@
 package app
 
 import (
+	// import Swagger docs
 	_ "innotech/docs"
 	"innotech/internal/contract"
 	"innotech/internal/modules"

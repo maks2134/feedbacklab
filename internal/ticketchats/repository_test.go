@@ -1,6 +1,7 @@
 package ticketchats
 
 import (
+	"context"
 	"database/sql"
 	"innotech/internal/storage/postgres"
 	"log"
@@ -35,15 +36,14 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 		MessageType: "text",
 	}
 
-	mock.ExpectPrepare(`INSERT INTO ticket_chats.*RETURNING.*`)
-
 	rows := sqlmock.NewRows([]string{"id", "date_created", "date_updated"}).
 		AddRow(42, now, now)
 
 	mock.ExpectQuery(`INSERT INTO ticket_chats.*RETURNING.*`).
 		WillReturnRows(rows)
 
-	err = repo.Create(chat)
+	ctx := context.Background()
+	err = repo.Create(ctx, chat)
 
 	assert.NoError(t, err)
 	assert.Equal(t, 42, chat.ID)
@@ -67,15 +67,14 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 		MessageType: "edited",
 	}
 
-	mock.ExpectPrepare(`UPDATE ticket_chats SET.*WHERE id = \?.*RETURNING date_updated`)
-
 	rows := sqlmock.NewRows([]string{"date_updated"}).AddRow(now)
 
-	mock.ExpectQuery(`UPDATE ticket_chats SET.*WHERE id = \?.*RETURNING date_updated`).
+	mock.ExpectQuery(`UPDATE ticket_chats SET.*WHERE id = .*RETURNING date_updated`).
 		WithArgs(chat.Message, chat.MessageType, nil, chat.ID).
 		WillReturnRows(rows)
 
-	err = repo.Update(chat)
+	ctx := context.Background()
+	err = repo.Update(ctx, chat)
 
 	assert.NoError(t, err)
 	assert.Equal(t, now, chat.DateUpdated)
@@ -107,11 +106,62 @@ func TestRepository_GetByTicketID_WithOrder(t *testing.T) {
 		WithArgs(42).
 		WillReturnRows(rows)
 
-	list, err := repo.GetByTicketID(42)
+	ctx := context.Background()
+	list, err := repo.GetByTicketID(ctx, 42)
 
 	assert.NoError(t, err)
 	assert.Len(t, list, 2)
 	assert.Equal(t, "mm-123", *list[1].MattermostMessageID)
 	assert.Nil(t, list[0].MattermostMessageID)
+	assert.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestRepository_GetByID(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer func() { _ = mockDB.Close() }()
+
+	db := sqlx.NewDb(mockDB, "sqlmock")
+	repo := NewRepository(db)
+
+	now := time.Now().UTC()
+
+	rows := sqlmock.NewRows([]string{
+		"id", "ticket_id", "sender_id", "sender_role", "message",
+		"message_type", "mattermost_message_id", "date_created", "date_updated",
+	}).AddRow(
+		1, 42, "user1", "customer", "test message",
+		"text", "mm-123", now, now,
+	)
+
+	mock.ExpectQuery(`SELECT \* FROM ticket_chats WHERE id = \$1`).
+		WithArgs(1).
+		WillReturnRows(rows)
+
+	ctx := context.Background()
+	chat, err := repo.GetByID(ctx, 1)
+
+	assert.NoError(t, err)
+	assert.Equal(t, 1, chat.ID)
+	assert.Equal(t, "test message", chat.Message)
+	assert.NoError(t, mock.ExpectationsWereMet())
+}
+
+func TestRepository_Delete(t *testing.T) {
+	mockDB, mock, err := sqlmock.New()
+	require.NoError(t, err)
+	defer func() { _ = mockDB.Close() }()
+
+	db := sqlx.NewDb(mockDB, "sqlmock")
+	repo := NewRepository(db)
+
+	mock.ExpectExec(`DELETE FROM ticket_chats WHERE id = \$1`).
+		WithArgs(1).
+		WillReturnResult(sqlmock.NewResult(0, 1))
+
+	ctx := context.Background()
+	err = repo.Delete(ctx, 1)
+
+	assert.NoError(t, err)
 	assert.NoError(t, mock.ExpectationsWereMet())
 }

@@ -1,3 +1,4 @@
+// Package files - package to files entity
 package files
 
 import (
@@ -6,11 +7,13 @@ import (
 	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for files operations.
 type Handler struct {
 	service *Service
 	logger  *slog.Logger
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{service: service, logger: logger}
 }
