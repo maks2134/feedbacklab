@@ -1,9 +1,8 @@
 package messageattachments
 
 import (
-	"database/sql"
+	"context"
 	"innotech/internal/storage/postgres"
-	"log"
 	"testing"
 	"time"
 
@@ -18,15 +17,13 @@ func ptr(s string) *string { return &s }
 func TestRepository_Create_WithReturning(t *testing.T) {
 	mockDB, mock, err := sqlmock.New()
 	require.NoError(t, err)
-	defer func(mockDB *sql.DB) {
-		err := mockDB.Close()
-		if err != nil {
-			log.Fatal("failed to close mock DB")
-		}
-	}(mockDB)
+	defer func() {
+		_ = mockDB.Close()
+	}()
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)
+	ctx := context.Background()
 
 	now := time.Now().UTC()
 	att := &postgres.MessageAttachment{
@@ -45,8 +42,7 @@ func TestRepository_Create_WithReturning(t *testing.T) {
 		WithArgs(att.ChatID, att.FilePath, att.UploadedBy, att.FileType).
 		WillReturnRows(rows)
 
-	err = repo.Create(att)
-
+	err = repo.Create(ctx, att)
 	assert.NoError(t, err)
 	assert.Equal(t, 42, att.ID)
 	assert.Equal(t, now, att.DateCreated)
@@ -61,6 +57,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)
+	ctx := context.Background()
 
 	now := time.Now().UTC()
 	att := &postgres.MessageAttachment{
@@ -77,8 +74,7 @@ func TestRepository_Update_WithReturning(t *testing.T) {
 		WithArgs(att.FilePath, att.FileType, att.ID).
 		WillReturnRows(rows)
 
-	err = repo.Update(att)
-
+	err = repo.Update(ctx, att)
 	assert.NoError(t, err)
 	assert.Equal(t, now, att.DateUpdated)
 	assert.NoError(t, mock.ExpectationsWereMet())
@@ -91,6 +87,7 @@ func TestRepository_GetByChatID_WithOrder(t *testing.T) {
 
 	db := sqlx.NewDb(mockDB, "sqlmock")
 	repo := NewRepository(db)
+	ctx := context.Background()
 
 	now := time.Now().UTC()
 
@@ -109,8 +106,7 @@ func TestRepository_GetByChatID_WithOrder(t *testing.T) {
 		WithArgs(42).
 		WillReturnRows(rows)
 
-	list, err := repo.GetByChatID(42)
-
+	list, err := repo.GetByChatID(ctx, 42)
 	assert.NoError(t, err)
 	assert.Len(t, list, 2)
 	assert.Equal(t, "image/png", *list[0].FileType)
