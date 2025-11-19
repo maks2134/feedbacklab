@@ -8,6 +8,7 @@ import (
 	"innotech/internal/modules"
 
 	"innotech/internal/documentations"
+	"innotech/internal/files"
 	"innotech/internal/projects"
 	"innotech/internal/userprojects"
 	"strconv"

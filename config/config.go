@@ -18,6 +18,12 @@ type Config struct {
 	DatabaseURL   string
 	ParsedDBURL   *url.URL
 	MigrationsDir string
+
+	MinioEndpoint  string
+	MinioAccessKey string
+	MinioSecretKey string
+	MinioBucket    string
+	MinioUseSSL    bool
 }
 
 // Load reads configuration from environment variables and returns a Config instance.
