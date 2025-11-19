@@ -44,6 +44,22 @@ services:
       timeout: 5s
       retries: 5
 
+  minio:
+    image: minio/minio:latest
+    container_name: feedbacklab_minio
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9001:9001"
+    environment:
+      MINIO_ROOT_USER: minioadmin
+      MINIO_ROOT_PASSWORD: minioadmin123
+    command: server /data --console-address ":9001"
+    volumes:
+      - minio_data:/data
+    networks:
+      - feedbacknet
+
   app:
     build: .
     container_name: innotech_app
@@ -52,8 +68,16 @@ services:
         condition: service_healthy
       keycloak:
         condition: service_healthy
+      minio:                    # Добавил зависимости
+        condition: service_started
     env_file:
       - .env.docker
+    environment:
+      MINIO_ENDPOINT: minio:9000
+      MINIO_ACCESS_KEY: minioadmin
+      MINIO_SECRET_KEY: minioadmin123
+      MINIO_BUCKET: feedback-files
+      MINIO_SSL: "false"
     ports:
       - "${APP_PORT:-8080}:${APP_PORT:-8080}"
       - "${HEALTH_PORT:-8081}:${HEALTH_PORT:-8081}"
@@ -65,3 +89,4 @@ services:
 
 volumes:
   db_data:
+  minio_data:
