@@ -7,7 +7,7 @@ BIN_DIR := bin
 CMD_DIR := cmd
 MIGRATIONS_DIR := migrations
 SWAGGER_DIR := docs
-GO_VERSION := 1.21
+GO_VERSION := 1.25
 DOCKER_COMPOSE := docker-compose -f docker-compose.local.yml
 
 # Colors for output
