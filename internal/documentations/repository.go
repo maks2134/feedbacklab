@@ -28,16 +28,14 @@ func NewRepository(db *sqlx.DB) Repository {
 func (r *documentationRepository) Create(ctx context.Context, d *postgres.Documentation) error {
 	query := `
 		INSERT INTO documentations (project_id, file_path, version, uploaded_by)
-		VALUES ($1, $2, $3, $4)
+		VALUES (:project_id, :file_path, :version, :uploaded_by)
 		RETURNING id, date_created, date_updated
 	`
-
-	return r.db.QueryRowxContext(ctx, query,
-		d.ProjectID,
-		d.FilePath,
-		d.Version,
-		d.UploadedBy,
-	).StructScan(d)
+	stmt, err := r.db.PrepareNamedContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	return stmt.GetContext(ctx, d, d)
 }
 
 func (r *documentationRepository) GetByID(ctx context.Context, id int) (*postgres.Documentation, error) {
@@ -58,17 +56,15 @@ func (r *documentationRepository) GetAll(ctx context.Context) ([]postgres.Docume
 func (r *documentationRepository) Update(ctx context.Context, d *postgres.Documentation) error {
 	query := `
 		UPDATE documentations
-		SET file_path=$1, version=$2, uploaded_by=$3
-		WHERE id=$4
+		SET file_path=:file_path, version=:version, uploaded_by=:uploaded_by
+		WHERE id=:id
 		RETURNING date_updated
 	`
-
-	return r.db.QueryRowxContext(ctx, query,
-		d.FilePath,
-		d.Version,
-		d.UploadedBy,
-		d.ID,
-	).Scan(&d.DateUpdated)
+	stmt, err := r.db.PrepareNamedContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	return stmt.GetContext(ctx, &d.DateUpdated, d)
 }
 
 func (r *documentationRepository) Delete(ctx context.Context, id int) error {

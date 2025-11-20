@@ -1,4 +1,4 @@
-// Package ticketchats - package to ticketchats entity
+// Package ticketchats provides ticket chat message management functionality.
 package ticketchats
 
 import (
@@ -40,7 +40,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 		MattermostMessageID: dto.MattermostMessageID,
 	}
 
-	if err := h.service.Create(c.UserContext(), &chat); err != nil {
+	if err := h.service.Create(c.Context(), &chat); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.Status(fiber.StatusCreated).JSON(chat)
@@ -59,7 +59,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	chat, err := h.service.GetByID(c.UserContext(), id)
+	chat, err := h.service.GetByID(c.Context(), id)
 	if err != nil {
 		return c.Status(fiber.StatusNotFound).JSON(fiber.Map{"error": "not found"})
 	}
@@ -78,7 +78,7 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid ticket id"})
 	}
-	chats, err := h.service.GetByTicketID(c.UserContext(), ticketID)
+	chats, err := h.service.GetByTicketID(c.Context(), ticketID)
 	if err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
@@ -108,7 +108,7 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		MessageType: dto.MessageType,
 	}
 
-	if err := h.service.Update(c.UserContext(), &chat); err != nil {
+	if err := h.service.Update(c.Context(), &chat); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.JSON(chat)
@@ -125,7 +125,7 @@ func (h *Handler) Delete(c *fiber.Ctx) error {
 	if err != nil {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
-	if err := h.service.Delete(c.UserContext(), id); err != nil {
+	if err := h.service.Delete(c.Context(), id); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
 	return c.SendStatus(fiber.StatusNoContent)

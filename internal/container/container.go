@@ -5,7 +5,6 @@ import (
 	"innotech/config"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
-	"innotech/internal/files"
 	"innotech/internal/health"
 	"innotech/internal/messageattachments"
 	"innotech/internal/modules"
@@ -17,7 +16,6 @@ import (
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
-	"innotech/pkg/minio"
 	"log"
 	"log/slog"
 	"os"
@@ -39,8 +37,6 @@ type Container struct {
 	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
-	Minio                     *minio.Client
-	FileHandler               *files.Handler
 	UserProjectHandler        *userprojects.Handler
 	ModuleHandler             *modules.Handler
 }
@@ -106,21 +102,6 @@ func New() *Container {
 	modulesService := modules.NewService(modulesRepo)
 	modulesHandler := modules.NewHandler(modulesService)
 
-	minioClient, err := minio.New(
-		cfg.MinioEndpoint,
-		cfg.MinioAccessKey,
-		cfg.MinioSecretKey,
-		cfg.MinioBucket,
-		cfg.MinioUseSSL,
-	)
-
-	fileService := files.NewService(minioClient, newLogger)
-	fileHandler := files.NewHandler(fileService, newLogger)
-
-	if err != nil {
-		log.Fatalf("Failed to init MinIO: %v", err)
-	}
-
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -134,8 +115,6 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
-		Minio:                     minioClient,
-		FileHandler:               fileHandler,
 		ModuleHandler:             modulesHandler,
 	}
 }

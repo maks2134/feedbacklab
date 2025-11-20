@@ -28,16 +28,14 @@ func NewRepository(db *sqlx.DB) Repository {
 func (r *moduleRepository) Create(ctx context.Context, m *postgres.Module) error {
 	query := `
 		INSERT INTO modules (project_id, name, description, responsible_user_id)
-		VALUES ($1, $2, $3, $4)
+		VALUES (:project_id, :name, :description, :responsible_user_id)
 		RETURNING id, date_created, date_updated
 	`
-
-	return r.db.QueryRowxContext(ctx, query,
-		m.ProjectID,
-		m.Name,
-		m.Description,
-		m.ResponsibleUserID,
-	).StructScan(m)
+	stmt, err := r.db.PrepareNamedContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	return stmt.GetContext(ctx, m, m)
 }
 
 func (r *moduleRepository) GetByID(ctx context.Context, id int) (*postgres.Module, error) {
@@ -58,17 +56,15 @@ func (r *moduleRepository) GetAll(ctx context.Context) ([]postgres.Module, error
 func (r *moduleRepository) Update(ctx context.Context, m *postgres.Module) error {
 	query := `
 		UPDATE modules
-		SET name=$1, description=$2, responsible_user_id=$3
-		WHERE id=$4
+		SET name=:name, description=:description, responsible_user_id=:responsible_user_id
+		WHERE id=:id
 		RETURNING date_updated
 	`
-
-	return r.db.QueryRowxContext(ctx, query,
-		m.Name,
-		m.Description,
-		m.ResponsibleUserID,
-		m.ID,
-	).Scan(&m.DateUpdated)
+	stmt, err := r.db.PrepareNamedContext(ctx, query)
+	if err != nil {
+		return err
+	}
+	return stmt.GetContext(ctx, &m.DateUpdated, m)
 }
 
 func (r *moduleRepository) Delete(ctx context.Context, id int) error {
