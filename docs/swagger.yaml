@@ -1,5 +1,92 @@
+basePath: /api
 definitions:
-  message_attachments.CreateMessageAttachmentDTO:
+  innotech_internal_storage_postgres.MessageAttachment:
+    properties:
+      chat_id:
+        type: integer
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+      id:
+        type: integer
+      uploaded_by:
+        type: string
+    type: object
+  innotech_internal_storage_postgres.Ticket:
+    properties:
+      assigned_to:
+        type: string
+      contract_id:
+        type: integer
+      created_by:
+        type: string
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      gitlab_issue_url:
+        type: string
+      id:
+        type: integer
+      mattermost_thread_url:
+        type: string
+      message:
+        type: string
+      module_id:
+        type: integer
+      project_id:
+        type: integer
+      status:
+        type: string
+      title:
+        type: string
+    type: object
+  innotech_internal_storage_postgres.TicketAttachment:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+      id:
+        type: integer
+      ticket_id:
+        type: integer
+      uploaded_by:
+        type: string
+    type: object
+  innotech_internal_storage_postgres.TicketChat:
+    properties:
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      id:
+        type: integer
+      mattermost_message_id:
+        type: string
+      message:
+        type: string
+      message_type:
+        type: string
+      sender_id:
+        type: string
+      sender_role:
+        type: string
+      ticket_id:
+        type: integer
+    type: object
+  innotech_internal_storage_transport.CreateMessageAttachmentDTO:
     properties:
       chat_id:
         type: integer
@@ -14,108 +101,7 @@ definitions:
     - file_path
     - uploaded_by
     type: object
-  message_attachments.MessageAttachment:
-    properties:
-      chat_id:
-        type: integer
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      file_path:
-        type: string
-      file_type:
-        type: string
-      id:
-        type: integer
-      uploaded_by:
-        type: string
-    type: object
-  message_attachments.UpdateMessageAttachmentDTO:
-    properties:
-      file_path:
-        type: string
-      file_type:
-        type: string
-    type: object
-  models.Contract:
-    properties:
-      client_name:
-        type: string
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      description:
-        type: string
-      end_date:
-        type: string
-      id:
-        type: integer
-      project_id:
-        type: integer
-      start_date:
-        type: string
-    type: object
-  models.Documentation:
-    properties:
-      content:
-        type: string
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      file_url:
-        type: string
-      id:
-        type: integer
-      project_id:
-        type: integer
-      title:
-        type: string
-    type: object
-  models.Module:
-    properties:
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-      project_id:
-        type: integer
-    type: object
-  models.Project:
-    properties:
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      description:
-        type: string
-      id:
-        type: integer
-      name:
-        type: string
-    type: object
-  models.UserProject:
-    properties:
-      date_added:
-        type: string
-      id:
-        type: integer
-      project_id:
-        type: integer
-      role:
-        type: string
-      user_id:
-        type: string
-    type: object
-  ticket_attachments.CreateTicketAttachmentDTO:
+  innotech_internal_storage_transport.CreateTicketAttachmentDTO:
     properties:
       description:
         type: string
@@ -132,35 +118,7 @@ definitions:
     - ticket_id
     - uploaded_by
     type: object
-  ticket_attachments.TicketAttachment:
-    properties:
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      description:
-        type: string
-      file_path:
-        type: string
-      file_type:
-        type: string
-      id:
-        type: integer
-      ticket_id:
-        type: integer
-      uploaded_by:
-        type: string
-    type: object
-  ticket_attachments.UpdateTicketAttachmentDTO:
-    properties:
-      description:
-        type: string
-      file_path:
-        type: string
-      file_type:
-        type: string
-    type: object
-  ticket_chats.CreateTicketChatDTO:
+  innotech_internal_storage_transport.CreateTicketChatDTO:
     properties:
       mattermost_message_id:
         type: string
@@ -190,40 +148,7 @@ definitions:
     - sender_role
     - ticket_id
     type: object
-  ticket_chats.TicketChat:
-    properties:
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      id:
-        type: integer
-      mattermost_message_id:
-        type: string
-      message:
-        type: string
-      message_type:
-        type: string
-      sender_id:
-        type: string
-      sender_role:
-        type: string
-      ticket_id:
-        type: integer
-    type: object
-  ticket_chats.UpdateTicketChatDTO:
-    properties:
-      message:
-        minLength: 1
-        type: string
-      message_type:
-        enum:
-        - text
-        - file
-        - system
-        type: string
-    type: object
-  tickets.CreateTicketDTO:
+  innotech_internal_storage_transport.CreateTicketDTO:
     properties:
       assigned_to:
         type: string
@@ -259,36 +184,35 @@ definitions:
     - project_id
     - title
     type: object
-  tickets.Ticket:
+  innotech_internal_storage_transport.UpdateMessageAttachmentDTO:
     properties:
-      assigned_to:
+      file_path:
         type: string
-      contract_id:
-        type: integer
-      created_by:
-        type: string
-      date_created:
-        type: string
-      date_updated:
-        type: string
-      gitlab_issue_url:
-        type: string
-      id:
-        type: integer
-      mattermost_thread_url:
-        type: string
-      message:
-        type: string
-      module_id:
-        type: integer
-      project_id:
-        type: integer
-      status:
-        type: string
-      title:
+      file_type:
         type: string
     type: object
-  tickets.UpdateTicketDTO:
+  innotech_internal_storage_transport.UpdateTicketAttachmentDTO:
+    properties:
+      description:
+        type: string
+      file_path:
+        type: string
+      file_type:
+        type: string
+    type: object
+  innotech_internal_storage_transport.UpdateTicketChatDTO:
+    properties:
+      message:
+        minLength: 1
+        type: string
+      message_type:
+        enum:
+        - text
+        - file
+        - system
+        type: string
+    type: object
+  innotech_internal_storage_transport.UpdateTicketDTO:
     properties:
       assigned_to:
         type: string
@@ -314,8 +238,37 @@ definitions:
     - status
     - title
     type: object
+  internal_contract.Contract:
+    properties:
+      client_name:
+        type: string
+      date_created:
+        type: string
+      date_updated:
+        type: string
+      description:
+        type: string
+      end_date:
+        type: string
+      id:
+        type: integer
+      project_id:
+        type: integer
+      start_date:
+        type: string
+    type: object
+host: localhost:8080
 info:
-  contact: {}
+  contact:
+    email: support@innotech.ru
+    name: API Support
+  description: API для управления проектами, тикетами и документацией
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  termsOfService: http://swagger.io/terms/
+  title: FeedbackLab API
+  version: "0.1"
 paths:
   /api/contracts:
     get:
@@ -327,7 +280,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/models.Contract'
+              $ref: '#/definitions/internal_contract.Contract'
             type: array
       summary: Get all contracts
       tags:
@@ -341,14 +294,14 @@ paths:
         name: contract
         required: true
         schema:
-          $ref: '#/definitions/models.Contract'
+          $ref: '#/definitions/internal_contract.Contract'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/models.Contract'
+            $ref: '#/definitions/internal_contract.Contract'
       summary: Create a new contract
       tags:
       - Contracts
@@ -380,7 +333,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Contract'
+            $ref: '#/definitions/internal_contract.Contract'
       summary: Get contract by ID
       tags:
       - Contracts
@@ -398,467 +351,17 @@ paths:
         name: contract
         required: true
         schema:
-          $ref: '#/definitions/models.Contract'
+          $ref: '#/definitions/internal_contract.Contract'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/models.Contract'
+            $ref: '#/definitions/internal_contract.Contract'
       summary: Update existing contract
       tags:
       - Contracts
-  /api/documentations:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Documentation'
-            type: array
-      summary: Get all documentations
-      tags:
-      - Documentations
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: Documentation Data
-        in: body
-        name: doc
-        required: true
-        schema:
-          $ref: '#/definitions/models.Documentation'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Documentation'
-      summary: Create a new documentation
-      tags:
-      - Documentations
-  /api/documentations/{id}:
-    delete:
-      parameters:
-      - description: Documentation ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: No Content
-      summary: Delete documentation
-      tags:
-      - Documentations
-    get:
-      parameters:
-      - description: Documentation ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Documentation'
-      summary: Get documentation by ID
-      tags:
-      - Documentations
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: Documentation ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Updated Documentation Data
-        in: body
-        name: doc
-        required: true
-        schema:
-          $ref: '#/definitions/models.Documentation'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Documentation'
-      summary: Update existing documentation
-      tags:
-      - Documentations
-  /api/modules:
-    get:
-      description: Returns all modules
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Module'
-            type: array
-      summary: Get all modules
-      tags:
-      - Modules
-    post:
-      consumes:
-      - application/json
-      description: Creates a new module entry
-      parameters:
-      - description: Module Data
-        in: body
-        name: module
-        required: true
-        schema:
-          $ref: '#/definitions/models.Module'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Module'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Create a new module
-      tags:
-      - Modules
-  /api/modules/{id}:
-    delete:
-      description: Deletes a module by ID
-      parameters:
-      - description: Module ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete module
-      tags:
-      - Modules
-    get:
-      description: Returns a single module by its ID
-      parameters:
-      - description: Module ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Module'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get module by ID
-      tags:
-      - Modules
-    put:
-      consumes:
-      - application/json
-      description: Updates module details by ID
-      parameters:
-      - description: Module ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Updated Module Data
-        in: body
-        name: module
-        required: true
-        schema:
-          $ref: '#/definitions/models.Module'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Module'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update existing module
-      tags:
-      - Modules
-  /api/projects:
-    get:
-      description: Returns all projects
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.Project'
-            type: array
-      summary: Get all projects
-      tags:
-      - Projects
-    post:
-      consumes:
-      - application/json
-      description: Creates a new project entry
-      parameters:
-      - description: Project Data
-        in: body
-        name: project
-        required: true
-        schema:
-          $ref: '#/definitions/models.Project'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.Project'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Create a new project
-      tags:
-      - Projects
-  /api/projects/{id}:
-    delete:
-      description: Deletes a project by ID
-      parameters:
-      - description: Project ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: No Content
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Delete project
-      tags:
-      - Projects
-    get:
-      description: Returns a single project by its ID
-      parameters:
-      - description: Project ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Project'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Get project by ID
-      tags:
-      - Projects
-    put:
-      consumes:
-      - application/json
-      description: Updates project details by ID
-      parameters:
-      - description: Project ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Updated Project Data
-        in: body
-        name: project
-        required: true
-        schema:
-          $ref: '#/definitions/models.Project'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.Project'
-        "400":
-          description: Bad Request
-          schema:
-            additionalProperties: true
-            type: object
-        "404":
-          description: Not Found
-          schema:
-            additionalProperties: true
-            type: object
-      summary: Update existing project
-      tags:
-      - Projects
-  /api/user-projects:
-    get:
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            items:
-              $ref: '#/definitions/models.UserProject'
-            type: array
-      summary: Get all user-project relations
-      tags:
-      - UserProjects
-    post:
-      consumes:
-      - application/json
-      parameters:
-      - description: UserProject Data
-        in: body
-        name: relation
-        required: true
-        schema:
-          $ref: '#/definitions/models.UserProject'
-      produces:
-      - application/json
-      responses:
-        "201":
-          description: Created
-          schema:
-            $ref: '#/definitions/models.UserProject'
-      summary: Create a new user-project
-      tags:
-      - UserProjects
-  /api/user-projects/{id}:
-    delete:
-      parameters:
-      - description: UserProject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      responses:
-        "204":
-          description: No Content
-      summary: Delete user-project
-      tags:
-      - UserProjects
-    get:
-      parameters:
-      - description: UserProject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.UserProject'
-      summary: Get user-project by ID
-      tags:
-      - UserProjects
-    put:
-      consumes:
-      - application/json
-      parameters:
-      - description: UserProject ID
-        in: path
-        name: id
-        required: true
-        type: integer
-      - description: Updated UserProject Data
-        in: body
-        name: relation
-        required: true
-        schema:
-          $ref: '#/definitions/models.UserProject'
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: OK
-          schema:
-            $ref: '#/definitions/models.UserProject'
-      summary: Update user-project relation
-      tags:
-      - UserProjects
   /health:
     get:
       description: возвращает статус OK
@@ -884,14 +387,14 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/message_attachments.CreateMessageAttachmentDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.CreateMessageAttachmentDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/message_attachments.MessageAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.MessageAttachment'
       summary: создать вложение сообщения
       tags:
       - MessageAttachments
@@ -922,7 +425,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/message_attachments.MessageAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.MessageAttachment'
       summary: получить вложение по ID
       tags:
       - MessageAttachments
@@ -940,14 +443,14 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/message_attachments.UpdateMessageAttachmentDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.UpdateMessageAttachmentDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/message_attachments.MessageAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.MessageAttachment'
       summary: обновить вложение
       tags:
       - MessageAttachments
@@ -966,7 +469,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/message_attachments.MessageAttachment'
+              $ref: '#/definitions/innotech_internal_storage_postgres.MessageAttachment'
             type: array
       summary: получить все вложения по chat_id
       tags:
@@ -981,14 +484,14 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/ticket_attachments.CreateTicketAttachmentDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.CreateTicketAttachmentDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketAttachment'
       summary: создать вложение тикета
       tags:
       - TicketAttachments
@@ -1019,7 +522,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketAttachment'
       summary: получить вложение по ID
       tags:
       - TicketAttachments
@@ -1037,14 +540,14 @@ paths:
         name: attachment
         required: true
         schema:
-          $ref: '#/definitions/ticket_attachments.UpdateTicketAttachmentDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.UpdateTicketAttachmentDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ticket_attachments.TicketAttachment'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketAttachment'
       summary: обновить вложение
       tags:
       - TicketAttachments
@@ -1063,7 +566,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ticket_attachments.TicketAttachment'
+              $ref: '#/definitions/innotech_internal_storage_postgres.TicketAttachment'
             type: array
       summary: получить все вложения тикета
       tags:
@@ -1078,14 +581,14 @@ paths:
         name: chat
         required: true
         schema:
-          $ref: '#/definitions/ticket_chats.CreateTicketChatDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.CreateTicketChatDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/ticket_chats.TicketChat'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketChat'
         "400":
           description: Bad Request
           schema:
@@ -1122,7 +625,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ticket_chats.TicketChat'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketChat'
         "404":
           description: Not Found
           schema:
@@ -1146,14 +649,14 @@ paths:
         name: chat
         required: true
         schema:
-          $ref: '#/definitions/ticket_chats.UpdateTicketChatDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.UpdateTicketChatDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/ticket_chats.TicketChat'
+            $ref: '#/definitions/innotech_internal_storage_postgres.TicketChat'
       summary: обновить сообщение
       tags:
       - TicketChats
@@ -1172,7 +675,7 @@ paths:
           description: OK
           schema:
             items:
-              $ref: '#/definitions/ticket_chats.TicketChat'
+              $ref: '#/definitions/innotech_internal_storage_postgres.TicketChat'
             type: array
       summary: получить все сообщения тикета
       tags:
@@ -1187,14 +690,14 @@ paths:
         name: ticket
         required: true
         schema:
-          $ref: '#/definitions/tickets.CreateTicketDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.CreateTicketDTO'
       produces:
       - application/json
       responses:
         "201":
           description: Created
           schema:
-            $ref: '#/definitions/tickets.Ticket'
+            $ref: '#/definitions/innotech_internal_storage_postgres.Ticket'
         "400":
           description: Bad Request
           schema:
@@ -1212,7 +715,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/tickets.Ticket'
+            $ref: '#/definitions/innotech_internal_storage_postgres.Ticket'
         "404":
           description: Not Found
           schema:
@@ -1249,7 +752,7 @@ paths:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/tickets.Ticket'
+            $ref: '#/definitions/innotech_internal_storage_postgres.Ticket'
         "404":
           description: Not Found
           schema:
@@ -1273,15 +776,18 @@ paths:
         name: ticket
         required: true
         schema:
-          $ref: '#/definitions/tickets.UpdateTicketDTO'
+          $ref: '#/definitions/innotech_internal_storage_transport.UpdateTicketDTO'
       produces:
       - application/json
       responses:
         "200":
           description: OK
           schema:
-            $ref: '#/definitions/tickets.Ticket'
+            $ref: '#/definitions/innotech_internal_storage_postgres.Ticket'
       summary: обновить тикет
       tags:
       - Tickets
+schemes:
+- http
+- https
 swagger: "2.0"

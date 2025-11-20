@@ -24,8 +24,8 @@ func NewHandler(service Service) *Handler {
 // @Tags Tickets
 // @Accept json
 // @Produce json
-// @Param ticket body CreateTicketDTO true "Ticket"
-// @Success 201 {object} Ticket
+// @Param ticket body transport.CreateTicketDTO true "Ticket"
+// @Success 201 {object} postgres.Ticket
 // @Failure 400 {object} map[string]string
 // @Router /tickets [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
@@ -56,7 +56,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 // @Tags Tickets
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} Ticket
+// @Success 200 {object} postgres.Ticket
 // @Failure 404 {object} map[string]string
 // @Router /tickets/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
@@ -75,7 +75,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 // @Summary получить все тикеты
 // @Tags Tickets
 // @Produce json
-// @Success 200 {object} Ticket
+// @Success 200 {object} postgres.Ticket
 // @Failure 404 {object} map[string]string
 // @Router /tickets/ [get]
 func (h *Handler) GetAll(c *fiber.Ctx) error {
@@ -92,8 +92,8 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param ticket body UpdateTicketDTO true "Ticket"
-// @Success 200 {object} Ticket
+// @Param ticket body transport.UpdateTicketDTO true "Ticket"
+// @Success 200 {object} postgres.Ticket
 // @Router /tickets/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))

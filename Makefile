@@ -121,11 +121,17 @@ migrate-create: ## Create a new migration file
 
 ##@ Swagger
 
-swagger: ## Generate Swagger documentation
-	@echo "$(GREEN)Generating Swagger documentation...$(NC)"
-	@which swag > /dev/null || (echo "$(RED)swag is not installed. Install it with: go install github.com/swaggo/swag/cmd/swag@latest$(NC)" && exit 1)
-	swag init -g $(CMD_DIR)/$(APP_NAME)/main.go -o $(SWAGGER_DIR)
+swagger: ## Generate OpenAPI 3.0 documentation
+	@echo "$(GREEN)Generating OpenAPI 3.0 documentation...$(NC)"
+	@which swag > /dev/null || (echo "$(RED)swag is not installed. Installing...$(NC)" && go install github.com/swaggo/swag/cmd/swag@latest)
+	swag init -g $(CMD_DIR)/$(APP_NAME)/main.go -o $(SWAGGER_DIR) --parseDependency --parseInternal
 	@echo "$(GREEN)Swagger documentation generated in $(SWAGGER_DIR)/$(NC)"
+	@echo "$(GREEN)Open static HTML: file://$(shell pwd)/$(SWAGGER_DIR)/swagger.html$(NC)"
+
+swagger-static: swagger ## Generate static HTML documentation (works offline)
+	@echo "$(GREEN)Static HTML documentation is available at: file://$(shell pwd)/$(SWAGGER_DIR)/swagger.html$(NC)"
+	@echo "$(GREEN)Open $(SWAGGER_DIR)/swagger.html in your browser for offline viewing$(NC)"
+	@echo "$(GREEN)Or access via: http://localhost:8080/docs/swagger.html$(NC)"
 
 ##@ Docker
 

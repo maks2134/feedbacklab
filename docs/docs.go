@@ -9,7 +9,15 @@ const docTemplate = `{
     "info": {
         "description": "{{escape .Description}}",
         "title": "{{.Title}}",
-        "contact": {},
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "API Support",
+            "email": "support@innotech.ru"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        },
         "version": "{{.Version}}"
     },
     "host": "{{.Host}}",
@@ -31,7 +39,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/models.Contract"
+                                "$ref": "#/definitions/internal_contract.Contract"
                             }
                         }
                     }
@@ -55,7 +63,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Contract"
+                            "$ref": "#/definitions/internal_contract.Contract"
                         }
                     }
                 ],
@@ -63,7 +71,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/models.Contract"
+                            "$ref": "#/definitions/internal_contract.Contract"
                         }
                     }
                 }
@@ -92,7 +100,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Contract"
+                            "$ref": "#/definitions/internal_contract.Contract"
                         }
                     }
                 }
@@ -122,7 +130,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/models.Contract"
+                            "$ref": "#/definitions/internal_contract.Contract"
                         }
                     }
                 ],
@@ -130,7 +138,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/models.Contract"
+                            "$ref": "#/definitions/internal_contract.Contract"
                         }
                     }
                 }
@@ -144,684 +152,6 @@ const docTemplate = `{
                     {
                         "type": "integer",
                         "description": "Contract ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    }
-                }
-            }
-        },
-        "/api/documentations": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Documentations"
-                ],
-                "summary": "Get all documentations",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Documentation"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Documentations"
-                ],
-                "summary": "Create a new documentation",
-                "parameters": [
-                    {
-                        "description": "Documentation Data",
-                        "name": "doc",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Documentation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Documentation"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/documentations/{id}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Documentations"
-                ],
-                "summary": "Get documentation by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Documentation ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Documentation"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Documentations"
-                ],
-                "summary": "Update existing documentation",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Documentation ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated Documentation Data",
-                        "name": "doc",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Documentation"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Documentation"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Documentations"
-                ],
-                "summary": "Delete documentation",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Documentation ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    }
-                }
-            }
-        },
-        "/api/modules": {
-            "get": {
-                "description": "Returns all modules",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Modules"
-                ],
-                "summary": "Get all modules",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Module"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Creates a new module entry",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Modules"
-                ],
-                "summary": "Create a new module",
-                "parameters": [
-                    {
-                        "description": "Module Data",
-                        "name": "module",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Module"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Module"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/modules/{id}": {
-            "get": {
-                "description": "Returns a single module by its ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Modules"
-                ],
-                "summary": "Get module by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Module ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Module"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Updates module details by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Modules"
-                ],
-                "summary": "Update existing module",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Module ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated Module Data",
-                        "name": "module",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Module"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Module"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Deletes a module by ID",
-                "tags": [
-                    "Modules"
-                ],
-                "summary": "Delete module",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Module ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/projects": {
-            "get": {
-                "description": "Returns all projects",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Get all projects",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.Project"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "description": "Creates a new project entry",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Create a new project",
-                "parameters": [
-                    {
-                        "description": "Project Data",
-                        "name": "project",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/projects/{id}": {
-            "get": {
-                "description": "Returns a single project by its ID",
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Get project by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "put": {
-                "description": "Updates project details by ID",
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Update existing project",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated Project Data",
-                        "name": "project",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.Project"
-                        }
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "description": "Deletes a project by ID",
-                "tags": [
-                    "Projects"
-                ],
-                "summary": "Delete project",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "Project ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "204": {
-                        "description": "No Content"
-                    },
-                    "400": {
-                        "description": "Bad Request",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    },
-                    "404": {
-                        "description": "Not Found",
-                        "schema": {
-                            "type": "object",
-                            "additionalProperties": true
-                        }
-                    }
-                }
-            }
-        },
-        "/api/user-projects": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserProjects"
-                ],
-                "summary": "Get all user-project relations",
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "type": "array",
-                            "items": {
-                                "$ref": "#/definitions/models.UserProject"
-                            }
-                        }
-                    }
-                }
-            },
-            "post": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserProjects"
-                ],
-                "summary": "Create a new user-project",
-                "parameters": [
-                    {
-                        "description": "UserProject Data",
-                        "name": "relation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UserProject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "201": {
-                        "description": "Created",
-                        "schema": {
-                            "$ref": "#/definitions/models.UserProject"
-                        }
-                    }
-                }
-            }
-        },
-        "/api/user-projects/{id}": {
-            "get": {
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserProjects"
-                ],
-                "summary": "Get user-project by ID",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserProject ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.UserProject"
-                        }
-                    }
-                }
-            },
-            "put": {
-                "consumes": [
-                    "application/json"
-                ],
-                "produces": [
-                    "application/json"
-                ],
-                "tags": [
-                    "UserProjects"
-                ],
-                "summary": "Update user-project relation",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserProject ID",
-                        "name": "id",
-                        "in": "path",
-                        "required": true
-                    },
-                    {
-                        "description": "Updated UserProject Data",
-                        "name": "relation",
-                        "in": "body",
-                        "required": true,
-                        "schema": {
-                            "$ref": "#/definitions/models.UserProject"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "OK",
-                        "schema": {
-                            "$ref": "#/definitions/models.UserProject"
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "UserProjects"
-                ],
-                "summary": "Delete user-project",
-                "parameters": [
-                    {
-                        "type": "integer",
-                        "description": "UserProject ID",
                         "name": "id",
                         "in": "path",
                         "required": true
@@ -876,7 +206,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/message_attachments.CreateMessageAttachmentDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.CreateMessageAttachmentDTO"
                         }
                     }
                 ],
@@ -884,7 +214,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/message_attachments.MessageAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.MessageAttachment"
                         }
                     }
                 }
@@ -914,7 +244,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/message_attachments.MessageAttachment"
+                                "$ref": "#/definitions/innotech_internal_storage_postgres.MessageAttachment"
                             }
                         }
                     }
@@ -943,7 +273,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/message_attachments.MessageAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.MessageAttachment"
                         }
                     }
                 }
@@ -973,7 +303,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/message_attachments.UpdateMessageAttachmentDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.UpdateMessageAttachmentDTO"
                         }
                     }
                 ],
@@ -981,7 +311,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/message_attachments.MessageAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.MessageAttachment"
                         }
                     }
                 }
@@ -1026,7 +356,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ticket_attachments.CreateTicketAttachmentDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.CreateTicketAttachmentDTO"
                         }
                     }
                 ],
@@ -1034,7 +364,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ticket_attachments.TicketAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketAttachment"
                         }
                     }
                 }
@@ -1064,7 +394,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ticket_attachments.TicketAttachment"
+                                "$ref": "#/definitions/innotech_internal_storage_postgres.TicketAttachment"
                             }
                         }
                     }
@@ -1093,7 +423,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ticket_attachments.TicketAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketAttachment"
                         }
                     }
                 }
@@ -1123,7 +453,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ticket_attachments.UpdateTicketAttachmentDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.UpdateTicketAttachmentDTO"
                         }
                     }
                 ],
@@ -1131,7 +461,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ticket_attachments.TicketAttachment"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketAttachment"
                         }
                     }
                 }
@@ -1176,7 +506,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ticket_chats.CreateTicketChatDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.CreateTicketChatDTO"
                         }
                     }
                 ],
@@ -1184,7 +514,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/ticket_chats.TicketChat"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketChat"
                         }
                     },
                     "400": {
@@ -1223,7 +553,7 @@ const docTemplate = `{
                         "schema": {
                             "type": "array",
                             "items": {
-                                "$ref": "#/definitions/ticket_chats.TicketChat"
+                                "$ref": "#/definitions/innotech_internal_storage_postgres.TicketChat"
                             }
                         }
                     }
@@ -1252,7 +582,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ticket_chats.TicketChat"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketChat"
                         }
                     },
                     "404": {
@@ -1291,7 +621,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/ticket_chats.UpdateTicketChatDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.UpdateTicketChatDTO"
                         }
                     }
                 ],
@@ -1299,7 +629,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/ticket_chats.TicketChat"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.TicketChat"
                         }
                     }
                 }
@@ -1344,7 +674,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/tickets.CreateTicketDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.CreateTicketDTO"
                         }
                     }
                 ],
@@ -1352,7 +682,7 @@ const docTemplate = `{
                     "201": {
                         "description": "Created",
                         "schema": {
-                            "$ref": "#/definitions/tickets.Ticket"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.Ticket"
                         }
                     },
                     "400": {
@@ -1380,7 +710,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/tickets.Ticket"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.Ticket"
                         }
                     },
                     "404": {
@@ -1417,7 +747,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/tickets.Ticket"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.Ticket"
                         }
                     },
                     "404": {
@@ -1456,7 +786,7 @@ const docTemplate = `{
                         "in": "body",
                         "required": true,
                         "schema": {
-                            "$ref": "#/definitions/tickets.UpdateTicketDTO"
+                            "$ref": "#/definitions/innotech_internal_storage_transport.UpdateTicketDTO"
                         }
                     }
                 ],
@@ -1464,7 +794,7 @@ const docTemplate = `{
                     "200": {
                         "description": "OK",
                         "schema": {
-                            "$ref": "#/definitions/tickets.Ticket"
+                            "$ref": "#/definitions/innotech_internal_storage_postgres.Ticket"
                         }
                     }
                 }
@@ -1492,7 +822,138 @@ const docTemplate = `{
         }
     },
     "definitions": {
-        "message_attachments.CreateMessageAttachmentDTO": {
+        "innotech_internal_storage_postgres.MessageAttachment": {
+            "type": "object",
+            "properties": {
+                "chat_id": {
+                    "type": "integer"
+                },
+                "date_created": {
+                    "type": "string"
+                },
+                "date_updated": {
+                    "type": "string"
+                },
+                "file_path": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "uploaded_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "innotech_internal_storage_postgres.Ticket": {
+            "type": "object",
+            "properties": {
+                "assigned_to": {
+                    "type": "string"
+                },
+                "contract_id": {
+                    "type": "integer"
+                },
+                "created_by": {
+                    "type": "string"
+                },
+                "date_created": {
+                    "type": "string"
+                },
+                "date_updated": {
+                    "type": "string"
+                },
+                "gitlab_issue_url": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mattermost_thread_url": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "module_id": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "status": {
+                    "type": "string"
+                },
+                "title": {
+                    "type": "string"
+                }
+            }
+        },
+        "innotech_internal_storage_postgres.TicketAttachment": {
+            "type": "object",
+            "properties": {
+                "date_created": {
+                    "type": "string"
+                },
+                "date_updated": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "file_path": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "ticket_id": {
+                    "type": "integer"
+                },
+                "uploaded_by": {
+                    "type": "string"
+                }
+            }
+        },
+        "innotech_internal_storage_postgres.TicketChat": {
+            "type": "object",
+            "properties": {
+                "date_created": {
+                    "type": "string"
+                },
+                "date_updated": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "mattermost_message_id": {
+                    "type": "string"
+                },
+                "message": {
+                    "type": "string"
+                },
+                "message_type": {
+                    "type": "string"
+                },
+                "sender_id": {
+                    "type": "string"
+                },
+                "sender_role": {
+                    "type": "string"
+                },
+                "ticket_id": {
+                    "type": "integer"
+                }
+            }
+        },
+        "innotech_internal_storage_transport.CreateMessageAttachmentDTO": {
             "type": "object",
             "required": [
                 "chat_id",
@@ -1514,162 +975,7 @@ const docTemplate = `{
                 }
             }
         },
-        "message_attachments.MessageAttachment": {
-            "type": "object",
-            "properties": {
-                "chat_id": {
-                    "type": "integer"
-                },
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "file_path": {
-                    "type": "string"
-                },
-                "file_type": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "uploaded_by": {
-                    "type": "string"
-                }
-            }
-        },
-        "message_attachments.UpdateMessageAttachmentDTO": {
-            "type": "object",
-            "properties": {
-                "file_path": {
-                    "type": "string"
-                },
-                "file_type": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Contract": {
-            "type": "object",
-            "properties": {
-                "client_name": {
-                    "type": "string"
-                },
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "end_date": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "project_id": {
-                    "type": "integer"
-                },
-                "start_date": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Documentation": {
-            "type": "object",
-            "properties": {
-                "content": {
-                    "type": "string"
-                },
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "file_url": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "project_id": {
-                    "type": "integer"
-                },
-                "title": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.Module": {
-            "type": "object",
-            "properties": {
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                },
-                "project_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "models.Project": {
-            "type": "object",
-            "properties": {
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "name": {
-                    "type": "string"
-                }
-            }
-        },
-        "models.UserProject": {
-            "type": "object",
-            "properties": {
-                "date_added": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "project_id": {
-                    "type": "integer"
-                },
-                "role": {
-                    "type": "string"
-                },
-                "user_id": {
-                    "type": "string"
-                }
-            }
-        },
-        "ticket_attachments.CreateTicketAttachmentDTO": {
+        "innotech_internal_storage_transport.CreateTicketAttachmentDTO": {
             "type": "object",
             "required": [
                 "file_path",
@@ -1694,50 +1000,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ticket_attachments.TicketAttachment": {
-            "type": "object",
-            "properties": {
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "description": {
-                    "type": "string"
-                },
-                "file_path": {
-                    "type": "string"
-                },
-                "file_type": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "ticket_id": {
-                    "type": "integer"
-                },
-                "uploaded_by": {
-                    "type": "string"
-                }
-            }
-        },
-        "ticket_attachments.UpdateTicketAttachmentDTO": {
-            "type": "object",
-            "properties": {
-                "description": {
-                    "type": "string"
-                },
-                "file_path": {
-                    "type": "string"
-                },
-                "file_type": {
-                    "type": "string"
-                }
-            }
-        },
-        "ticket_chats.CreateTicketChatDTO": {
+        "innotech_internal_storage_transport.CreateTicketChatDTO": {
             "type": "object",
             "required": [
                 "message",
@@ -1778,56 +1041,7 @@ const docTemplate = `{
                 }
             }
         },
-        "ticket_chats.TicketChat": {
-            "type": "object",
-            "properties": {
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "mattermost_message_id": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "message_type": {
-                    "type": "string"
-                },
-                "sender_id": {
-                    "type": "string"
-                },
-                "sender_role": {
-                    "type": "string"
-                },
-                "ticket_id": {
-                    "type": "integer"
-                }
-            }
-        },
-        "ticket_chats.UpdateTicketChatDTO": {
-            "type": "object",
-            "properties": {
-                "message": {
-                    "type": "string",
-                    "minLength": 1
-                },
-                "message_type": {
-                    "type": "string",
-                    "enum": [
-                        "text",
-                        "file",
-                        "system"
-                    ]
-                }
-            }
-        },
-        "tickets.CreateTicketDTO": {
+        "innotech_internal_storage_transport.CreateTicketDTO": {
             "type": "object",
             "required": [
                 "contract_id",
@@ -1877,51 +1091,49 @@ const docTemplate = `{
                 }
             }
         },
-        "tickets.Ticket": {
+        "innotech_internal_storage_transport.UpdateMessageAttachmentDTO": {
             "type": "object",
             "properties": {
-                "assigned_to": {
+                "file_path": {
                     "type": "string"
                 },
-                "contract_id": {
-                    "type": "integer"
-                },
-                "created_by": {
-                    "type": "string"
-                },
-                "date_created": {
-                    "type": "string"
-                },
-                "date_updated": {
-                    "type": "string"
-                },
-                "gitlab_issue_url": {
-                    "type": "string"
-                },
-                "id": {
-                    "type": "integer"
-                },
-                "mattermost_thread_url": {
-                    "type": "string"
-                },
-                "message": {
-                    "type": "string"
-                },
-                "module_id": {
-                    "type": "integer"
-                },
-                "project_id": {
-                    "type": "integer"
-                },
-                "status": {
-                    "type": "string"
-                },
-                "title": {
+                "file_type": {
                     "type": "string"
                 }
             }
         },
-        "tickets.UpdateTicketDTO": {
+        "innotech_internal_storage_transport.UpdateTicketAttachmentDTO": {
+            "type": "object",
+            "properties": {
+                "description": {
+                    "type": "string"
+                },
+                "file_path": {
+                    "type": "string"
+                },
+                "file_type": {
+                    "type": "string"
+                }
+            }
+        },
+        "innotech_internal_storage_transport.UpdateTicketChatDTO": {
+            "type": "object",
+            "properties": {
+                "message": {
+                    "type": "string",
+                    "minLength": 1
+                },
+                "message_type": {
+                    "type": "string",
+                    "enum": [
+                        "text",
+                        "file",
+                        "system"
+                    ]
+                }
+            }
+        },
+        "innotech_internal_storage_transport.UpdateTicketDTO": {
             "type": "object",
             "required": [
                 "message",
@@ -1956,18 +1168,47 @@ const docTemplate = `{
                     "minLength": 3
                 }
             }
+        },
+        "internal_contract.Contract": {
+            "type": "object",
+            "properties": {
+                "client_name": {
+                    "type": "string"
+                },
+                "date_created": {
+                    "type": "string"
+                },
+                "date_updated": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "end_date": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "integer"
+                },
+                "project_id": {
+                    "type": "integer"
+                },
+                "start_date": {
+                    "type": "string"
+                }
+            }
         }
     }
 }`
 
 // SwaggerInfo holds exported Swagger Info so clients can modify it
 var SwaggerInfo = &swag.Spec{
-	Version:          "",
-	Host:             "",
-	BasePath:         "",
-	Schemes:          []string{},
-	Title:            "",
-	Description:      "",
+	Version:          "0.1",
+	Host:             "localhost:8080",
+	BasePath:         "/api",
+	Schemes:          []string{"http", "https"},
+	Title:            "FeedbackLab API",
+	Description:      "API для управления проектами, тикетами и документацией",
 	InfoInstanceName: "swagger",
 	SwaggerTemplate:  docTemplate,
 	LeftDelim:        "{{",

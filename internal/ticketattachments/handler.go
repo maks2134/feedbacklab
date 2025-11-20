@@ -24,8 +24,8 @@ func NewHandler(service Service) *Handler {
 // @Tags TicketAttachments
 // @Accept json
 // @Produce json
-// @Param attachment body CreateTicketAttachmentDTO true "Attachment"
-// @Success 201 {object} TicketAttachment
+// @Param attachment body transport.CreateTicketAttachmentDTO true "Attachment"
+// @Success 201 {object} postgres.TicketAttachment
 // @Router /ticket_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	dto := c.Locals("body").(*transport.CreateTicketAttachmentDTO)
@@ -49,7 +49,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 // @Tags TicketAttachments
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} TicketAttachment
+// @Success 200 {object} postgres.TicketAttachment
 // @Router /ticket_attachments/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
@@ -68,7 +68,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 // @Tags TicketAttachments
 // @Produce json
 // @Param ticket_id path int true "Ticket ID"
-// @Success 200 {array} TicketAttachment
+// @Success 200 {array} postgres.TicketAttachment
 // @Router /ticket_attachments/ticket/{ticket_id} [get]
 func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 	ticketID, err := strconv.Atoi(c.Params("ticket_id"))
@@ -88,8 +88,8 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param attachment body UpdateTicketAttachmentDTO true "Attachment"
-// @Success 200 {object} TicketAttachment
+// @Param attachment body transport.UpdateTicketAttachmentDTO true "Attachment"
+// @Success 200 {object} postgres.TicketAttachment
 // @Router /ticket_attachments/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
