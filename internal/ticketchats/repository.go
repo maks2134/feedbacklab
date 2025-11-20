@@ -51,7 +51,7 @@ func (r *repository) GetByID(ctx context.Context, id int) (*postgres.TicketChat,
 func (r *repository) GetByTicketID(ctx context.Context, ticketID int) ([]postgres.TicketChat, error) {
 	var chats []postgres.TicketChat
 	err := r.db.SelectContext(ctx, &chats,
-		`SELECT * FROM ticket_chats WHERE ticket_id = $1 ORDER BY date_created ASC`,
+		`SELECT * FROM ticket_chats WHERE ticket_id = $1 ORDER BY date_created`,
 		ticketID,
 	)
 	if err != nil {

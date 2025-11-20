@@ -18,12 +18,6 @@ type Config struct {
 	DatabaseURL   string
 	ParsedDBURL   *url.URL
 	MigrationsDir string
-
-	MinioEndpoint  string
-	MinioAccessKey string
-	MinioSecretKey string
-	MinioBucket    string
-	MinioUseSSL    bool
 }
 
 // Load reads configuration from environment variables and returns a Config instance.
@@ -56,14 +50,6 @@ func Load() (*Config, error) {
 
 	cfg.MigrationsDir = getEnv("MIGRATIONS_DIR", "./migrations")
 
-	cfg.MinioEndpoint = getEnv("MINIO_ENDPOINT", "localhost:9000")
-	cfg.MinioAccessKey = getEnv("MINIO_ACCESS_KEY", "minio")
-	cfg.MinioSecretKey = getEnv("MINIO_SECRET_KEY", "minio123")
-	cfg.MinioBucket = getEnv("MINIO_BUCKET", "feedback")
-
-	useSSLStr := getEnv("MINIO_USE_SSL", "false")
-	cfg.MinioUseSSL, _ = strconv.ParseBool(useSSLStr)
-
 	log.Println("config loaded and parsed successfully")
 	return cfg, nil
 }
@@ -75,7 +61,6 @@ func getEnv(key, fallback string) string {
 	return fallback
 }
 
-// getEnvInt - parser to integer value
 func getEnvInt(key string, fallback int) (int, error) {
 	if val, ok := os.LookupEnv(key); ok {
 		parsed, err := strconv.Atoi(val)

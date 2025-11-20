@@ -2,13 +2,12 @@
 package app
 
 import (
-	// import Swagger docs
+	// Import swagger docs for API documentation.
 	_ "innotech/docs"
 	"innotech/internal/contract"
 	"innotech/internal/modules"
 
 	"innotech/internal/documentations"
-	"innotech/internal/files"
 	"innotech/internal/projects"
 	"innotech/internal/userprojects"
 	"strconv"
@@ -46,7 +45,6 @@ func Start(container *container.Container) {
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
 	userprojects.RegisterRoutes(app, container.UserProjectHandler)
 	modules.RegisterRoutes(app, container.ModuleHandler)
-	files.RegisterRoutes(app, container.FileHandler)
 
 	log.Printf(" Server running on port %d\n", container.Config.AppPort)
 	if err := app.Listen(":" + strconv.Itoa(container.Config.AppPort)); err != nil {
