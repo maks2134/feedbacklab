@@ -1,3 +1,4 @@
+// Package minio - package to create basic operation in MinIO storage
 package minio
 
 import (
@@ -12,7 +13,8 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-type MinioClient struct {
+// Client - struct to create basic operation in MinIO storage
+type Client struct {
 	Client     *minio.Client
 	BucketName string
 }

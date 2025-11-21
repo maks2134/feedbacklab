@@ -5,11 +5,12 @@ import (
 	"innotech/pkg/logger"
 )
 
+// Service defines the interface for project business logic operations.
 type Service interface {
-	Create(ctx context.Context, p *Project) error
-	GetByID(ctx context.Context, id int) (*Project, error)
-	GetAll(ctx context.Context) ([]Project, error)
-	Update(ctx context.Context, p *Project) error
+	Create(ctx context.Context, p *postgres.Project) error
+	GetByID(ctx context.Context, id int) (*postgres.Project, error)
+	GetAll(ctx context.Context) ([]postgres.Project, error)
+	Update(ctx context.Context, p *postgres.Project) error
 	Delete(ctx context.Context, id int) error
 }
 
@@ -17,6 +18,7 @@ type projectService struct {
 	repo Repository
 }
 
+// NewService creates a new Service instance.
 func NewService(repo Repository) Service {
 	logger.Info("project service initialized")
 	return &projectService{repo: repo}

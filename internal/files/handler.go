@@ -1,20 +1,24 @@
+// Package files - package to files entity
 package files
 
 import (
-	"github.com/gofiber/fiber/v2"
 	"log/slog"
+
+	"github.com/gofiber/fiber/v2"
 )
 
+// Handler handles HTTP requests for files operations.
 type Handler struct {
 	service *Service
 	logger  *slog.Logger
 }
 
+// NewHandler creates a new Handler instance.
 func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{service: service, logger: logger}
 }
 
-// POST /files/upload
+// Upload POST /files/upload
 func (h *Handler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
 	if err != nil {
