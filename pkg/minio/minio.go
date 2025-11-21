@@ -6,7 +6,7 @@ import (
 	"net/url"
 	"time"
 
-	"innotech/pkg/logger" // Добавляем импорт вашего логгера
+	"innotech/pkg/logger"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"

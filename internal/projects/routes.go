@@ -21,7 +21,6 @@ func RegisterRoutes(app *fiber.App, h *Handler) {
 		return c.Next()
 	})
 
-	// Регистрируем роуты
 	api.Get("/", h.GetAll)
 	api.Get("/:id", h.GetByID)
 	api.Post("/", middleware.ValidateBody[CreateProjectDTO](h.Create))

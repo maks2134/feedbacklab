@@ -2,7 +2,7 @@ package projects
 
 import (
 	"context"
-	"innotech/pkg/logger" // Импортируем ваш логгер
+	"innotech/pkg/logger"
 )
 
 type Service interface {

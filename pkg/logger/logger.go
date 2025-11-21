@@ -7,7 +7,6 @@ import (
 
 var Global *slog.Logger
 
-// Init инициализирует глобальный логгер
 func Init() {
 	Global = slog.New(slog.NewJSONHandler(os.Stdout, &slog.HandlerOptions{
 		Level: slog.LevelDebug,
@@ -16,7 +15,6 @@ func Init() {
 	Global.Info("logger initialized")
 }
 
-// Shortcut функции для удобства
 func Info(msg string, args ...interface{}) {
 	Global.Info(msg, args...)
 }
