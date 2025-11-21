@@ -4,7 +4,6 @@ import (
 	"innotech/config"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
-	"innotech/internal/files"
 	"innotech/internal/health"
 	"innotech/internal/message_attachments"
 	"innotech/internal/projects"
@@ -14,7 +13,6 @@ import (
 	"innotech/internal/user_projects"
 	"innotech/pkg/db"
 	"innotech/pkg/logger"
-	"innotech/pkg/minio"
 	"log"
 	"log/slog"
 
@@ -33,21 +31,18 @@ type Container struct {
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
-	Minio                     *minio.MinioClient
-	FileHandler               *files.Handler
 }
 
 func New() *Container {
-	cfg := config.Load()
+	cfg, err := config.Load()
+	if err != nil {
+		log.Fatalln(err)
+	}
 
 	database, err := db.Connect(cfg.DatabaseURL)
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
 	}
-
-	newLogger := logger.NewLogger()
-	slog.SetDefault(newLogger)
-	//TODO сделать нормальный логгер через slog
 
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
@@ -84,21 +79,6 @@ func New() *Container {
 	userProjectService := user_projects.NewService(userProjectRepo)
 	userProjectHandler := user_projects.NewHandler(userProjectService)
 
-	minioClient, err := minio.New(
-		cfg.MinioEndpoint,
-		cfg.MinioAccessKey,
-		cfg.MinioSecretKey,
-		cfg.MinioBucket,
-		cfg.MinioUseSSL,
-	)
-
-	fileService := files.NewService(minioClient, newLogger)
-	fileHandler := files.NewHandler(fileService, newLogger)
-
-	if err != nil {
-		log.Fatalf("Failed to init MinIO: %v", err)
-	}
-
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -111,7 +91,5 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
-		Minio:                     minioClient,
-		FileHandler:               fileHandler,
 	}
 }

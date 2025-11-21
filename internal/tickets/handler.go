@@ -1,6 +1,7 @@
 package tickets
 
 import (
+	"log/slog"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -12,7 +13,7 @@ type Handler struct {
 	service Service
 }
 
-func NewHandler(service Service) *Handler {
+func NewHandler(service Service, log *slog.Logger) *Handler {
 	return &Handler{service: service}
 }
 

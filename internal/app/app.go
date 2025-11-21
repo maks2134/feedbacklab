@@ -37,7 +37,7 @@ func Start(container *container.Container) {
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
 	user_projects.RegisterRoutes(app, container.UserProjectHandler)
 
-	files.RegisterRoutes(api, container.FileHandler)
+	files.RegisterRoutes(app, container.FileHandler)
 
 	log.Printf(" Server running on port %s\n", container.Config.AppPort)
 	if err := app.Listen(":" + container.Config.AppPort); err != nil {
