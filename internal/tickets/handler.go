@@ -2,8 +2,7 @@
 package tickets
 
 import (
-	"innotech/internal/storage/postgres"
-	"innotech/internal/storage/transport"
+	"log/slog"
 	"strconv"
 
 	"github.com/gofiber/fiber/v2"
@@ -14,8 +13,7 @@ type Handler struct {
 	service Service
 }
 
-// NewHandler creates a new Handler instance.
-func NewHandler(service Service) *Handler {
+func NewHandler(service Service, log *slog.Logger) *Handler {
 	return &Handler{service: service}
 }
 

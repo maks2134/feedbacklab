@@ -37,8 +37,7 @@ type Container struct {
 	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
-	UserProjectHandler        *userprojects.Handler
-	ModuleHandler             *modules.Handler
+	UserProjectHandler        *user_projects.Handler
 }
 
 // New creates and initializes a new Container with all dependencies.
@@ -51,16 +50,6 @@ func New() *Container {
 	database, err := db.Connect(cfg.DatabaseURL)
 	if err != nil {
 		log.Fatalf("DB connection failed: %v", err)
-	}
-
-	newLogger := logger.NewLogger()
-	slog.SetDefault(newLogger)
-	// TODO сделать нормальный логгер через slog
-
-	i18nBundle := i18n.InitBundle()
-	localesDir := getEnv("LOCALES_DIR", "./locales")
-	if err := i18n.LoadTranslations(i18nBundle, localesDir); err != nil {
-		log.Printf("Warning: failed to load translations: %v", err)
 	}
 
 	healthService := health.NewSelfHealthService()
@@ -94,13 +83,9 @@ func New() *Container {
 	docService := documentations.NewService(docRepo)
 	docHandler := documentations.NewHandler(docService)
 
-	userProjectRepo := userprojects.NewRepository(database)
-	userProjectService := userprojects.NewService(userProjectRepo)
-	userProjectHandler := userprojects.NewHandler(userProjectService)
-
-	modulesRepo := modules.NewRepository(database)
-	modulesService := modules.NewService(modulesRepo)
-	modulesHandler := modules.NewHandler(modulesService)
+	userProjectRepo := user_projects.NewRepository(database)
+	userProjectService := user_projects.NewService(userProjectRepo)
+	userProjectHandler := user_projects.NewHandler(userProjectService)
 
 	return &Container{
 		Config:                    cfg,
@@ -115,13 +100,6 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
-		ModuleHandler:             modulesHandler,
-	}
-}
-
-func getEnv(key, fallback string) string {
-	if val, ok := os.LookupEnv(key); ok {
-		return val
 	}
 	return fallback
 }
