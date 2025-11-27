@@ -10,15 +10,10 @@ import (
 
 // @title FeedbackLab API
 // @version 0.1
-// @description API для управления проектами, тикетами и документацией
-// @termsOfService http://swagger.io/terms/
-// @contact.name API Support
-// @contact.email support@innotech.ru
-// @license.name Apache 2.0
-// @license.url http://www.apache.org/licenses/LICENSE-2.0.html
+// @description API для управления проектами, тикетами и документациейs
 // @host localhost:8080
 // @BasePath /api
-// @schemes http https
+// @schemes http
 func main() {
 	c := container.New()
 

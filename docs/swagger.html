@@ -27,8 +27,8 @@
   <script src="https://unpkg.com/swagger-ui-dist@5.10.5/swagger-ui-standalone-preset.js"></script>
   <script>
     window.onload = function() {
-      // Try to load OpenAPI 3.0 spec first, fallback to Swagger 2.0
-      const specUrls = ['./openapi.json', './swagger.json', './swagger.yaml', './openapi.yaml'];
+      // Load OpenAPI 3.0 spec (JSON format preferred for Swagger UI)
+      const specUrls = ['./swagger.json', './openapi.json'];
       
       // Try each URL until one works
       const tryLoadSpec = (index) => {
@@ -40,7 +40,13 @@
         return fetch(url)
           .then(response => {
             if (response.ok) {
-              return response.json().then(data => ({ url, data }));
+              return response.json().then(data => {
+                // Validate that it's OpenAPI 3.0
+                if (!data.openapi && !data.swagger) {
+                  throw new Error('Invalid API specification format');
+                }
+                return { url, data };
+              });
             } else {
               return tryLoadSpec(index + 1);
             }
@@ -73,8 +79,9 @@
           document.getElementById('swagger-ui').innerHTML = 
             '<div style="padding: 20px; text-align: center;">' +
             '<h2>Error loading API documentation</h2>' +
-            '<p>Please make sure openapi.json or swagger.json exists in the docs directory.</p>' +
+            '<p>Please make sure swagger.json (OpenAPI 3.0) exists in the docs directory.</p>' +
             '<p>Run: make swagger</p>' +
+            '<p style="color: red;">Error: ' + error.message + '</p>' +
             '</div>';
         });
     };
