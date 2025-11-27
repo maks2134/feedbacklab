@@ -5,6 +5,7 @@ import (
 	"innotech/internal/app"
 	"innotech/internal/container"
 	"innotech/pkg/db"
+	"innotech/pkg/logger"
 	"log"
 )
 
@@ -13,13 +14,25 @@ import (
 // @host localhost:8080
 // @BasePath /api
 func main() {
+	logger.Init()
+	logger.Info("starting FeedbackLab API application")
+
 	c := container.New()
+	logger.Info("container initialized")
 
 	if err := db.Migrate(c.Config.DatabaseURL, c.Config.MigrationsDir); err != nil {
+		logger.Error("database migration failed",
+			"error", err,
+			"database_url", c.Config.DatabaseURL,
+			"migrations_dir", c.Config.MigrationsDir,
+		)
 		log.Fatalf("Migration failed: %v", err)
 	}
+	logger.Info("database migrations completed successfully")
+
+	logger.Info("starting application server",
+		"version", "0.1",
+	)
 
 	app.Start(c)
 }
-
-// todo 1) сделать парсер в конфиге, 2) прикрутить slog, 3) названия в docker(https://github.com/wagoodman/dive), 4) линтер(https://gist.github.com/maratori/47a4d00457a92aa426dbd48a18776322), 5) переводы, 6) minio 7)ошибки.
