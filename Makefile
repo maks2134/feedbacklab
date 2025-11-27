@@ -121,11 +121,28 @@ migrate-create: ## Create a new migration file
 
 ##@ Swagger
 
-swagger: ## Generate Swagger documentation
-	@echo "$(GREEN)Generating Swagger documentation...$(NC)"
-	@which swag > /dev/null || (echo "$(RED)swag is not installed. Install it with: go install github.com/swaggo/swag/cmd/swag@latest$(NC)" && exit 1)
-	swag init -g $(CMD_DIR)/$(APP_NAME)/main.go -o $(SWAGGER_DIR)
-	@echo "$(GREEN)Swagger documentation generated in $(SWAGGER_DIR)/$(NC)"
+swagger: ## Generate OpenAPI 3.0 documentation from annotations
+	@echo "$(GREEN)Generating Swagger documentation from annotations...$(NC)"
+	@which swag > /dev/null || (echo "$(RED)swag is not installed. Installing...$(NC)" && go install github.com/swaggo/swag/cmd/swag@latest)
+	@export PATH=$$PATH:$$(go env GOPATH)/bin:$$HOME/go/bin && swag init -g $(CMD_DIR)/$(APP_NAME)/main.go -o $(SWAGGER_DIR) --parseDependency --parseInternal
+	@echo "$(GREEN)Converting Swagger 2.0 to OpenAPI 3.0...$(NC)"
+	@which swagger2openapi > /dev/null || (echo "$(RED)swagger2openapi is not installed. Installing...$(NC)" && npm install -g swagger2openapi)
+	@swagger2openapi $(SWAGGER_DIR)/swagger.json -o $(SWAGGER_DIR)/openapi-generated.json 2>/dev/null || echo "$(YELLOW)Warning: Could not convert swagger.json to OpenAPI 3.0$(NC)"
+	@echo "$(GREEN)Using manually created OpenAPI 3.0 specification...$(NC)"
+	@if [ -f $(SWAGGER_DIR)/openapi.json ]; then \
+		echo "$(GREEN)✓ Found openapi.json, using it as the source$(NC)"; \
+		cp $(SWAGGER_DIR)/openapi.json $(SWAGGER_DIR)/swagger.json; \
+		cp $(SWAGGER_DIR)/openapi.json $(SWAGGER_DIR)/swagger.yaml 2>/dev/null || echo "$(YELLOW)Note: Could not create swagger.yaml$(NC)"; \
+	else \
+		echo "$(YELLOW)Warning: openapi.json not found, using generated swagger.json$(NC)"; \
+	fi
+	@echo "$(GREEN)OpenAPI 3.0 documentation ready in $(SWAGGER_DIR)/$(NC)"
+	@echo "$(GREEN)Access Swagger UI at: http://localhost:8080/swagger/index.html$(NC)"
+
+swagger-static: swagger ## Generate static HTML documentation (works offline)
+	@echo "$(GREEN)Static HTML documentation is available at: file://$(shell pwd)/$(SWAGGER_DIR)/swagger.html$(NC)"
+	@echo "$(GREEN)Open $(SWAGGER_DIR)/swagger.html in your browser for offline viewing$(NC)"
+	@echo "$(GREEN)Or access via: http://localhost:8080/docs/swagger.html$(NC)"
 
 ##@ Docker
 

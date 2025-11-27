@@ -18,6 +18,16 @@ func NewHandler(service Service) *Handler {
 	return &Handler{service: service}
 }
 
+// Create godoc
+// @Summary Создать новую документацию
+// @Tags Documentations
+// @Accept json
+// @Produce json
+// @Param documentation body transport.CreateDocumentationDTO true "Documentation Data"
+// @Success 201 {object} postgres.Documentation
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/documentations [post]
 // Create handles the creation of a new documentation entry.
 func (h *Handler) Create(c *fiber.Ctx) error {
 	dto := c.Locals("body").(*transport.CreateDocumentationDTO)
@@ -33,6 +43,15 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 	return c.Status(fiber.StatusCreated).JSON(d)
 }
 
+// GetByID godoc
+// @Summary Получить документацию по ID
+// @Tags Documentations
+// @Produce json
+// @Param id path int true "Documentation ID"
+// @Success 200 {object} postgres.Documentation
+// @Failure 400 {object} map[string]string
+// @Failure 404 {object} map[string]string
+// @Router /api/documentations/{id} [get]
 // GetByID retrieves a documentation entry by its ID.
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
@@ -46,6 +65,13 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 	return c.JSON(d)
 }
 
+// GetAll godoc
+// @Summary Получить всю документацию
+// @Tags Documentations
+// @Produce json
+// @Success 200 {array} postgres.Documentation
+// @Failure 500 {object} map[string]string
+// @Router /api/documentations [get]
 // GetAll retrieves all documentation entries.
 func (h *Handler) GetAll(c *fiber.Ctx) error {
 	docs, err := h.service.GetAll(c.Context())
@@ -55,6 +81,17 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 	return c.JSON(docs)
 }
 
+// Update godoc
+// @Summary Обновить документацию
+// @Tags Documentations
+// @Accept json
+// @Produce json
+// @Param id path int true "Documentation ID"
+// @Param documentation body transport.UpdateDocumentationDTO true "Documentation Data"
+// @Success 200 {object} postgres.Documentation
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/documentations/{id} [put]
 // Update handles the update of an existing documentation entry.
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
@@ -74,6 +111,14 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 	return c.JSON(d)
 }
 
+// Delete godoc
+// @Summary Удалить документацию
+// @Tags Documentations
+// @Param id path int true "Documentation ID"
+// @Success 204
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /api/documentations/{id} [delete]
 // Delete handles the deletion of a documentation entry.
 func (h *Handler) Delete(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))

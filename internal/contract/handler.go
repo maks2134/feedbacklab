@@ -21,7 +21,7 @@ func NewHandler(service *Service) *Handler {
 // @Description Returns all contracts
 // @Tags Contracts
 // @Produce json
-// @Success 200 {array} models.Contract
+// @Success 200 {array} contract.Contract
 // @Router /api/contracts [get]
 func (h *Handler) GetAll(c *fiber.Ctx) error {
 	items, err := h.service.GetAll()
@@ -37,7 +37,7 @@ func (h *Handler) GetAll(c *fiber.Ctx) error {
 // @Tags Contracts
 // @Produce json
 // @Param id path int true "Contract ID"
-// @Success 200 {object} models.Contract
+// @Success 200 {object} contract.Contract
 // @Router /api/contracts/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))
@@ -56,8 +56,8 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 // @Tags Contracts
 // @Accept json
 // @Produce json
-// @Param contract body models.Contract true "Contract Data"
-// @Success 201 {object} models.Contract
+// @Param contract body contract.Contract true "Contract Data"
+// @Success 201 {object} contract.Contract
 // @Router /api/contracts [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
 	var input Contract
@@ -76,8 +76,8 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "Contract ID"
-// @Param contract body models.Contract true "Updated Contract Data"
-// @Success 200 {object} models.Contract
+// @Param contract body contract.Contract true "Updated Contract Data"
+// @Success 200 {object} contract.Contract
 // @Router /api/contracts/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))

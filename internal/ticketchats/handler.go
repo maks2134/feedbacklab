@@ -24,8 +24,8 @@ func NewHandler(service Service) *Handler {
 // @Tags TicketChats
 // @Accept json
 // @Produce json
-// @Param chat body CreateTicketChatDTO true "Chat"
-// @Success 201 {object} TicketChat
+// @Param chat body transport.CreateTicketChatDTO true "Chat"
+// @Success 201 {object} postgres.TicketChat
 // @Failure 400 {object} map[string]string
 // @Router /ticket_chats/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
@@ -51,7 +51,7 @@ func (h *Handler) Create(c *fiber.Ctx) error {
 // @Tags TicketChats
 // @Produce json
 // @Param id path int true "ID"
-// @Success 200 {object} TicketChat
+// @Success 200 {object} postgres.TicketChat
 // @Failure 404 {object} map[string]string
 // @Router /ticket_chats/{id} [get]
 func (h *Handler) GetByID(c *fiber.Ctx) error {
@@ -71,7 +71,7 @@ func (h *Handler) GetByID(c *fiber.Ctx) error {
 // @Tags TicketChats
 // @Produce json
 // @Param ticket_id path int true "Ticket ID"
-// @Success 200 {array} TicketChat
+// @Success 200 {array} postgres.TicketChat
 // @Router /ticket_chats/ticket/{ticket_id} [get]
 func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 	ticketID, err := strconv.Atoi(c.Params("ticket_id"))
@@ -91,8 +91,8 @@ func (h *Handler) GetByTicketID(c *fiber.Ctx) error {
 // @Accept json
 // @Produce json
 // @Param id path int true "ID"
-// @Param chat body UpdateTicketChatDTO true "Chat"
-// @Success 200 {object} TicketChat
+// @Param chat body transport.UpdateTicketChatDTO true "Chat"
+// @Success 200 {object} postgres.TicketChat
 // @Router /ticket_chats/{id} [put]
 func (h *Handler) Update(c *fiber.Ctx) error {
 	id, err := strconv.Atoi(c.Params("id"))

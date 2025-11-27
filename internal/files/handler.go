@@ -18,6 +18,16 @@ func NewHandler(service *Service, logger *slog.Logger) *Handler {
 	return &Handler{service: service, logger: logger}
 }
 
+// Upload godoc
+// @Summary Загрузить файл
+// @Tags Files
+// @Accept multipart/form-data
+// @Produce json
+// @Param file formData file true "Файл для загрузки"
+// @Success 200 {object} map[string]string
+// @Failure 400 {object} map[string]string
+// @Failure 500 {object} map[string]string
+// @Router /files/upload [post]
 // Upload POST /files/upload
 func (h *Handler) Upload(c *fiber.Ctx) error {
 	file, err := c.FormFile("file")
