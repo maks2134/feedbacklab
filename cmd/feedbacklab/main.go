@@ -5,6 +5,7 @@ import (
 	"innotech/internal/app"
 	"innotech/internal/container"
 	"innotech/pkg/db"
+	"innotech/pkg/logger"
 	"log"
 )
 
@@ -15,11 +16,25 @@ import (
 // @BasePath /api
 // @schemes http
 func main() {
+	logger.Init()
+	logger.Info("starting FeedbackLab API application")
+
 	c := container.New()
+	logger.Info("container initialized")
 
 	if err := db.Migrate(c.Config.DatabaseURL, c.Config.MigrationsDir); err != nil {
+		logger.Error("database migration failed",
+			"error", err,
+			"database_url", c.Config.DatabaseURL,
+			"migrations_dir", c.Config.MigrationsDir,
+		)
 		log.Fatalf("Migration failed: %v", err)
 	}
+	logger.Info("database migrations completed successfully")
+
+	logger.Info("starting application server",
+		"version", "0.1",
+	)
 
 	app.Start(c)
 }

@@ -47,8 +47,9 @@ func Start(container *container.Container) {
 	contract.RegisterRoutes(app, container.ContractHandler)
 	projects.RegisterRoutes(app, container.ProjectHandler)
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
-	userprojects.RegisterRoutes(app, container.UserProjectHandler)
-	modules.RegisterRoutes(app, container.ModuleHandler)
+	user_projects.RegisterRoutes(app, container.UserProjectHandler)
+
+	files.RegisterRoutes(app, container.FileHandler)
 
 	log.Printf(" Server running on port %d\n", container.Config.AppPort)
 	if err := app.Listen(":" + strconv.Itoa(container.Config.AppPort)); err != nil {
