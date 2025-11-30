@@ -13,8 +13,8 @@ import (
 	"github.com/minio/minio-go/v7/pkg/credentials"
 )
 
-// Client - struct to create basic operation in MinIO storage
-type Client struct {
+// MinioClient provides helper methods for interacting with MinIO storage.
+type MinioClient struct {
 	Client     *minio.Client
 	BucketName string
 }
