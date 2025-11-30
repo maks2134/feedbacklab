@@ -3,11 +3,11 @@ package minio
 
 import (
 	"context"
+	"innotech/pkg/logger"
 	"log"
+	"mime/multipart"
 	"net/url"
 	"time"
-
-	"innotech/pkg/logger"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -73,62 +73,46 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClie
 	}, nil
 }
 
-func (m *MinioClient) Upload(ctx context.Context, objectName, filePath string) error {
-	logger.Info("uploading file to MinIO",
+func (m *MinioClient) UploadFile(ctx context.Context, objectName string, file *multipart.FileHeader) error {
+	src, err := file.Open()
+	if err != nil {
+		return err
+	}
+	defer func(src multipart.File) {
+		err := src.Close()
+		if err != nil {
+			return
+		}
+	}(src)
+
+	logger.Info("uploading file stream to MinIO",
 		"bucket", m.BucketName,
 		"object_name", objectName,
-		"file_path", filePath,
+		"size", file.Size,
 	)
 
-	_, err := m.Client.FPutObject(ctx, m.BucketName, objectName, filePath, minio.PutObjectOptions{})
+	_, err = m.Client.PutObject(ctx, m.BucketName, objectName, src, file.Size, minio.PutObjectOptions{
+		ContentType: file.Header.Get("Content-Type"),
+	})
 	if err != nil {
-		logger.Error("failed to upload file to MinIO",
-			"bucket", m.BucketName,
-			"object_name", objectName,
-			"file_path", filePath,
-			"error", err,
-		)
+		logger.Error("failed to upload file", "error", err)
 		return err
 	}
 
-	logger.Info("file uploaded successfully",
-		"bucket", m.BucketName,
-		"object_name", objectName,
-		"file_path", filePath,
-	)
 	return nil
 }
 
 func (m *MinioClient) GetFileURL(objectName string) (string, error) {
-	logger.Debug("generating presigned URL for object",
-		"bucket", m.BucketName,
-		"object_name", objectName,
-	)
+	expiry := time.Hour * 24
 
-	reqParams := make(url.Values)
-
-	presignedURL, err := m.Client.PresignedGetObject(
-		context.Background(),
-		m.BucketName,
-		objectName,
-		time.Hour*24,
-		reqParams,
-	)
+	pressigndURL, err := m.Client.PresignedGetObject(context.Background(), m.BucketName, objectName, expiry, make(url.Values))
 	if err != nil {
-		logger.Error("failed to generate presigned URL",
-			"bucket", m.BucketName,
-			"object_name", objectName,
-			"error", err,
-		)
-		return "", err
+		logger.Error("failed to get presigned url", "error", err)
 	}
 
-	urlString := presignedURL.String()
-	logger.Debug("presigned URL generated successfully",
-		"bucket", m.BucketName,
-		"object_name", objectName,
-		"url_length", len(urlString),
-	)
+	return pressigndURL.String(), nil
+}
 
-	return urlString, nil
+func (m *MinioClient) DeleteFile(ctx context.Context, objectName string) error {
+	return m.Client.RemoveObject(ctx, m.BucketName, objectName, minio.RemoveObjectOptions{})
 }
