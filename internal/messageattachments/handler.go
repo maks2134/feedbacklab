@@ -28,18 +28,23 @@ func NewHandler(service Service) *Handler {
 // @Success 201 {object} postgres.MessageAttachment
 // @Router /message_attachments/ [post]
 func (h *Handler) Create(c *fiber.Ctx) error {
-	dto := c.Locals("body").(*transport.CreateMessageAttachmentDTO)
+	file, err := c.FormFile("file")
+	if err != nil {
+		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "file is required"})
+	}
+
+	chatID, _ := strconv.Atoi(c.FormValue("chat_id"))
+	uploadedBy, _ := strconv.Atoi(c.FormValue("uploaded_by"))
 
 	att := postgres.MessageAttachment{
-		ChatID:     dto.ChatID,
-		FilePath:   dto.FilePath,
-		UploadedBy: dto.UploadedBy,
-		FileType:   dto.FileType,
+		ChatID:     chatID,
+		UploadedBy: strconv.Itoa(uploadedBy),
 	}
 
-	if err := h.service.Create(c.Context(), &att); err != nil {
+	if err := h.service.Create(c.Context(), &att, file); err != nil {
 		return c.Status(fiber.StatusInternalServerError).JSON(fiber.Map{"error": err.Error()})
 	}
+
 	return c.Status(fiber.StatusCreated).JSON(att)
 }
 

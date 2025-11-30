@@ -50,6 +50,22 @@ func New() *Container {
 		log.Fatalf("DB connection failed: %v", err)
 	}
 
+	minioClient, err := minioclient.New(
+		cfg.MinioEndpoint,
+		cfg.MinioAccessKey,
+		cfg.MinioSecretKey,
+		cfg.MinioBucket,
+		cfg.MinioUseSSL,
+	)
+	if err != nil {
+		log.Fatalf("failed to initialize MinIO client: %v", err)
+	}
+
+	bundle := i18n.InitBundle()
+	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
+		log.Printf("warning: failed to load translations: %v", err)
+	}
+
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
 
@@ -62,11 +78,11 @@ func New() *Container {
 	chatHandler := ticketchats.NewHandler(chatService)
 
 	attachRepo := ticketattachments.NewRepository(database)
-	attachService := ticketattachments.NewService(attachRepo)
+	attachService := ticketattachments.NewService(attachRepo, minioClient)
 	attachHandler := ticketattachments.NewHandler(attachService)
 
 	msgAttachRepo := messageattachments.NewRepository(database)
-	msgAttachService := messageattachments.NewService(msgAttachRepo)
+	msgAttachService := messageattachments.NewService(msgAttachRepo, minioClient)
 	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	contractRepo := contract.NewRepository(database)
@@ -84,22 +100,6 @@ func New() *Container {
 	userProjectRepo := userprojects.NewRepository(database)
 	userProjectService := userprojects.NewService(userProjectRepo)
 	userProjectHandler := userprojects.NewHandler(userProjectService)
-
-	bundle := i18n.InitBundle()
-	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
-		log.Printf("warning: failed to load translations: %v", err)
-	}
-
-	_, err = minioclient.New(
-		cfg.MinioEndpoint,
-		cfg.MinioAccessKey,
-		cfg.MinioSecretKey,
-		cfg.MinioBucket,
-		cfg.MinioUseSSL,
-	)
-	if err != nil {
-		log.Fatalf("failed to initialize MinIO client: %v", err)
-	}
 
 	return &Container{
 		Config:                    cfg,
