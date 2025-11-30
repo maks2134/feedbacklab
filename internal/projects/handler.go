@@ -2,6 +2,8 @@
 package projects
 
 import (
+	"innotech/internal/storage/postgres"
+	"innotech/internal/storage/transport"
 	"innotech/pkg/logger"
 	"strconv"
 
@@ -142,8 +144,8 @@ func (h *Handler) Update(c *fiber.Ctx) error {
 		return c.Status(fiber.StatusBadRequest).JSON(fiber.Map{"error": "invalid id"})
 	}
 
-	dto := c.Locals("body").(*UpdateProjectDTO)
-	p := Project{
+	dto := c.Locals("body").(*transport.UpdateProjectDTO)
+	p := postgres.Project{
 		ID:              id,
 		Name:            dto.Name,
 		Description:     dto.Description,

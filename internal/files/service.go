@@ -2,18 +2,18 @@ package files
 
 import (
 	"context"
-	"innotech/pkg/minio"
+	minio_client "innotech/pkg/minio"
 	"log/slog"
 )
 
 // Service defines the interface for files business logic operations.
 type Service struct {
-	minio  *minio.Client
+	minio  *minio_client.MinioClient
 	logger *slog.Logger
 }
 
 // NewService creates a new Service instance.
-func NewService(minioClient *minio.Client, logger *slog.Logger) *Service {
+func NewService(minioClient *minio_client.MinioClient, logger *slog.Logger) *Service {
 	return &Service{minio: minioClient, logger: logger}
 }
 

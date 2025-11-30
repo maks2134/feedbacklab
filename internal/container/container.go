@@ -5,20 +5,19 @@ import (
 	"innotech/config"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
+	"innotech/internal/files"
 	"innotech/internal/health"
 	"innotech/internal/messageattachments"
-	"innotech/internal/modules"
 	"innotech/internal/projects"
 	"innotech/internal/ticketattachments"
 	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
-	"innotech/internal/userprojects"
+	user_projects "innotech/internal/userprojects"
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
+	minio_client "innotech/pkg/minio"
 	"log"
-	"log/slog"
-	"os"
 
 	"github.com/jmoiron/sqlx"
 	goi18n "github.com/nicksnyder/go-i18n/v2/i18n"
@@ -38,6 +37,7 @@ type Container struct {
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
+	FileHandler               *files.Handler
 }
 
 // New creates and initializes a new Container with all dependencies.
@@ -57,7 +57,7 @@ func New() *Container {
 
 	ticketRepo := tickets.NewRepository(database)
 	ticketService := tickets.NewService(ticketRepo)
-	ticketHandler := tickets.NewHandler(ticketService)
+	ticketHandler := tickets.NewHandler(ticketService, logger.Global)
 
 	chatRepo := ticketchats.NewRepository(database)
 	chatService := ticketchats.NewService(chatRepo)
@@ -87,10 +87,28 @@ func New() *Container {
 	userProjectService := user_projects.NewService(userProjectRepo)
 	userProjectHandler := user_projects.NewHandler(userProjectService)
 
+	bundle := i18n.InitBundle()
+	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
+		log.Printf("warning: failed to load translations: %v", err)
+	}
+
+	minioClient, err := minio_client.New(
+		cfg.MinioEndpoint,
+		cfg.MinioAccessKey,
+		cfg.MinioSecretKey,
+		cfg.MinioBucket,
+		cfg.MinioUseSSL,
+	)
+	if err != nil {
+		log.Fatalf("failed to initialize MinIO client: %v", err)
+	}
+	fileService := files.NewService(minioClient, logger.Global)
+	fileHandler := files.NewHandler(fileService, logger.Global)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
-		I18nBundle:                i18nBundle,
+		I18nBundle:                bundle,
 		HealthHandler:             healthHandler,
 		TicketHandler:             ticketHandler,
 		TicketChatsHandler:        chatHandler,
@@ -100,6 +118,6 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
+		FileHandler:               fileHandler,
 	}
-	return fallback
 }

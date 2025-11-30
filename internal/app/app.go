@@ -4,15 +4,14 @@ package app
 import (
 	// Import swagger docs for API documentation.
 	_ "innotech/docs"
+	"innotech/internal/container"
 	"innotech/internal/contract"
-	"innotech/internal/modules"
-
 	"innotech/internal/documentations"
+	"innotech/internal/files"
 	"innotech/internal/projects"
-	"innotech/internal/userprojects"
+	user_projects "innotech/internal/userprojects"
 	"strconv"
 
-	"innotech/internal/container"
 	"innotech/internal/health"
 	"innotech/internal/messageattachments"
 	"innotech/internal/ticketattachments"
@@ -23,6 +22,7 @@ import (
 	"log"
 
 	"github.com/gofiber/fiber/v2"
+	"github.com/gofiber/fiber/v2/middleware/basicauth"
 	swagger "github.com/swaggo/fiber-swagger"
 )
 
@@ -31,6 +31,16 @@ func Start(container *container.Container) {
 	app := fiber.New()
 
 	app.Use(middleware.I18nMiddleware(container.I18nBundle))
+
+	if container.Config.SwaggerUsername != "" && container.Config.SwaggerPassword != "" {
+		authMiddleware := basicauth.New(basicauth.Config{
+			Users: map[string]string{
+				container.Config.SwaggerUsername: container.Config.SwaggerPassword,
+			},
+		})
+		app.Use("/swagger", authMiddleware)
+		app.Use("/docs", authMiddleware)
+	}
 
 	// Swagger UI endpoint
 	app.Get("/swagger/*", swagger.WrapHandler)

@@ -1,18 +1,18 @@
 {
-  "openapi": "3.0.0",
-  "info": {
-    "title": "FeedbackLab API",
+    "openapi": "3.0.0",
+    "info": {
+        "title": "FeedbackLab API",
     "description": "API для управления проектами, тикетами и документацией",
     "version": "0.1",
-    "contact": {
-      "name": "API Support",
-      "email": "support@innotech.ru"
-    },
-    "license": {
-      "name": "Apache 2.0",
-      "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
+        "contact": {
+            "name": "API Support",
+            "email": "support@innotech.ru"
+        },
+        "license": {
+            "name": "Apache 2.0",
+            "url": "http://www.apache.org/licenses/LICENSE-2.0.html"
     }
-  },
+        },
   "servers": [
     {
       "url": "http://localhost:8080",
@@ -69,7 +69,7 @@
       "description": "File upload endpoints"
     }
   ],
-  "paths": {
+    "paths": {
     "/health": {
       "get": {
         "tags": ["Health"],
@@ -105,21 +105,21 @@
         }
       }
     },
-    "/api/contracts": {
-      "get": {
+        "/api/contracts": {
+            "get": {
         "tags": ["Contracts"],
         "summary": "Получить все контракты",
         "description": "Возвращает список всех контрактов",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
                     "$ref": "#/components/schemas/Contract"
-                  }
+                                    }
                 }
               }
             }
@@ -130,31 +130,31 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "post": {
+            },
+            "post": {
         "tags": ["Contracts"],
         "summary": "Создать новый контракт",
-        "requestBody": {
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/Contract"
               }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Contract"
                 }
               }
@@ -176,35 +176,35 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
-    "/api/contracts/{id}": {
-      "get": {
+        },
+        "/api/contracts/{id}": {
+            "get": {
         "tags": ["Contracts"],
         "summary": "Получить контракт по ID",
         "description": "Возвращает контракт по его идентификатору",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID контракта"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Contract"
                 }
               }
@@ -226,42 +226,42 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "put": {
+            },
+            "put": {
         "tags": ["Contracts"],
         "summary": "Обновить контракт",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID контракта"
-          }
-        ],
-        "requestBody": {
+                    }
+                ],
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/Contract"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Contract"
                 }
               }
@@ -283,29 +283,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
+            },
+            "delete": {
         "tags": ["Contracts"],
         "summary": "Удалить контракт",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID контракта"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -313,10 +313,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -331,16 +331,16 @@
       }
     },
     "/api/projects": {
-      "get": {
+            "get": {
         "tags": ["Projects"],
         "summary": "Получить все проекты",
         "description": "Возвращает список всех проектов",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/Project"
@@ -355,35 +355,35 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      },
-      "post": {
+        },
+            "post": {
         "tags": ["Projects"],
         "summary": "Создать новый проект",
-        "requestBody": {
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/CreateProjectDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Project"
-                }
-              }
-            }
+                                }
+                            }
+                        }
           },
           "400": {
             "description": "Bad Request",
@@ -391,10 +391,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -409,7 +409,7 @@
       }
     },
     "/api/projects/{id}": {
-      "get": {
+            "get": {
         "tags": ["Projects"],
         "summary": "Получить проект по ID",
         "description": "Возвращает проект по его идентификатору",
@@ -460,17 +460,17 @@
       "put": {
         "tags": ["Projects"],
         "summary": "Обновить проект",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID проекта"
-          }
-        ],
+                    }
+                ],
         "requestBody": {
           "required": true,
           "content": {
@@ -560,14 +560,14 @@
         "tags": ["Modules"],
         "summary": "Получить все модули",
         "description": "Возвращает список всех модулей",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
                     "$ref": "#/components/schemas/Module"
                   }
                 }
@@ -580,12 +580,12 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      },
+        },
       "post": {
         "tags": ["Modules"],
         "summary": "Создать новый модуль",
@@ -634,27 +634,27 @@
       }
     },
     "/api/modules/{id}": {
-      "get": {
+            "get": {
         "tags": ["Modules"],
         "summary": "Получить модуль по ID",
         "description": "Возвращает модуль по его идентификатору",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID модуля"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Module"
                 }
               }
@@ -676,42 +676,42 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "put": {
+            },
+            "put": {
         "tags": ["Modules"],
         "summary": "Обновить модуль",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID модуля"
-          }
-        ],
-        "requestBody": {
+                    }
+                ],
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/UpdateModuleDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Module"
                 }
               }
@@ -733,29 +733,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
+            },
+            "delete": {
         "tags": ["Modules"],
         "summary": "Удалить модуль",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID модуля"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -763,10 +763,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -811,29 +811,29 @@
           }
         }
       },
-      "post": {
+            "post": {
         "tags": ["Documentations"],
         "summary": "Создать новую документацию",
-        "requestBody": {
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/CreateDocumentationDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Documentation"
-                }
-              }
-            }
+                                }
+                            }
+                        }
           },
           "400": {
             "description": "Bad Request",
@@ -841,10 +841,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -859,7 +859,7 @@
       }
     },
     "/api/documentations/{id}": {
-      "get": {
+            "get": {
         "tags": ["Documentations"],
         "summary": "Получить документацию по ID",
         "description": "Возвращает документацию по её идентификатору",
@@ -910,17 +910,17 @@
       "put": {
         "tags": ["Documentations"],
         "summary": "Обновить документацию",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID документации"
-          }
-        ],
+                    }
+                ],
         "requestBody": {
           "required": true,
           "content": {
@@ -1010,14 +1010,14 @@
         "tags": ["UserProjects"],
         "summary": "Получить все связи пользователь-проект",
         "description": "Возвращает список всех связей пользователь-проект",
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
                     "$ref": "#/components/schemas/UserProject"
                   }
                 }
@@ -1030,12 +1030,12 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      },
+        },
       "post": {
         "tags": ["UserProjects"],
         "summary": "Создать новую связь пользователь-проект",
@@ -1084,12 +1084,12 @@
       }
     },
     "/api/user-projects/{user_id}/{project_id}": {
-      "get": {
+            "get": {
         "tags": ["UserProjects"],
         "summary": "Получить связь пользователь-проект",
         "description": "Возвращает связь пользователь-проект по идентификаторам пользователя и проекта",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -1101,20 +1101,20 @@
           },
           {
             "name": "project_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID проекта"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/UserProject"
                 }
               }
@@ -1136,17 +1136,17 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "put": {
+            },
+            "put": {
         "tags": ["UserProjects"],
         "summary": "Обновить связь пользователь-проект",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -1158,30 +1158,30 @@
           },
           {
             "name": "project_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID проекта"
-          }
-        ],
-        "requestBody": {
+                    }
+                ],
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/UpdateUserProjectDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/UserProject"
                 }
               }
@@ -1203,17 +1203,17 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
+            },
+            "delete": {
         "tags": ["UserProjects"],
         "summary": "Удалить связь пользователь-проект",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -1225,17 +1225,17 @@
           },
           {
             "name": "project_id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID проекта"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -1243,10 +1243,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1261,35 +1261,35 @@
       }
     },
     "/tickets": {
-      "post": {
+            "post": {
         "tags": ["Tickets"],
         "summary": "Создать тикет",
-        "requestBody": {
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/CreateTicketDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Ticket"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Error"
                 }
               }
@@ -1301,15 +1301,15 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
+        },
     "/tickets/": {
-      "get": {
+            "get": {
         "tags": ["Tickets"],
         "summary": "Получить все тикеты",
         "responses": {
@@ -1353,17 +1353,17 @@
       "get": {
         "tags": ["Tickets"],
         "summary": "Получить тикет по ID",
-        "parameters": [
-          {
+                "parameters": [
+                    {
             "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID тикета"
-          }
-        ],
+                    }
+                ],
         "responses": {
           "200": {
             "description": "OK",
@@ -1421,12 +1421,12 @@
             }
           }
         },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Ticket"
                 }
               }
@@ -1505,7 +1505,7 @@
             "application/json": {
               "schema": {
                 "$ref": "#/components/schemas/CreateTicketChatDTO"
-              }
+                                    }
             }
           }
         },
@@ -1536,34 +1536,34 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
-    "/ticket_chats/{id}": {
-      "get": {
+        },
+        "/ticket_chats/{id}": {
+            "get": {
         "tags": ["TicketChats"],
         "summary": "Получить сообщение по ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID сообщения"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/TicketChat"
                 }
               }
@@ -1575,52 +1575,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "put": {
+            },
+            "put": {
         "tags": ["TicketChats"],
         "summary": "Обновить сообщение",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID сообщения"
-          }
-        ],
-        "requestBody": {
+                    }
+                ],
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/UpdateTicketChatDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/TicketChat"
                 }
               }
@@ -1642,29 +1642,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
+            },
+            "delete": {
         "tags": ["TicketChats"],
         "summary": "Удалить сообщение",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID сообщения"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -1672,10 +1672,10 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                    }
                 }
-              }
             }
-          },
+        },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1707,9 +1707,9 @@
         "responses": {
           "200": {
             "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                   "type": "array",
                   "items": {
                     "$ref": "#/components/schemas/TicketChat"
@@ -1725,9 +1725,9 @@
                 "schema": {
                   "$ref": "#/components/schemas/Error"
                 }
-              }
-            }
-          },
+                            }
+                        }
+                    },
           "500": {
             "description": "Internal Server Error",
             "content": {
@@ -1754,23 +1754,23 @@
               }
             }
           }
-        },
-        "responses": {
-          "201": {
-            "description": "Created",
-            "content": {
-              "application/json": {
-                "schema": {
+                },
+                "responses": {
+                    "201": {
+                        "description": "Created",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/TicketAttachment"
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Bad Request",
-            "content": {
-              "application/json": {
-                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "400": {
+                        "description": "Bad Request",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Error"
                 }
               }
@@ -1782,15 +1782,15 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
             }
-          }
-        }
-      }
-    },
+        },
     "/ticket_attachments/{id}": {
-      "get": {
+            "get": {
         "tags": ["TicketAttachments"],
         "summary": "Получить вложение по ID",
         "parameters": [
@@ -1804,12 +1804,12 @@
             "description": "ID вложения"
           }
         ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/TicketAttachment"
                 }
               }
@@ -1821,21 +1821,21 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
+                                    }
+                                }
+                            }
+                        }
+                    }
       },
       "put": {
         "tags": ["TicketAttachments"],
@@ -1936,7 +1936,7 @@
       }
     },
     "/ticket_attachments/ticket/{ticket_id}": {
-      "get": {
+            "get": {
         "tags": ["TicketAttachments"],
         "summary": "Получить все вложения тикета",
         "parameters": [
@@ -2039,23 +2039,23 @@
       "get": {
         "tags": ["MessageAttachments"],
         "summary": "Получить вложение по ID",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID вложения"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/MessageAttachment"
                 }
               }
@@ -2067,52 +2067,52 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "Not Found",
-            "content": {
-              "application/json": {
-                "schema": {
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Not Found",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "put": {
+            },
+            "put": {
         "tags": ["MessageAttachments"],
         "summary": "Обновить вложение",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID вложения"
-          }
-        ],
-        "requestBody": {
+                    }
+                ],
+                "requestBody": {
           "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
+                    "content": {
+                        "application/json": {
+                            "schema": {
                 "$ref": "#/components/schemas/UpdateMessageAttachmentDTO"
               }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "OK",
-            "content": {
-              "application/json": {
-                "schema": {
+                            }
+                        }
+                },
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "content": {
+                            "application/json": {
+                                "schema": {
                   "$ref": "#/components/schemas/MessageAttachment"
                 }
               }
@@ -2134,29 +2134,29 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
+                                }
+                            }
+                        }
+                    }
                 }
-              }
-            }
-          }
-        }
-      },
-      "delete": {
+            },
+            "delete": {
         "tags": ["MessageAttachments"],
         "summary": "Удалить вложение",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "integer"
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
             },
             "description": "ID вложения"
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "No Content"
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "No Content"
           },
           "400": {
             "description": "Bad Request",
@@ -2176,17 +2176,17 @@
                   "$ref": "#/components/schemas/Error"
                 }
               }
+                    }
+                }
             }
-          }
         }
-      }
     },
     "/message_attachments/chat/{chat_id}": {
       "get": {
         "tags": ["MessageAttachments"],
         "summary": "Получить все вложения по chat_id",
         "parameters": [
-          {
+        {
             "name": "chat_id",
             "in": "path",
             "required": true,
@@ -2232,7 +2232,7 @@
           }
         }
       }
-    },
+        },
     "/files/upload": {
       "post": {
         "tags": ["Files"],
@@ -2289,7 +2289,7 @@
               "application/json": {
                 "schema": {
                   "$ref": "#/components/schemas/Error"
-                }
+        }
               }
             }
           }
@@ -2297,11 +2297,11 @@
       }
     }
   },
-  "components": {
-    "schemas": {
+    "components": {
+        "schemas": {
       "Error": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "error": {
             "type": "string"
           }
@@ -2311,25 +2311,25 @@
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "project_id": {
             "type": "integer"
-          },
+                    },
           "client_name": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "start_date": {
             "type": "string",
             "format": "date-time"
-          },
+                    },
           "end_date": {
             "type": "string",
             "format": "date-time"
           },
           "description": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "date_created": {
             "type": "string",
             "format": "date-time"
@@ -2343,14 +2343,14 @@
       "Project": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer"
-          },
+                    "id": {
+                        "type": "integer"
+                    },
           "name": {
             "type": "string",
             "minLength": 2,
             "maxLength": 255
-          },
+            },
           "description": {
             "type": "string",
             "nullable": true
@@ -2375,25 +2375,25 @@
         "required": ["name"]
       },
       "CreateProjectDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "name": {
             "type": "string",
             "minLength": 2,
             "maxLength": 255
           },
           "description": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "gitlab_project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "mattermost_team": {
-            "type": "string"
+                        "type": "string"
           }
         },
         "required": ["name"]
-      },
+                    },
       "UpdateProjectDTO": {
         "type": "object",
         "properties": {
@@ -2401,28 +2401,28 @@
             "type": "string",
             "minLength": 2,
             "maxLength": 255
-          },
+                    },
           "description": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "gitlab_project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "mattermost_team": {
-            "type": "string"
+                        "type": "string"
           }
-        },
+                    },
         "required": ["name"]
-      },
+                    },
       "Module": {
         "type": "object",
         "properties": {
           "id": {
-            "type": "integer"
-          },
-          "project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
+                    "project_id": {
+                        "type": "integer"
+                    },
           "name": {
             "type": "string",
             "minLength": 2,
@@ -2431,7 +2431,7 @@
           "description": {
             "type": "string",
             "nullable": true
-          },
+            },
           "responsible_user_id": {
             "type": "string",
             "format": "uuid",
@@ -2449,24 +2449,24 @@
         "required": ["project_id", "name"]
       },
       "CreateModuleDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "project_id": {
             "type": "integer"
-          },
+                    },
           "name": {
             "type": "string",
             "minLength": 2,
             "maxLength": 255
-          },
-          "description": {
-            "type": "string"
-          },
+                    },
+                    "description": {
+                        "type": "string"
+                    },
           "responsible_user_id": {
             "type": "string",
             "format": "uuid"
           }
-        },
+                    },
         "required": ["project_id", "name"]
       },
       "UpdateModuleDTO": {
@@ -2478,8 +2478,8 @@
             "maxLength": 255
           },
           "description": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "responsible_user_id": {
             "type": "string",
             "format": "uuid"
@@ -2490,15 +2490,15 @@
       "Documentation": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer"
-          },
+                    "id": {
+                        "type": "integer"
+                    },
           "project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "file_path": {
-            "type": "string"
-          },
+                        "type": "string"
+            },
           "version": {
             "type": "string",
             "nullable": true
@@ -2508,104 +2508,104 @@
             "format": "uuid",
             "nullable": true
           },
-          "date_created": {
+                    "date_created": {
             "type": "string",
             "format": "date-time"
-          },
-          "date_updated": {
+                    },
+                    "date_updated": {
             "type": "string",
             "format": "date-time"
           }
         },
         "required": ["project_id", "file_path"]
-      },
+                    },
       "CreateDocumentationDTO": {
         "type": "object",
         "properties": {
           "project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "file_path": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "version": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "uploaded_by": {
             "type": "string",
             "format": "uuid"
           }
-        },
+                    },
         "required": ["project_id", "file_path"]
       },
       "UpdateDocumentationDTO": {
         "type": "object",
         "properties": {
           "file_path": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "version": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "uploaded_by": {
             "type": "string",
             "format": "uuid"
-          }
+                    }
         },
         "required": ["file_path"]
-      },
+            },
       "UserProject": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "user_id": {
             "type": "string",
             "format": "uuid"
           },
           "project_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "role": {
             "type": "string",
             "enum": ["viewer", "editor", "admin", "owner"]
-          },
+                    },
           "permissions": {
             "type": "array",
             "items": {
-              "type": "string"
+                        "type": "string"
             }
           },
           "date_created": {
             "type": "string",
             "format": "date-time"
-          },
+                    },
           "date_updated": {
             "type": "string",
             "format": "date-time"
-          }
-        },
+                }
+            },
         "required": ["user_id", "project_id", "role", "permissions"]
       },
       "CreateUserProjectDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "user_id": {
             "type": "string",
             "format": "uuid"
-          },
+                    },
           "project_id": {
             "type": "integer"
           },
           "role": {
             "type": "string",
             "enum": ["viewer", "editor", "admin", "owner"]
-          },
+                    },
           "permissions": {
             "type": "array",
             "items": {
-              "type": "string"
+                        "type": "string"
             }
           }
-        },
+                    },
         "required": ["user_id", "project_id", "role", "permissions"]
       },
       "UpdateUserProjectDTO": {
@@ -2614,19 +2614,19 @@
           "role": {
             "type": "string",
             "enum": ["viewer", "editor", "admin", "owner"]
-          },
+                    },
           "permissions": {
             "type": "array",
             "items": {
-              "type": "string"
-            }
-          }
-        },
+                        "type": "string"
+                    }
+                }
+            },
         "required": ["role", "permissions"]
       },
       "Ticket": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "id": {
             "type": "integer"
           },
@@ -2641,22 +2641,22 @@
             "type": "integer"
           },
           "created_by": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "assigned_to": {
-            "type": "string",
+                        "type": "string",
             "nullable": true
-          },
+                    },
           "title": {
-            "type": "string",
+                        "type": "string",
             "minLength": 3,
             "maxLength": 255
-          },
+                    },
           "message": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "status": {
-            "type": "string",
+                        "type": "string",
             "enum": ["open", "in_progress", "resolved", "closed"]
           },
           "gitlab_issue_url": {
@@ -2666,7 +2666,7 @@
           "mattermost_thread_url": {
             "type": "string",
             "nullable": true
-          },
+                    },
           "date_created": {
             "type": "string",
             "format": "date-time"
@@ -2674,25 +2674,25 @@
           "date_updated": {
             "type": "string",
             "format": "date-time"
-          }
-        },
+                }
+            },
         "required": ["project_id", "contract_id", "created_by", "title", "message"]
       },
       "CreateTicketDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "project_id": {
             "type": "integer"
           },
           "module_id": {
             "type": "integer"
-          },
-          "contract_id": {
-            "type": "integer"
-          },
-          "created_by": {
-            "type": "string"
-          },
+                    },
+                    "contract_id": {
+                        "type": "integer"
+                    },
+                    "created_by": {
+                        "type": "string"
+                    },
           "assigned_to": {
             "type": "string"
           },
@@ -2708,11 +2708,11 @@
             "type": "string",
             "enum": ["open", "in_progress", "resolved", "closed"]
           },
-          "gitlab_issue_url": {
-            "type": "string"
-          },
-          "mattermost_thread_url": {
-            "type": "string"
+                    "gitlab_issue_url": {
+                        "type": "string"
+                    },
+                    "mattermost_thread_url": {
+                        "type": "string"
           }
         },
         "required": ["project_id", "contract_id", "created_by", "title", "message"]
@@ -2724,14 +2724,14 @@
             "type": "string",
             "minLength": 3,
             "maxLength": 255
-          },
-          "message": {
-            "type": "string"
-          },
-          "status": {
-            "type": "string",
+                    },
+                    "message": {
+                        "type": "string"
+                    },
+                    "status": {
+                        "type": "string",
             "enum": ["open", "in_progress", "resolved", "closed"]
-          },
+                    },
           "assigned_to": {
             "type": "string"
           },
@@ -2740,21 +2740,21 @@
           },
           "mattermost_thread_url": {
             "type": "string"
-          }
-        },
+                }
+            },
         "required": ["title", "message", "status"]
       },
       "TicketChat": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "id": {
             "type": "integer"
-          },
+                    },
           "ticket_id": {
             "type": "integer"
           },
           "sender_id": {
-            "type": "string"
+                        "type": "string"
           },
           "sender_role": {
             "type": "string",
@@ -2763,7 +2763,7 @@
           "message": {
             "type": "string",
             "minLength": 1
-          },
+            },
           "message_type": {
             "type": "string",
             "enum": ["text", "file", "system"]
@@ -2784,14 +2784,14 @@
         "required": ["ticket_id", "sender_id", "sender_role", "message"]
       },
       "CreateTicketChatDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "ticket_id": {
             "type": "integer"
-          },
+                    },
           "sender_id": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "sender_role": {
             "type": "string",
             "enum": ["customer", "manager", "developer", "tester"]
@@ -2805,36 +2805,36 @@
             "enum": ["text", "file", "system"]
           },
           "mattermost_message_id": {
-            "type": "string"
-          }
-        },
+                        "type": "string"
+                }
+            },
         "required": ["ticket_id", "sender_id", "sender_role", "message"]
       },
       "UpdateTicketChatDTO": {
-        "type": "object",
-        "properties": {
-          "message": {
-            "type": "string",
-            "minLength": 1
-          },
-          "message_type": {
-            "type": "string",
+                "type": "object",
+                "properties": {
+                    "message": {
+                        "type": "string",
+                        "minLength": 1
+                    },
+                    "message_type": {
+                        "type": "string",
             "enum": ["text", "file", "system"]
-          }
-        }
-      },
+                    }
+                }
+            },
       "TicketAttachment": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "id": {
             "type": "integer"
-          },
+                    },
           "ticket_id": {
             "type": "integer"
-          },
+                    },
           "file_path": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "file_type": {
             "type": "string",
             "nullable": true
@@ -2844,36 +2844,36 @@
             "nullable": true
           },
           "uploaded_by": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "date_created": {
-            "type": "string",
+                        "type": "string",
             "format": "date-time"
-          },
+                    },
           "date_updated": {
-            "type": "string",
+                        "type": "string",
             "format": "date-time"
-          }
-        },
+                }
+            },
         "required": ["ticket_id", "file_path", "uploaded_by"]
       },
       "CreateTicketAttachmentDTO": {
-        "type": "object",
-        "properties": {
+                "type": "object",
+                "properties": {
           "ticket_id": {
             "type": "integer"
-          },
+                    },
           "file_path": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
           "file_type": {
-            "type": "string"
-          },
-          "description": {
-            "type": "string"
-          },
+                        "type": "string"
+                    },
+                    "description": {
+                        "type": "string"
+                    },
           "uploaded_by": {
-            "type": "string"
+                        "type": "string"
           }
         },
         "required": ["ticket_id", "file_path", "uploaded_by"]
@@ -2895,14 +2895,14 @@
       "MessageAttachment": {
         "type": "object",
         "properties": {
-          "id": {
-            "type": "integer"
-          },
+                    "id": {
+                        "type": "integer"
+                    },
           "chat_id": {
-            "type": "integer"
-          },
+                        "type": "integer"
+                    },
           "file_path": {
-            "type": "string"
+                        "type": "string"
           },
           "file_type": {
             "type": "string",
@@ -2918,7 +2918,7 @@
           "date_updated": {
             "type": "string",
             "format": "date-time"
-          }
+    }
         },
         "required": ["chat_id", "file_path", "uploaded_by"]
       },
