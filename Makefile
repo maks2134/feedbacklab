@@ -141,32 +141,46 @@ swagger: ## Generate OpenAPI 3.0 documentation from annotations
 
 ##@ Docker
 
-docker-build: ## Build Docker image
-	@echo "$(GREEN)Building Docker image...$(NC)"
-	docker build -t $(APP_NAME):latest .
+docker-build: ## Build Docker image force
+	@echo "$(GREEN)Building Docker images...$(NC)"
+	$(DC_CMD) build
 
-docker-up: ## Start Docker Compose services
+docker-up: ## Start Docker Compose services (rebuilds if necessary)
 	@echo "$(GREEN)Starting Docker Compose services...$(NC)"
-	$(DOCKER_COMPOSE) up -d
-	@echo "$(GREEN)Services started. Use 'make docker-logs' to view logs$(NC)"
+	$(DC_CMD) up -d --build
+	@echo "$(GREEN)Services started!$(NC)"
+	@echo "$(GREEN)App: http://localhost:8080$(NC)"
+	@echo "$(GREEN)Mattermost: http://localhost:8065$(NC)"
+	@echo "$(GREEN)Keycloak: http://localhost:8082$(NC)"
 
 docker-down: ## Stop Docker Compose services
 	@echo "$(YELLOW)Stopping Docker Compose services...$(NC)"
-	$(DOCKER_COMPOSE) down
+	$(DC_CMD) down
 
 docker-logs: ## View Docker Compose logs
-	$(DOCKER_COMPOSE) logs -f
+	$(DC_CMD) logs -f
 
 docker-restart: docker-down docker-up ## Restart Docker Compose services
 
-docker-clean: docker-down ## Stop and remove Docker containers and volumes
-	@echo "$(YELLOW)Removing Docker volumes...$(NC)"
-	$(DOCKER_COMPOSE) down -v
+docker-clean: ## Stop and remove Docker containers AND volumes (FULL RESET)
+	@echo "$(RED)Stopping and removing containers and VOLUMES...$(NC)"
+	$(DC_CMD) down -v
+	@echo "$(YELLOW)Pruning system...$(NC)"
 	docker system prune -f
+	@echo "$(GREEN)Clean complete. Next start will re-initialize databases.$(NC)"
 
 docker-ps: ## Show running Docker containers
-	$(DOCKER_COMPOSE) ps
+	$(DC_CMD) ps
 
+# Полезная команда для создания баз, если скрипт init-db.sh не сработал
+docker-init-db: ## Manually init databases inside running container
+	@echo "$(GREEN)Creating databases manually...$(NC)"
+	docker exec -it feedback_db psql -U feedback -d innotech -c "CREATE DATABASE keycloak;" || true
+	docker exec -it feedback_db psql -U feedback -d innotech -c "CREATE DATABASE mattermost;" || true
+	docker exec -it feedback_db psql -U feedback -d innotech -c "GRANT ALL PRIVILEGES ON DATABASE keycloak TO feedback;" || true
+	docker exec -it feedback_db psql -U feedback -d innotech -c "GRANT ALL PRIVILEGES ON DATABASE mattermost TO feedback;" || true
+	@echo "$(GREEN)Databases created. Restarting services...$(NC)"
+	$(DC_CMD) restart keycloak mattermost
 
 ##@ Default
 

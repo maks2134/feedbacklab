@@ -9,11 +9,14 @@ services:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U feedback -d innotech"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
       interval: 5s
       timeout: 3s
       retries: 5
+    networks:
+      - feedbacknet
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.0
@@ -21,10 +24,9 @@ services:
     environment:
       KC_DB: postgres
       KC_DB_URL_HOST: db
-      KC_DB_URL_DATABASE: innotech
-      KC_DB_USERNAME: feedback
-      KC_DB_PASSWORD: feedback
-      KC_DB_SCHEMA: public
+      KC_DB_URL_DATABASE: keycloak
+      KC_DB_USERNAME: ${POSTGRES_USER}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
       KC_HTTP_PORT: 8082
       KEYCLOAK_ADMIN: admin
       KEYCLOAK_ADMIN_PASSWORD: admin
@@ -43,17 +45,20 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - feedbacknet
 
   minio:
     image: minio/minio:latest
     container_name: feedbacklab_minio
-    restart: unless-stopped
     ports:
       - "9000:9000"
       - "9001:9001"
+    env_file:
+      - .env.docker
     environment:
-      MINIO_ROOT_USER: minioadmin
-      MINIO_ROOT_PASSWORD: minioadmin123
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
@@ -74,9 +79,6 @@ services:
       - .env.docker
     environment:
       MINIO_ENDPOINT: minio:9000
-      MINIO_ACCESS_KEY: minioadmin
-      MINIO_SECRET_KEY: minioadmin123
-      MINIO_BUCKET: feedback-files
       MINIO_SSL: "false"
     ports:
       - "${APP_PORT:-8080}:${APP_PORT:-8080}"
@@ -86,23 +88,30 @@ services:
       interval: 10s
       timeout: 5s
       retries: 5
+    networks:
+      - feedbacknet
 
   mattermost:
-    image: mattermost/mattermost-team-edition:9.11
+    image: mattermost/mattermost-team-edition:latest
     container_name: mattermost
     restart: unless-stopped
     env_file:
       - .env.docker
     environment:
+      MM_SERVICESETTINGS_SITEURL: "http://localhost:8065"
       MM_SQLSETTINGS_DRIVERNAME: postgres
-      MM_SQLSETTINGS_DATASOURCE: postgres://${MM_DB_USER}:${MM_DB_PASSWORD}@${MM_DB_HOST}:${MM_DB_PORT}/${MM_DB_NAME}?sslmode=disable&connect_timeout=10
+      MM_SQLSETTINGS_DATASOURCE: postgres://${MM_DB_USER}:${MM_DB_PASSWORD}@db:5432/mattermost?sslmode=disable&connect_timeout=10
     depends_on:
       db:
         condition: service_healthy
+    ports:
+      - "8065:8065"
     volumes:
       - mattermost_data:/mattermost/data
       - mattermost_config:/mattermost/config
       - mattermost_logs:/mattermost/logs
+    networks:
+      - feedbacknet
 
 volumes:
   db_data:
