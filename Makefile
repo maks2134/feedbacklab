@@ -139,11 +139,6 @@ swagger: ## Generate OpenAPI 3.0 documentation from annotations
 	@echo "$(GREEN)OpenAPI 3.0 documentation ready in $(SWAGGER_DIR)/$(NC)"
 	@echo "$(GREEN)Access Swagger UI at: http://localhost:8080/swagger/index.html$(NC)"
 
-swagger-static: swagger ## Generate static HTML documentation (works offline)
-	@echo "$(GREEN)Static HTML documentation is available at: file://$(shell pwd)/$(SWAGGER_DIR)/swagger.html$(NC)"
- 	@echo "$(GREEN)Open $(SWAGGER_DIR)/swagger.html in your browser for offline viewing$(NC)"
-	@echo "$(GREEN)Or access via: http://localhost:8080/docs/swagger.html$(NC)"
-
 ##@ Docker
 
 docker-build: ## Build Docker image

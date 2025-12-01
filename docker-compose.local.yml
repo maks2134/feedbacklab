@@ -68,7 +68,7 @@ services:
         condition: service_healthy
       keycloak:
         condition: service_healthy
-      minio:                    # Добавил зависимости
+      minio:
         condition: service_started
     env_file:
       - .env.docker
@@ -87,6 +87,30 @@ services:
       timeout: 5s
       retries: 5
 
+  mattermost:
+    image: mattermost/mattermost-team-edition:9.11
+    container_name: mattermost
+    restart: unless-stopped
+    env_file:
+      - .env.docker
+    environment:
+      MM_SQLSETTINGS_DRIVERNAME: postgres
+      MM_SQLSETTINGS_DATASOURCE: postgres://${MM_DB_USER}:${MM_DB_PASSWORD}@${MM_DB_HOST}:${MM_DB_PORT}/${MM_DB_NAME}?sslmode=disable&connect_timeout=10
+    depends_on:
+      db:
+        condition: service_healthy
+    volumes:
+      - mattermost_data:/mattermost/data
+      - mattermost_config:/mattermost/config
+      - mattermost_logs:/mattermost/logs
+
 volumes:
   db_data:
   minio_data:
+  mattermost_data:
+  mattermost_config:
+  mattermost_logs:
+
+networks:
+  feedbacknet:
+    driver: bridge
