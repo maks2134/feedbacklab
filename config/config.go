@@ -13,18 +13,19 @@ import (
 
 // Config holds application configuration settings.
 type Config struct {
-	AppPort         int
-	HealthPort      int
-	DatabaseURL     string
-	ParsedDBURL     *url.URL
-	MigrationsDir   string
-	SwaggerUsername string
-	SwaggerPassword string
-	MinioEndpoint   string
-	MinioAccessKey  string
-	MinioSecretKey  string
-	MinioBucket     string
-	MinioUseSSL     bool
+	AppPort           int
+	HealthPort        int
+	DatabaseURL       string
+	ParsedDBURL       *url.URL
+	MigrationsDir     string
+	SwaggerUsername   string
+	SwaggerPassword   string
+	MinioEndpoint     string
+	MinioAccessKey    string
+	MinioSecretKey    string
+	MinioBucket       string
+	MinioUseSSL       bool
+	MattermostWebhook string
 }
 
 // Load reads configuration from environment variables and returns a Config instance.
