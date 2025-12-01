@@ -172,7 +172,6 @@ docker-clean: ## Stop and remove Docker containers AND volumes (FULL RESET)
 docker-ps: ## Show running Docker containers
 	$(DC_CMD) ps
 
-# Полезная команда для создания баз, если скрипт init-db.sh не сработал
 docker-init-db: ## Manually init databases inside running container
 	@echo "$(GREEN)Creating databases manually...$(NC)"
 	docker exec -it feedback_db psql -U feedback -d innotech -c "CREATE DATABASE keycloak;" || true
