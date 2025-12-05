@@ -16,6 +16,7 @@ import (
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
+	"innotech/pkg/mattermost"
 	minio_client "innotech/pkg/minio"
 	"log"
 
@@ -28,6 +29,7 @@ type Container struct {
 	Config                    *config.Config
 	DB                        *sqlx.DB
 	I18nBundle                *goi18n.Bundle
+	Mattermost                *mattermost.Client
 	HealthHandler             *health.Handler
 	TicketHandler             *tickets.Handler
 	TicketChatsHandler        *ticketchats.Handler
@@ -102,6 +104,9 @@ func New() *Container {
 	if err != nil {
 		log.Fatalf("failed to initialize MinIO client: %v", err)
 	}
+
+	mm := mattermost.New(cfg.MattermostWebhook)
+
 	fileService := files.NewService(minioClient, logger.Global)
 	fileHandler := files.NewHandler(fileService, logger.Global)
 
@@ -119,5 +124,6 @@ func New() *Container {
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
 		FileHandler:               fileHandler,
+		Mattermost:                mm,
 	}
 }

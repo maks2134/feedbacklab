@@ -41,3 +41,4 @@ func main() {
 
 // todo 1) сделать парсер в конфиге, 2) прикрутить slog, 3) названия в docker(https://github.com/wagoodman/dive), 4) линтер(https://gist.github.com/maratori/47a4d00457a92aa426dbd48a18776322), 5) переводы, 6) minio 7)ошибки.
 // todo 1) Makfeile для основных команд, 2) openAPI 3, 3) swagger static(html), 4) закрыть свагер, 5) clock-permission, 6)поразбираться с keycloak - получение токена(будто user), получение user info с scope permissions.
+// todo 1) asnible чекнуть для моего докера 2)прокинуть везде переводы, 3) посмотреть под плагин mattermost - temporal, 4)keycloack - добить 5) закрыть PR алексея 6) интеграции с msSQL потыкать: почекать драйвер под msSQL - (https://github.com/microsoft/go-mssqldb#readme)
