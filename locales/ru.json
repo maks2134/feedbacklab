@@ -49,5 +49,17 @@
   },
   "project.deleted": {
     "other": "Проект успешно удален"
+  },
+  "message_attachment.error.file_required": {
+    "other": "Файл обязателен"
+  },
+  "message_attachment.error.invalid_chat_id": {
+    "other": "Неверный идентификатор чата"
+  },
+  "message_attachment.error.invalid_uploaded_by": {
+    "other": "Неверный идентификатор загрузчика"
+  },
+  "message_attachment.error.not_found": {
+    "other": "Вложение сообщения не найдено"
   }
 }

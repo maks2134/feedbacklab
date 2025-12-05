@@ -2,13 +2,18 @@ package ticketattachments
 
 import (
 	"context"
-	"errors"
+	"fmt"
+	"mime/multipart"
+	"path/filepath"
+
 	"innotech/internal/storage/postgres"
+	"innotech/pkg/minio"
+
+	"github.com/google/uuid"
 )
 
-// Service defines the interface for ticket attachment business logic operations.
 type Service interface {
-	Create(ctx context.Context, att *postgres.TicketAttachment) error
+	Create(ctx context.Context, att *postgres.TicketAttachment, file *multipart.FileHeader) error
 	GetByID(ctx context.Context, id int) (*postgres.TicketAttachment, error)
 	GetByTicketID(ctx context.Context, ticketID int) ([]postgres.TicketAttachment, error)
 	Update(ctx context.Context, att *postgres.TicketAttachment) error
@@ -16,28 +21,61 @@ type Service interface {
 }
 
 type service struct {
-	repo Repository
+	repo        Repository
+	minioClient *minio.MinioClient
 }
 
-// NewService creates a new Service instance.
-func NewService(repo Repository) Service {
-	return &service{repo: repo}
-}
-
-func (s *service) Create(ctx context.Context, att *postgres.TicketAttachment) error {
-	if att.FilePath == "" {
-		return errors.New("file_path cannot be empty")
+func NewService(repo Repository, minioClient *minio.MinioClient) Service {
+	return &service{
+		repo:        repo,
+		minioClient: minioClient,
 	}
-	// Pass the context to the repository
+}
+
+func (s *service) Create(ctx context.Context, att *postgres.TicketAttachment, file *multipart.FileHeader) error {
+	ext := filepath.Ext(file.Filename)
+	objectName := fmt.Sprintf("tickets/%d/%s%s", att.TicketID, uuid.New().String(), ext)
+
+	if err := s.minioClient.UploadFile(ctx, objectName, file); err != nil {
+		return err
+	}
+
+	att.FilePath = objectName
+
+	contentType := file.Header.Get("Content-Type")
+	att.FileType = &contentType
+
 	return s.repo.Create(ctx, att)
 }
 
 func (s *service) GetByID(ctx context.Context, id int) (*postgres.TicketAttachment, error) {
-	return s.repo.GetByID(ctx, id)
+	att, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return nil, err
+	}
+
+	signedURL, err := s.minioClient.GetFileURL(att.FilePath)
+	if err == nil {
+		att.FilePath = signedURL
+	}
+
+	return att, nil
 }
 
 func (s *service) GetByTicketID(ctx context.Context, ticketID int) ([]postgres.TicketAttachment, error) {
-	return s.repo.GetByTicketID(ctx, ticketID)
+	list, err := s.repo.GetByTicketID(ctx, ticketID)
+	if err != nil {
+		return nil, err
+	}
+
+	for i := range list {
+		signedURL, err := s.minioClient.GetFileURL(list[i].FilePath)
+		if err == nil {
+			list[i].FilePath = signedURL
+		}
+	}
+
+	return list, nil
 }
 
 func (s *service) Update(ctx context.Context, att *postgres.TicketAttachment) error {
@@ -45,5 +83,12 @@ func (s *service) Update(ctx context.Context, att *postgres.TicketAttachment) er
 }
 
 func (s *service) Delete(ctx context.Context, id int) error {
+	att, err := s.repo.GetByID(ctx, id)
+	if err != nil {
+		return err
+	}
+
+	_ = s.minioClient.DeleteFile(ctx, att.FilePath)
+
 	return s.repo.Delete(ctx, id)
 }

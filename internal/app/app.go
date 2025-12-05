@@ -7,9 +7,8 @@ import (
 	"innotech/internal/container"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
-	"innotech/internal/files"
 	"innotech/internal/projects"
-	user_projects "innotech/internal/userprojects"
+	"innotech/internal/userprojects"
 	"strconv"
 
 	"innotech/internal/health"
@@ -57,9 +56,7 @@ func Start(container *container.Container) {
 	contract.RegisterRoutes(app, container.ContractHandler)
 	projects.RegisterRoutes(app, container.ProjectHandler)
 	documentations.RegisterRoutes(app, container.DocumentationHandler)
-	user_projects.RegisterRoutes(app, container.UserProjectHandler)
-
-	files.RegisterRoutes(app, container.FileHandler)
+	userprojects.RegisterRoutes(app, container.UserProjectHandler)
 
 	log.Printf(" Server running on port %d\n", container.Config.AppPort)
 	if err := app.Listen(":" + strconv.Itoa(container.Config.AppPort)); err != nil {

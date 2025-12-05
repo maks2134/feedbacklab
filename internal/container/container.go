@@ -5,18 +5,17 @@ import (
 	"innotech/config"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
-	"innotech/internal/files"
 	"innotech/internal/health"
 	"innotech/internal/messageattachments"
 	"innotech/internal/projects"
 	"innotech/internal/ticketattachments"
 	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
-	user_projects "innotech/internal/userprojects"
+	"innotech/internal/userprojects"
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
-	minio_client "innotech/pkg/minio"
+	"innotech/pkg/minio"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -36,8 +35,7 @@ type Container struct {
 	ContractHandler           *contract.Handler
 	ProjectHandler            *projects.Handler
 	DocumentationHandler      *documentations.Handler
-	UserProjectHandler        *user_projects.Handler
-	FileHandler               *files.Handler
+	UserProjectHandler        *userprojects.Handler
 }
 
 // New creates and initializes a new Container with all dependencies.
@@ -64,12 +62,9 @@ func New() *Container {
 	chatHandler := ticketchats.NewHandler(chatService)
 
 	attachRepo := ticketattachments.NewRepository(database)
-	attachService := ticketattachments.NewService(attachRepo)
+	// Note: minioClient will be initialized later and passed to service
+	attachService := ticketattachments.NewService(attachRepo, nil)
 	attachHandler := ticketattachments.NewHandler(attachService)
-
-	msgAttachRepo := messageattachments.NewRepository(database)
-	msgAttachService := messageattachments.NewService(msgAttachRepo)
-	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	contractRepo := contract.NewRepository(database)
 	contractService := contract.NewService(contractRepo)
@@ -83,16 +78,16 @@ func New() *Container {
 	docService := documentations.NewService(docRepo)
 	docHandler := documentations.NewHandler(docService)
 
-	userProjectRepo := user_projects.NewRepository(database)
-	userProjectService := user_projects.NewService(userProjectRepo)
-	userProjectHandler := user_projects.NewHandler(userProjectService)
+	userProjectRepo := userprojects.NewRepository(database)
+	userProjectService := userprojects.NewService(userProjectRepo)
+	userProjectHandler := userprojects.NewHandler(userProjectService)
 
 	bundle := i18n.InitBundle()
 	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
 		log.Printf("warning: failed to load translations: %v", err)
 	}
 
-	minioClient, err := minio_client.New(
+	minioClient, err := minio.New(
 		cfg.MinioEndpoint,
 		cfg.MinioAccessKey,
 		cfg.MinioSecretKey,
@@ -102,8 +97,14 @@ func New() *Container {
 	if err != nil {
 		log.Fatalf("failed to initialize MinIO client: %v", err)
 	}
-	fileService := files.NewService(minioClient, logger.Global)
-	fileHandler := files.NewHandler(fileService, logger.Global)
+
+	// Reinitialize services with minio client
+	attachService = ticketattachments.NewService(attachRepo, minioClient)
+	attachHandler = ticketattachments.NewHandler(attachService)
+
+	msgAttachRepo := messageattachments.NewRepository(database)
+	msgAttachService := messageattachments.NewService(msgAttachRepo, minioClient)
+	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	return &Container{
 		Config:                    cfg,
@@ -118,6 +119,5 @@ func New() *Container {
 		ProjectHandler:            projectHandler,
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
-		FileHandler:               fileHandler,
 	}
 }
