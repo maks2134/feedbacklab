@@ -184,4 +184,3 @@ docker-init-db: ## Manually init databases inside running container
 ##@ Default
 
 .DEFAULT_GOAL := help
-
