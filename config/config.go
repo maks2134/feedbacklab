@@ -13,18 +13,23 @@ import (
 
 // Config holds application configuration settings.
 type Config struct {
-	AppPort         int
-	HealthPort      int
-	DatabaseURL     string
-	ParsedDBURL     *url.URL
-	MigrationsDir   string
-	SwaggerUsername string
-	SwaggerPassword string
-	MinioEndpoint   string
-	MinioAccessKey  string
-	MinioSecretKey  string
-	MinioBucket     string
-	MinioUseSSL     bool
+	AppPort          int
+	HealthPort       int
+	DatabaseURL      string
+	ParsedDBURL      *url.URL
+	MigrationsDir    string
+	SwaggerUsername  string
+	SwaggerPassword  string
+	MinioEndpoint    string
+	MinioAccessKey   string
+	MinioSecretKey   string
+	MinioBucket      string
+	MinioUseSSL      bool
+	KeycloakURL      string
+	KeycloakRealm    string
+	KeycloakClientID string
+	KeycloakAdmin    string
+	KeycloakAdminPwd string
 }
 
 // Load reads configuration from environment variables and returns a Config instance.
@@ -69,6 +74,12 @@ func Load() (*Config, error) {
 		return nil, fmt.Errorf("invalid MINIO_SSL: %w", err)
 	}
 	cfg.MinioUseSSL = minioUseSSL
+
+	cfg.KeycloakURL = getEnv("KEYCLOAK_URL", "http://localhost:8082")
+	cfg.KeycloakRealm = getEnv("KEYCLOAK_REALM", "feedbacklab")
+	cfg.KeycloakClientID = getEnv("KEYCLOAK_CLIENT_ID", "feedbacklab-api")
+	cfg.KeycloakAdmin = getEnv("KEYCLOAK_ADMIN", "admin")
+	cfg.KeycloakAdminPwd = getEnv("KEYCLOAK_ADMIN_PASSWORD", "admin")
 
 	log.Println("config loaded and parsed successfully")
 	return cfg, nil

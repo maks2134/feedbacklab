@@ -1,23 +1,80 @@
 {
   "realm": "feedbacklab",
   "enabled": true,
+  "registrationAllowed": false,
+  "registrationEmailAsUsername": true,
+  "rememberMe": true,
+  "verifyEmail": false,
+  "loginWithEmailAllowed": true,
+  "duplicateEmailsAllowed": false,
+  "resetPasswordAllowed": true,
+  "editUsernameAllowed": false,
   "users": [
     {
-      "username": "admin_user",
+      "username": "admin",
+      "email": "admin@feedbacklab.local",
       "enabled": true,
       "emailVerified": true,
+      "firstName": "Admin",
+      "lastName": "User",
+      "realmRoles": ["admin", "user"],
       "credentials": [
-        { "type": "password", "value": "admin123", "temporary": false }
+        {
+          "type": "password",
+          "value": "admin123",
+          "temporary": false
+        }
       ]
     }
   ],
+  "roles": {
+    "realm": [
+      {
+        "name": "admin",
+        "description": "Administrator role with full access"
+      },
+      {
+        "name": "user",
+        "description": "Regular user role"
+      }
+    ]
+  },
   "clients": [
     {
       "clientId": "feedbacklab-api",
+      "name": "FeedbackLab API",
+      "description": "FeedbackLab API client",
+      "enabled": true,
       "publicClient": true,
       "directAccessGrantsEnabled": true,
+      "standardFlowEnabled": true,
+      "implicitFlowEnabled": false,
+      "serviceAccountsEnabled": false,
       "redirectUris": ["*"],
-      "webOrigins": ["*"]
+      "webOrigins": ["*"],
+      "protocol": "openid-connect",
+      "defaultClientScopes": ["profile", "email"],
+      "optionalClientScopes": ["offline_access", "phone", "address"]
+    }
+  ],
+  "clientScopes": [
+    {
+      "name": "profile",
+      "description": "User profile information",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
+    },
+    {
+      "name": "email",
+      "description": "User email",
+      "protocol": "openid-connect",
+      "attributes": {
+        "include.in.token.scope": "true",
+        "display.on.consent.screen": "true"
+      }
     }
   ]
 }

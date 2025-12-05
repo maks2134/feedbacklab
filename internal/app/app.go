@@ -4,6 +4,7 @@ package app
 import (
 	// Import swagger docs for API documentation.
 	_ "innotech/docs"
+	"innotech/internal/auth"
 	"innotech/internal/container"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
@@ -49,6 +50,9 @@ func Start(container *container.Container) {
 	app.Static("/docs", "./docs")
 
 	health.RegisterRoutes(app, container.HealthHandler)
+
+	// Register authentication routes
+	auth.RegisterRoutes(app, container.AuthHandler, container.KeycloakJWTMiddleware)
 
 	tickets.RegisterRoutes(app, container.TicketHandler)
 	ticketchats.RegisterRoutes(app, container.TicketChatsHandler)

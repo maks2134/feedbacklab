@@ -3,6 +3,7 @@ package container
 
 import (
 	"innotech/config"
+	"innotech/internal/auth"
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
 	"innotech/internal/files"
@@ -15,7 +16,9 @@ import (
 	user_projects "innotech/internal/userprojects"
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
+	"innotech/pkg/keycloak"
 	"innotech/pkg/logger"
+	"innotech/pkg/middleware"
 	minio_client "innotech/pkg/minio"
 	"log"
 
@@ -38,6 +41,9 @@ type Container struct {
 	DocumentationHandler      *documentations.Handler
 	UserProjectHandler        *user_projects.Handler
 	FileHandler               *files.Handler
+	AuthHandler               *auth.Handler
+	KeycloakClient            *keycloak.Client
+	KeycloakJWTMiddleware     *middleware.KeycloakJWTMiddleware
 }
 
 // New creates and initializes a new Container with all dependencies.
@@ -105,6 +111,23 @@ func New() *Container {
 	fileService := files.NewService(minioClient, logger.Global)
 	fileHandler := files.NewHandler(fileService, logger.Global)
 
+	// Initialize Keycloak client and middleware
+	keycloakClient := keycloak.NewClient(
+		cfg.KeycloakURL,
+		cfg.KeycloakRealm,
+		cfg.KeycloakAdmin,
+		cfg.KeycloakAdminPwd,
+	)
+	keycloakJWTMiddleware := middleware.NewJWTMiddleware(
+		cfg.KeycloakURL,
+		cfg.KeycloakRealm,
+		cfg.KeycloakClientID,
+	)
+
+	// Initialize auth service and handler
+	authService := auth.NewService(keycloakClient, logger.Global)
+	authHandler := auth.NewHandler(authService, logger.Global)
+
 	return &Container{
 		Config:                    cfg,
 		DB:                        database,
@@ -119,5 +142,8 @@ func New() *Container {
 		DocumentationHandler:      docHandler,
 		UserProjectHandler:        userProjectHandler,
 		FileHandler:               fileHandler,
+		AuthHandler:               authHandler,
+		KeycloakClient:            keycloakClient,
+		KeycloakJWTMiddleware:     keycloakJWTMiddleware,
 	}
 }
