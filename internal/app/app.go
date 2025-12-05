@@ -8,7 +8,7 @@ import (
 	"innotech/internal/contract"
 	"innotech/internal/documentations"
 	"innotech/internal/projects"
-	userprojects "innotech/internal/userprojects"
+	"innotech/internal/userprojects"
 	"strconv"
 
 	"innotech/internal/health"
@@ -41,8 +41,10 @@ func Start(container *container.Container) {
 		app.Use("/docs", authMiddleware)
 	}
 
+	// Swagger UI endpoint
 	app.Get("/swagger/*", swagger.WrapHandler)
 
+	// Static Swagger HTML for offline viewing
 	app.Static("/docs", "./docs")
 
 	health.RegisterRoutes(app, container.HealthHandler)

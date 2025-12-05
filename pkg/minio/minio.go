@@ -3,11 +3,11 @@ package minio
 
 import (
 	"context"
-	"innotech/pkg/logger"
-	"log"
 	"mime/multipart"
 	"net/url"
 	"time"
+
+	"innotech/pkg/logger"
 
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
@@ -39,7 +39,13 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClie
 	}
 
 	ctx := context.Background()
-	exists, _ := client.BucketExists(ctx, bucket)
+	exists, err := client.BucketExists(ctx, bucket)
+	if err != nil {
+		logger.Warn("failed to check bucket existence",
+			"bucket", bucket,
+			"error", err,
+		)
+	}
 	if !exists {
 		logger.Info("bucket does not exist, creating new bucket",
 			"bucket", bucket,
@@ -53,7 +59,9 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClie
 			)
 			return nil, err
 		}
-		log.Println("Bucket created:", bucket)
+		logger.Info("bucket created",
+			"bucket", bucket,
+		)
 		logger.Info("bucket created successfully",
 			"bucket", bucket,
 		)
@@ -73,46 +81,140 @@ func New(endpoint, accessKey, secretKey, bucket string, useSSL bool) (*MinioClie
 	}, nil
 }
 
-func (m *MinioClient) UploadFile(ctx context.Context, objectName string, file *multipart.FileHeader) error {
-	src, err := file.Open()
-	if err != nil {
-		return err
-	}
-	defer func(src multipart.File) {
-		err := src.Close()
-		if err != nil {
-			return
-		}
-	}(src)
-
-	logger.Info("uploading file stream to MinIO",
+func (m *MinioClient) Upload(ctx context.Context, objectName, filePath string) error {
+	logger.Info("uploading file to MinIO",
 		"bucket", m.BucketName,
 		"object_name", objectName,
-		"size", file.Size,
+		"file_path", filePath,
 	)
 
-	_, err = m.Client.PutObject(ctx, m.BucketName, objectName, src, file.Size, minio.PutObjectOptions{
-		ContentType: file.Header.Get("Content-Type"),
-	})
+	_, err := m.Client.FPutObject(ctx, m.BucketName, objectName, filePath, minio.PutObjectOptions{})
 	if err != nil {
-		logger.Error("failed to upload file", "error", err)
+		logger.Error("failed to upload file to MinIO",
+			"bucket", m.BucketName,
+			"object_name", objectName,
+			"file_path", filePath,
+			"error", err,
+		)
 		return err
 	}
 
+	logger.Info("file uploaded successfully",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+		"file_path", filePath,
+	)
 	return nil
 }
 
 func (m *MinioClient) GetFileURL(objectName string) (string, error) {
-	expiry := time.Hour * 24
+	logger.Debug("generating presigned URL for object",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+	)
 
-	pressigndURL, err := m.Client.PresignedGetObject(context.Background(), m.BucketName, objectName, expiry, make(url.Values))
+	reqParams := make(url.Values)
+
+	presignedURL, err := m.Client.PresignedGetObject(
+		context.Background(),
+		m.BucketName,
+		objectName,
+		time.Hour*24,
+		reqParams,
+	)
 	if err != nil {
-		logger.Error("failed to get presigned url", "error", err)
+		logger.Error("failed to generate presigned URL",
+			"bucket", m.BucketName,
+			"object_name", objectName,
+			"error", err,
+		)
+		return "", err
 	}
 
-	return pressigndURL.String(), nil
+	urlString := presignedURL.String()
+	logger.Debug("presigned URL generated successfully",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+		"url_length", len(urlString),
+	)
+
+	return urlString, nil
 }
 
+// UploadFile uploads a file from multipart.FileHeader to MinIO.
+func (m *MinioClient) UploadFile(ctx context.Context, objectName string, file *multipart.FileHeader) error {
+	logger.Info("uploading file to MinIO",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+		"filename", file.Filename,
+	)
+
+	src, err := file.Open()
+	if err != nil {
+		logger.Error("failed to open uploaded file",
+			"bucket", m.BucketName,
+			"object_name", objectName,
+			"filename", file.Filename,
+			"error", err,
+		)
+		return err
+	}
+	defer func(src multipart.File) {
+		if closeErr := src.Close(); closeErr != nil {
+			logger.Warn("failed to close file",
+				"object_name", objectName,
+				"filename", file.Filename,
+				"error", closeErr,
+			)
+		}
+	}(src)
+
+	contentType := file.Header.Get("Content-Type")
+	if contentType == "" {
+		contentType = "application/octet-stream"
+	}
+
+	_, err = m.Client.PutObject(ctx, m.BucketName, objectName, src, file.Size, minio.PutObjectOptions{
+		ContentType: contentType,
+	})
+	if err != nil {
+		logger.Error("failed to upload file to MinIO",
+			"bucket", m.BucketName,
+			"object_name", objectName,
+			"filename", file.Filename,
+			"error", err,
+		)
+		return err
+	}
+
+	logger.Info("file uploaded successfully",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+		"filename", file.Filename,
+	)
+	return nil
+}
+
+// DeleteFile deletes a file from MinIO storage.
 func (m *MinioClient) DeleteFile(ctx context.Context, objectName string) error {
-	return m.Client.RemoveObject(ctx, m.BucketName, objectName, minio.RemoveObjectOptions{})
+	logger.Info("deleting file from MinIO",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+	)
+
+	err := m.Client.RemoveObject(ctx, m.BucketName, objectName, minio.RemoveObjectOptions{})
+	if err != nil {
+		logger.Error("failed to delete file from MinIO",
+			"bucket", m.BucketName,
+			"object_name", objectName,
+			"error", err,
+		)
+		return err
+	}
+
+	logger.Info("file deleted successfully",
+		"bucket", m.BucketName,
+		"object_name", objectName,
+	)
+	return nil
 }

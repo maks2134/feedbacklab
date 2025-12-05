@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 
 	"innotech/internal/storage/postgres"
+	"innotech/pkg/errors"
+	"innotech/pkg/logger"
 	"innotech/pkg/minio"
 
 	"github.com/google/uuid"
@@ -34,23 +36,35 @@ func (s *service) Create(ctx context.Context, att *postgres.MessageAttachment, f
 	objectName := fmt.Sprintf("chat/%d/%s%s", att.ChatID, uuid.New().String(), ext)
 
 	if err := s.minioClient.UploadFile(ctx, objectName, file); err != nil {
-		return err
+		return errors.NewInternalError("service", "upload file to minio", err)
 	}
 
 	contentType := file.Header.Get("Content-Type")
 	att.FileType = &contentType
+	att.FilePath = objectName
 
-	return s.repo.Create(ctx, att)
+	if err := s.repo.Create(ctx, att); err != nil {
+		return errors.NewInternalError("service", "create message attachment", err)
+	}
+
+	return nil
 }
 
 func (s *service) GetByID(ctx context.Context, id int) (*postgres.MessageAttachment, error) {
 	att, err := s.repo.GetByID(ctx, id)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewNotFoundError("message_attachment.error.not_found", "message attachment", err)
 	}
 
 	url, err := s.minioClient.GetFileURL(att.FilePath)
-	if err == nil {
+	if err != nil {
+		logger.Warn("failed to get presigned URL for message attachment",
+			"id", id,
+			"file_path", att.FilePath,
+			"error", err,
+		)
+		// Continue with original file path if URL generation fails
+	} else {
 		att.FilePath = url
 	}
 	return att, nil
@@ -59,11 +73,19 @@ func (s *service) GetByID(ctx context.Context, id int) (*postgres.MessageAttachm
 func (s *service) GetByChatID(ctx context.Context, chatID int) ([]postgres.MessageAttachment, error) {
 	list, err := s.repo.GetByChatID(ctx, chatID)
 	if err != nil {
-		return nil, err
+		return nil, errors.NewInternalError("service", "get message attachments by chat id", err)
 	}
+
 	for i := range list {
 		url, err := s.minioClient.GetFileURL(list[i].FilePath)
-		if err == nil {
+		if err != nil {
+			logger.Warn("failed to get presigned URL for message attachment",
+				"chat_id", chatID,
+				"file_path", list[i].FilePath,
+				"error", err,
+			)
+			// Continue with original file path if URL generation fails
+		} else {
 			list[i].FilePath = url
 		}
 	}
@@ -73,11 +95,28 @@ func (s *service) GetByChatID(ctx context.Context, chatID int) ([]postgres.Messa
 func (s *service) Delete(ctx context.Context, id int) error {
 	att, err := s.repo.GetByID(ctx, id)
 	if err != nil {
-		return err
+		return errors.NewNotFoundError("message_attachment.error.not_found", "message attachment", err)
 	}
-	_ = s.minioClient.DeleteFile(ctx, att.FilePath)
-	return s.repo.Delete(ctx, id)
+
+	if err := s.minioClient.DeleteFile(ctx, att.FilePath); err != nil {
+		logger.Warn("failed to delete file from minio",
+			"id", id,
+			"file_path", att.FilePath,
+			"error", err,
+		)
+		// Continue with database deletion even if minio deletion fails
+	}
+
+	if err := s.repo.Delete(ctx, id); err != nil {
+		return errors.NewInternalError("service", "delete message attachment", err)
+	}
+
+	return nil
 }
+
 func (s *service) Update(ctx context.Context, att *postgres.MessageAttachment) error {
-	return s.repo.Update(ctx, att)
+	if err := s.repo.Update(ctx, att); err != nil {
+		return errors.NewInternalError("service", "update message attachment", err)
+	}
+	return nil
 }

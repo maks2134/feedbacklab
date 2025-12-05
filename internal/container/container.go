@@ -11,11 +11,11 @@ import (
 	"innotech/internal/ticketattachments"
 	"innotech/internal/ticketchats"
 	"innotech/internal/tickets"
-	userprojects "innotech/internal/userprojects"
+	"innotech/internal/userprojects"
 	"innotech/pkg/db"
 	"innotech/pkg/i18n"
 	"innotech/pkg/logger"
-	minioclient "innotech/pkg/minio"
+	"innotech/pkg/minio"
 	"log"
 
 	"github.com/jmoiron/sqlx"
@@ -50,22 +50,6 @@ func New() *Container {
 		log.Fatalf("DB connection failed: %v", err)
 	}
 
-	minioClient, err := minioclient.New(
-		cfg.MinioEndpoint,
-		cfg.MinioAccessKey,
-		cfg.MinioSecretKey,
-		cfg.MinioBucket,
-		cfg.MinioUseSSL,
-	)
-	if err != nil {
-		log.Fatalf("failed to initialize MinIO client: %v", err)
-	}
-
-	bundle := i18n.InitBundle()
-	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
-		log.Printf("warning: failed to load translations: %v", err)
-	}
-
 	healthService := health.NewSelfHealthService()
 	healthHandler := health.NewHandler(healthService)
 
@@ -78,12 +62,9 @@ func New() *Container {
 	chatHandler := ticketchats.NewHandler(chatService)
 
 	attachRepo := ticketattachments.NewRepository(database)
-	attachService := ticketattachments.NewService(attachRepo, minioClient)
+	// Note: minioClient will be initialized later and passed to service
+	attachService := ticketattachments.NewService(attachRepo, nil)
 	attachHandler := ticketattachments.NewHandler(attachService)
-
-	msgAttachRepo := messageattachments.NewRepository(database)
-	msgAttachService := messageattachments.NewService(msgAttachRepo, minioClient)
-	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	contractRepo := contract.NewRepository(database)
 	contractService := contract.NewService(contractRepo)
@@ -100,6 +81,30 @@ func New() *Container {
 	userProjectRepo := userprojects.NewRepository(database)
 	userProjectService := userprojects.NewService(userProjectRepo)
 	userProjectHandler := userprojects.NewHandler(userProjectService)
+
+	bundle := i18n.InitBundle()
+	if err := i18n.LoadTranslations(bundle, "./locales"); err != nil {
+		log.Printf("warning: failed to load translations: %v", err)
+	}
+
+	minioClient, err := minio.New(
+		cfg.MinioEndpoint,
+		cfg.MinioAccessKey,
+		cfg.MinioSecretKey,
+		cfg.MinioBucket,
+		cfg.MinioUseSSL,
+	)
+	if err != nil {
+		log.Fatalf("failed to initialize MinIO client: %v", err)
+	}
+
+	// Reinitialize services with minio client
+	attachService = ticketattachments.NewService(attachRepo, minioClient)
+	attachHandler = ticketattachments.NewHandler(attachService)
+
+	msgAttachRepo := messageattachments.NewRepository(database)
+	msgAttachService := messageattachments.NewService(msgAttachRepo, minioClient)
+	msgAttachHandler := messageattachments.NewHandler(msgAttachService)
 
 	return &Container{
 		Config:                    cfg,

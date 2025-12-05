@@ -11,7 +11,7 @@ import (
 
 // @title FeedbackLab API
 // @version 0.1
-// @description API для управления проектами, тикетами и документациейs
+// @description API для управления проектами, тикетами и документацией
 // @host localhost:8080
 // @BasePath /api
 // @schemes http

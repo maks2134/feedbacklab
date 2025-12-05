@@ -1,4 +1,4 @@
-// Package ticketattachments provides ticket attachment management functionality.
+// Package ticketattachments Package ticket attachments provides ticket attachment management functionality.
 package ticketattachments
 
 import (

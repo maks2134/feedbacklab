@@ -49,5 +49,17 @@
   },
   "project.deleted": {
     "other": "Project successfully deleted"
+  },
+  "message_attachment.error.file_required": {
+    "other": "File is required"
+  },
+  "message_attachment.error.invalid_chat_id": {
+    "other": "Invalid chat ID"
+  },
+  "message_attachment.error.invalid_uploaded_by": {
+    "other": "Invalid uploaded by ID"
+  },
+  "message_attachment.error.not_found": {
+    "other": "Message attachment not found"
   }
 }
