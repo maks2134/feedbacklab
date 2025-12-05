@@ -5,18 +5,43 @@ services:
     restart: always
     env_file:
       - .env.docker
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-feedback}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-feedback}
+      POSTGRES_DB: ${POSTGRES_DB:-innotech}
     ports:
       - "${DB_PORT:-5432}:5432"
     volumes:
       - db_data:/var/lib/postgresql/data
-      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh
+      - ./init-db.sh:/docker-entrypoint-initdb.d/init-db.sh:ro
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d ${POSTGRES_DB}"]
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-feedback} -d ${POSTGRES_DB:-innotech}"]
       interval: 5s
       timeout: 3s
       retries: 5
+      start_period: 10s
     networks:
       - feedbacknet
+
+  init-db:
+    image: postgres:17.4
+    container_name: feedback_init_db
+    depends_on:
+      db:
+        condition: service_healthy
+    env_file:
+      - .env.docker
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-feedback}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:-feedback}
+      PGHOST: db
+      PGPORT: 5432
+    volumes:
+      - ./init-databases.sh:/init-databases.sh:ro
+    command: ["bash", "/init-databases.sh"]
+    networks:
+      - feedbacknet
+    restart: "no"
 
   keycloak:
     image: quay.io/keycloak/keycloak:26.0.0
@@ -25,26 +50,29 @@ services:
       KC_DB: postgres
       KC_DB_URL_HOST: db
       KC_DB_URL_DATABASE: keycloak
-      KC_DB_USERNAME: ${POSTGRES_USER}
-      KC_DB_PASSWORD: ${POSTGRES_PASSWORD}
+      KC_DB_USERNAME: ${POSTGRES_USER:-feedback}
+      KC_DB_PASSWORD: ${POSTGRES_PASSWORD:-feedback}
+      KC_DB_URL_PORT: 5432
       KC_HTTP_PORT: 8082
-      KEYCLOAK_ADMIN: admin
-      KEYCLOAK_ADMIN_PASSWORD: admin
+      KEYCLOAK_ADMIN: ${KEYCLOAK_ADMIN:-admin}
+      KEYCLOAK_ADMIN_PASSWORD: ${KEYCLOAK_ADMIN_PASSWORD:-admin}
+      KC_HEALTH_ENABLED: "true"
     command:
       - start-dev
       - --import-realm
     depends_on:
-      db:
-        condition: service_healthy
+      init-db:
+        condition: service_completed_successfully
     ports:
-      - "8082:8082"
+      - "${KEYCLOAK_PORT:-8082}:8082"
     volumes:
-      - ./keycloak/realms:/opt/keycloak/data/import
+      - ./keycloak/realms:/opt/keycloak/data/import:ro
     healthcheck:
-      test: ["CMD", "curl", "-f", "http://localhost:8082/realms/master"]
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8082 || exit 1"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
+      start_period: 60s
     networks:
       - feedbacknet
 
@@ -52,21 +80,29 @@ services:
     image: minio/minio:latest
     container_name: feedbacklab_minio
     ports:
-      - "9000:9000"
-      - "9001:9001"
+      - "${MINIO_PORT:-9000}:9000"
+      - "${MINIO_CONSOLE_PORT:-9001}:9001"
     env_file:
       - .env.docker
     environment:
-      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY}
-      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY}
+      MINIO_ROOT_USER: ${MINIO_ACCESS_KEY:-minioadmin}
+      MINIO_ROOT_PASSWORD: ${MINIO_SECRET_KEY:-minioadmin123}
     command: server /data --console-address ":9001"
     volumes:
       - minio_data:/data
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/9000 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
     networks:
       - feedbacknet
 
   app:
-    build: .
+    build:
+      context: .
+      dockerfile: Dockerfile
     container_name: feedbacklab
     depends_on:
       db:
@@ -74,20 +110,23 @@ services:
       keycloak:
         condition: service_healthy
       minio:
-        condition: service_started
+        condition: service_healthy
     env_file:
       - .env.docker
     environment:
+      DATABASE_URL: postgres://${POSTGRES_USER:-feedback}:${POSTGRES_PASSWORD:-feedback}@db:5432/${POSTGRES_DB:-innotech}?sslmode=disable
       MINIO_ENDPOINT: minio:9000
       MINIO_SSL: "false"
+      MIGRATIONS_DIR: /app/migrations
     ports:
-      - "${APP_PORT:-8080}:${APP_PORT:-8080}"
-      - "${HEALTH_PORT:-8081}:${HEALTH_PORT:-8081}"
+      - "${APP_PORT:-8080}:8080"
+      - "${HEALTH_PORT:-8081}:8081"
     healthcheck:
       test: ["CMD", "/app/healthcheck"]
       interval: 10s
       timeout: 5s
       retries: 5
+      start_period: 30s
     networks:
       - feedbacknet
 
@@ -98,18 +137,24 @@ services:
     env_file:
       - .env.docker
     environment:
-      MM_SERVICESETTINGS_SITEURL: "http://localhost:8065"
+      MM_SERVICESETTINGS_SITEURL: ${MM_SITEURL:-http://localhost:8065}
       MM_SQLSETTINGS_DRIVERNAME: postgres
-      MM_SQLSETTINGS_DATASOURCE: postgres://${MM_DB_USER}:${MM_DB_PASSWORD}@db:5432/mattermost?sslmode=disable&connect_timeout=10
+      MM_SQLSETTINGS_DATASOURCE: postgres://${MM_DB_USER:-feedback}:${MM_DB_PASSWORD:-feedback}@db:5432/mattermost?sslmode=disable&connect_timeout=10
     depends_on:
-      db:
-        condition: service_healthy
+      init-db:
+        condition: service_completed_successfully
     ports:
-      - "8065:8065"
+      - "${MM_PORT:-8065}:8065"
     volumes:
       - mattermost_data:/mattermost/data
       - mattermost_config:/mattermost/config
       - mattermost_logs:/mattermost/logs
+    healthcheck:
+      test: ["CMD-SHELL", "exec 3<>/dev/tcp/localhost/8065 || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 60s
     networks:
       - feedbacknet
 
