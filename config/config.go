@@ -71,6 +71,8 @@ func Load() (*Config, error) {
 	}
 	cfg.MinioUseSSL = minioUseSSL
 
+	cfg.MattermostWebhook = getEnv("MATTERMOST_WEBHOOK", "")
+
 	log.Println("config loaded and parsed successfully")
 	return cfg, nil
 }
